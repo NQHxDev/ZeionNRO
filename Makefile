@@ -18,11 +18,11 @@ help:
 
 setup:
 	@echo "\033[0;34m>>>\033[0m Initializing Configuration Files..."
-	@cp -n Hashirama/config/server.example.properties Hashirama/config/server.properties || echo "Hashirama config already exists."
+	@cp -n ServerGame/config/server.example.properties ServerGame/config/server.properties || echo "ServerGame config already exists."
 	@cp -n ServerLogin/server.example.ini ServerLogin/server.ini || echo "ServerLogin config already exists."
 
 	@echo "\033[0;34m>>>\033[0m Checking for assets..."
-	@if [ ! -d "Hashirama/resources" ] || [ -z "$$(ls -A Hashirama/resources)" ]; then \
+	@if [ ! -d "ServerGame/resources" ] || [ -z "$$(ls -A ServerGame/resources)" ]; then \
 		echo "\033[0;33m>>> Assets missing. Downloading from GitHub Release...\033[0m"; \
 		curl -L $(DATA_URL) -o $(DATA_FILE); \
 		echo "\033[0;34m>>> Extracting data pack...\033[0m"; \
@@ -34,7 +34,7 @@ setup:
 	fi
 
 	@echo "\033[0;34m>>>\033[0m Creating required directories..."
-	@mkdir -p Hashirama/resources Hashirama/data Hashirama/Eff Hashirama/mob log
+	@mkdir -p ServerGame/resources ServerGame/data ServerGame/Eff ServerGame/mob log
 
 	@echo "\033[0;32m>>>\033[0m SETUP COMPLETE!"
 	@echo "\033[0;33mPlease update your DB credentials in the config files before running.\033[0m"
@@ -42,14 +42,14 @@ setup:
 build:
 	@echo "\033[0;34m>>>\033[0m Building ServerLogin..."
 	@cd ServerLogin && $(MAKE) build
-	@echo "\033[0;34m>>>\033[0m Building Hashirama..."
-	@cd Hashirama && $(MAKE) build
+	@echo "\033[0;34m>>>\033[0m Building ServerGame..."
+	@cd ServerGame && $(MAKE) build
 	@echo "\033[0;32m>>>\033[0m All modules built successfully!"
 
 clean:
 	@echo "\033[0;31m>>>\033[0m Cleaning ServerLogin..."
 	@cd ServerLogin && $(MAKE) clean
-	@echo "\033[0;31m>>>\033[0m Cleaning Hashirama..."
-	@cd Hashirama && $(MAKE) clean
+	@echo "\033[0;31m>>>\033[0m Cleaning ServerGame..."
+	@cd ServerGame && $(MAKE) clean
 	@rm -rf log
 	@echo "\033[0;32m>>>\033[0m Project cleaned."

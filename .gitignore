@@ -1,16 +1,16 @@
 target/
 
-Hashirama.jar
+ServerGame.jar
 ServerLogin.jar
 
-Hashirama/config/server.properties
+ServerGame/config/server.properties
 ServerLogin/server.ini
 
 .DS_Store
 
-Hashirama/resources/
-Hashirama/data/
-Hashirama/Eff/
-Hashirama/mob/
+ServerGame/resources/
+ServerGame/data/
+ServerGame/Eff/
+ServerGame/mob/
 
 log/

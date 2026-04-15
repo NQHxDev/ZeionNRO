@@ -27,7 +27,7 @@
 ```mermaid
 graph TD
     User((Player)) -->|Gateway| SL[ServerLogin]
-    SL -->|Auth Success| HM[Hashirama Core]
+    SL -->|Auth Success| HM[ServerGame Core]
     HM -->|Persistence| DB[(MySQL Database)]
     HM -->|Logic| Engine[Game Engine]
     Engine --> Map[Map System]
@@ -39,7 +39,7 @@ graph TD
 | Component | Description |
 | :--- | :--- |
 | **`ServerLogin`** | High-speed authentication gateway & session manager. |
-| **`Hashirama`** | The flagship game core handling world logic, entities, and skills. |
+| **`ServerGame`** | The flagship game core handling world logic, entities, and skills. |
 | **`SQL`** | Optimized database schemas and migration scripts. |
 
 ## Management CLI
