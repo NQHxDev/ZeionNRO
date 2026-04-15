@@ -1,0 +1,16 @@
+target/
+
+Hashirama.jar
+ServerLogin.jar
+
+Hashirama/config/server.properties
+ServerLogin/server.ini
+
+.DS_Store
+
+Hashirama/resources/
+Hashirama/data/
+Hashirama/Eff/
+Hashirama/mob/
+
+log/
