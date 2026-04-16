@@ -1,21 +1,15 @@
 package nro.services;
 
 import java.io.IOException;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import nro.consts.ConstNpc;
-import nro.jdbc.DBService;
 import nro.models.item.Item;
 
 import nro.models.player.Player;
 import nro.server.io.Message;
-import nro.utils.Log;
 import nro.utils.Util;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 public class PhongThiNghiem {
 
@@ -54,41 +48,6 @@ public class PhongThiNghiem {
 
    public long thoiGianDieuChe() {
       return this.thoi_gian * 1000 * 60;
-   }
-
-   public void loadPhongThiNghiem() {
-      try {
-         PreparedStatement ps = DBService.gI().getConnectionForGame()
-               .prepareStatement("SELECT * FROM `phong_thi_nghiem`");
-         ResultSet rs = ps.executeQuery();
-         try {
-            while (rs.next()) {
-               PhongThiNghiem ptn = new PhongThiNghiem();
-               ptn.id = rs.getInt("id");
-               ptn.name_tab = rs.getString("name_tab");
-               ptn.name_binh = rs.getString("name_binh");
-               ptn.thoi_gian = rs.getInt("thoi_gian");
-               ptn.idItem_Nhan = rs.getInt("item_nhan");
-               ptn.info = rs.getString("info");
-               ptn.color = rs.getByte("color");
-               JSONArray jArr = new JSONArray(rs.getString("items"));
-               for (int i = 0; i < jArr.length(); i++) {
-                  PhongThiNghiem_Template itemThuoc = new PhongThiNghiem_Template();
-                  JSONObject obj = jArr.getJSONObject(i);
-                  itemThuoc.tempId = obj.getInt("tempid");
-                  itemThuoc.quantity = obj.getInt("quantity");
-                  ptn.items.add(itemThuoc);
-               }
-               PHONG_THI_NGHIEM.add(ptn);
-            }
-            Log.success("Load Phong Thi Nghiem thanh cong (" + PHONG_THI_NGHIEM.size() + ")");
-         } finally {
-            rs.close();
-            ps.close();
-         }
-      } catch (Exception ex) {
-         ex.printStackTrace();
-      }
    }
 
    public void Send_PhongThiNghiem_Template(Player pl) {

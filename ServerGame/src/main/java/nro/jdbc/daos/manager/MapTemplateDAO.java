@@ -1,4 +1,4 @@
-package nro.jdbc.daos;
+package nro.jdbc.daos.manager;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -145,12 +145,12 @@ public class MapTemplateDAO {
                }
                mapTemplates[i++] = mapTemplate;
             }
-            Log.success("Load map template th脿nh c么ng (" + mapTemplates.length + ")");
+            Log.success("Map templates loaded successfully (" + mapTemplates.length + ")");
          }
          rs.close();
          ps.close();
       } catch (Exception e) {
-         Log.error(MapTemplateDAO.class, e, "L峄梚 load map template");
+         Log.error(MapTemplateDAO.class, e, "Error loading map templates");
       }
       return mapTemplates;
    }

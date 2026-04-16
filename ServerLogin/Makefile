@@ -22,31 +22,31 @@ help:
 	@printf "$(CYAN)==================================================$(RESET)\n"
 	@printf "$(CYAN)     SERVER LOGIN MANAGEMENT COMMANDS           $(RESET)\n"
 	@printf "$(CYAN)==================================================$(RESET)\n"
-	@printf "  $(GREEN)make build$(RESET)    - Biên dịch và đóng gói JAR (kèm dependencies)\n"
-	@printf "  $(GREEN)make run$(RESET)      - Build và khởi chạy Login Server ngay lập tức\n"
-	@printf "  $(GREEN)make clean$(RESET)    - Xóa các file rác và thư mục target/\n"
-	@printf "  $(GREEN)make update$(RESET)   - Build và copy JAR mới ra thư mục gốc\n"
-	@printf "  $(GREEN)make rebuild$(RESET)  - Clean và sau đó Build lại từ đầu\n"
-	@printf "  $(GREEN)make help$(RESET)     - Hiển thị hướng dẫn này\n"
+	@printf "  $(GREEN)make build$(RESET)    - Compile and package JAR (with dependencies)\n"
+	@printf "  $(GREEN)make run$(RESET)      - Build and launch Login Server immediately\n"
+	@printf "  $(GREEN)make clean$(RESET)    - Delete temporary files and target/ directory\n"
+	@printf "  $(GREEN)make update$(RESET)   - Build and copy new JAR to root directory\n"
+	@printf "  $(GREEN)make rebuild$(RESET)  - Clean and then rebuild from scratch\n"
+	@printf "  $(GREEN)make help$(RESET)     - Show this help menu\n"
 	@printf "$(CYAN)==================================================$(RESET)\n"
 
 build:
-	@printf "$(CYAN) Đang biên dịch $(APP_NAME) ...$(RESET)\n"
+	@printf "$(CYAN) Compiling $(APP_NAME) ...$(RESET)\n"
 	@$(MVN) clean package -DskipTests
-	@printf "$(GREEN) Build thành công! File JAR nằm trong thư mục $(JAR_DIR)$(RESET)\n"
+	@printf "$(GREEN) Build Successful! JAR file is in the $(JAR_DIR) directory$(RESET)\n"
 
 update: build
-	@printf "$(YELLOW) Đang cập nhật file JAR ra thư mục gốc...$(RESET)\n"
+	@printf "$(YELLOW) Updating JAR file to root directory...$(RESET)\n"
 	@cp $(FAT_JAR) $(ROOT_JAR)
-	@printf "$(GREEN) Đã cập nhật $(ROOT_JAR) thành công!$(RESET)\n"
+	@printf "$(GREEN) Updated $(ROOT_JAR) successfully!$(RESET)\n"
 
 clean:
-	@printf "$(YELLOW) Đang dọn dẹp các tệp tin tạm...$(RESET)\n"
+	@printf "$(YELLOW) Cleaning temporary files...$(RESET)\n"
 	@$(MVN) clean
-	@printf "$(GREEN) Đã dọn dẹp xong.$(RESET)\n"
+	@printf "$(GREEN) Cleanup complete.$(RESET)\n"
 
 run: update
-	@printf "$(CYAN) Đang khởi chạy Login Server ...$(RESET)\n"
+	@printf "$(CYAN) Launching Login Server ...$(RESET)\n"
 	@$(JAVA) -jar $(ROOT_JAR)
 
 rebuild: clean update

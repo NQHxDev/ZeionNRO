@@ -1,24 +1,25 @@
 package nro.services;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
+import lombok.Getter;
+import lombok.Setter;
 import nro.models.player.Player;
 import java.util.ArrayList;
 import java.util.List;
-import nro.jdbc.DBService;
 
 import nro.server.io.Message;
-import nro.utils.Log;
 
+@Getter
+@Setter
 public class BangTin {
 
    private int id;
+
    private String tieude;
+
    private String info;
+
    private static final int START = 1;
+
    public static final List<BangTin> BANGTIN_MANAGER = new ArrayList<>();
 
    private static BangTin i;
@@ -46,25 +47,6 @@ public class BangTin {
          pl.sendMessage(msg);
          msg.cleanup();
       } catch (Exception e) {
-      }
-   }
-
-   public void load_BangTin() {
-      try {
-         Connection con = DBService.gI().getConnectionForGame();
-         PreparedStatement ps = con.prepareStatement("select * from bang_tin");
-         ResultSet rs = ps.executeQuery();
-         while (rs.next()) {
-            BangTin bangtin_manager = new BangTin();
-            bangtin_manager.id = rs.getInt("id");
-            bangtin_manager.tieude = rs.getString("tieu_de");
-            bangtin_manager.info = rs.getString("info");
-            BANGTIN_MANAGER.add(bangtin_manager);
-         }
-         Log.success("Load bảng tin thành công (" + BANGTIN_MANAGER.size() + ")");
-      } catch (SQLException e) {
-         Log.error(BangTin.class, e, "Lỗi load database");
-         System.exit(0);
       }
    }
 

@@ -169,7 +169,7 @@ public class LoginController {
    }
 
    public void onConnectOK() {
-      System.out.println("Da ket noi may chu login thanh cong!");
+      Log.success("Connected to login server successfully!");
       session.getService().setServer(Manager.SERVER, Client.gI());
    }
 

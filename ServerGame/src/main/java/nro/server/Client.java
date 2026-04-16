@@ -90,7 +90,6 @@ public class Client implements Runnable {
          "feat", "feed", "feel", "fees", "feet", "fell",
          "felt", "fend", "fern", "feta", "glue", "glum", "gnat", "gnaw" };
 
-   private boolean running = true;
    private int id = 1_000_000_000;
 
    private Client() {
@@ -330,7 +329,7 @@ public class Client implements Runnable {
    }
 
    public void close() {
-      Log.log("BEGIN KICK OUT SESSION...............................");
+      Log.log("Cleaning up sessions ...");
       synchronized (sessions) {
          while (!this.sessions.isEmpty()) {
             Log.log("LEFT PLAYER: " + this.players.size() + ".........................");

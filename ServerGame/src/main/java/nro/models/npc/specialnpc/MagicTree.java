@@ -55,7 +55,7 @@ public class MagicTree {
 
    private boolean loadedMagicTreeToPlayer;
    private Player player;
-   private boolean actived;
+   // private boolean actived;
 
    public byte level;
    public int currPeas;

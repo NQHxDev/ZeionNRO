@@ -1,19 +1,22 @@
 package nro.server;
 
 import lombok.NoArgsConstructor;
-import nro.services.ClanService;
-import nro.services.Service;
-import java.io.IOException;
-import java.time.Duration;
-import java.time.LocalDateTime;
+
 import java.time.ZoneId;
+import java.time.Duration;
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.AllArgsConstructor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
+import nro.utils.Log;
+import nro.services.Service;
+import nro.services.ClanService;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -47,14 +50,16 @@ public class AutoMaintenance {
       try {
          Maintenance.isRuning = true;
          int seconds = 60;
+         Log.warning("Hệ thống sẽ bảo trì định kì sau " + seconds + " giây...");
          while (seconds > 0) {
-            seconds--;
+            Log.log("Bảo trì trong: " + seconds + "s");
             Service.getInstance().sendThongBaoAllPlayer("Hệ thống sẽ bảo trì định kì sau " + seconds
                   + " giây nữa, vui lòng thoát game để tránh mất vật phẩm.");
             try {
                Thread.sleep(1000);
             } catch (Exception e) {
             }
+            seconds--;
          }
          try {
             Client.gI().close();
@@ -67,24 +72,12 @@ public class AutoMaintenance {
             e.printStackTrace();
          }
          ServerManager.listenSocket.close();
-         String executeCommand = Manager.executeCommand;
-         if (executeCommand != null) {
-            openCmd(executeCommand);
-         }
       } catch (IOException ex) {
          Logger.getLogger(AutoMaintenance.class.getName()).log(Level.SEVERE, null, ex);
          System.exit(1);
       } finally {
+         Log.log("Tiến trình Game Server đang thoát để thực hiện bảo trì/khởi động lại...");
          System.exit(0);
-      }
-   }
-
-   private void openCmd(String cmd) {
-      try {
-         Runtime rt = Runtime.getRuntime();
-         rt.exec("cmd /c start cmd.exe /K \"dir && " + cmd);
-      } catch (IOException ex) {
-         Logger.getLogger(AutoMaintenance.class.getName()).log(Level.SEVERE, null, ex);
       }
    }
 }

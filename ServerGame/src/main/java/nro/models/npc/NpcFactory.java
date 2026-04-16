@@ -43,8 +43,39 @@ import nro.models.skill.Skill;
 import nro.server.Manager;
 import nro.server.ServerManager;
 import nro.server.io.Message;
-import nro.services.*;
-import nro.services.func.*;
+import nro.services.BanDoKhoBauService;
+import nro.services.ClanService;
+import nro.services.DoanhTraiService;
+import nro.services.FriendAndEnemyService;
+import nro.services.IntrinsicService;
+import nro.services.InventoryService;
+import nro.services.ItemService;
+import nro.services.KhamNgoc;
+import nro.services.KhamNgocPlayer;
+import nro.services.MapService;
+import nro.services.NpcService;
+import nro.services.OpenPowerService;
+import nro.services.PetService;
+import nro.services.PhongThiNghiem;
+import nro.services.PhongThiNghiem_Player;
+import nro.services.PlayerService;
+import nro.services.RuongSuuTam;
+import nro.services.Service;
+import nro.services.SkillService;
+import nro.services.TaskService;
+import nro.services.TopService;
+import nro.services.func.ChangeMapService;
+import nro.services.func.CombineServiceNew;
+import nro.services.func.Input;
+import nro.services.func.LuckyRoundService;
+import nro.services.func.PVPServcice;
+import nro.services.func.ShopService;
+import nro.services.func.SoMayMan;
+import nro.services.func.SummonDragon;
+import nro.services.func.TaiXiu;
+import nro.services.func.UseItem;
+import nro.jdbc.DBService;
+import nro.jdbc.daos.manager.ServiceDataDAO;
 import nro.utils.Log;
 import nro.utils.SkillUtil;
 import nro.utils.TimeUtil;
@@ -7844,40 +7875,35 @@ public class NpcFactory {
                   }
                   break;
                case ConstNpc.MENU_LOAD_DATA: {
-                  switch (select) {
-                     case 0:
-                        BangTin.BANGTIN_MANAGER.clear();
-                        BangTin.gI().load_BangTin();
-                        Service.getInstance().sendThongBao(player, "Load Bảng Tin thành công");
-                        break;
-                     case 1:
-                        PhucLoi.PHUCLOI_MANAGER.clear();
-                        PhucLoi.PHUCLOI_TEMPLATES.clear();
-                        PhucLoi.gI().load_PhucLoi();
-                        PhucLoi.gI().load_PhucLoiTab();
-                        Service.getInstance().sendThongBao(player, "Load Phúc Lợi thành công");
-                        break;
-                     case 2:
-                        TamBao.MOC_TAMBAO.clear();
-                        TamBao.gI().load_mocTamBao();
-                        Service.getInstance().sendThongBao(player, "Load Vòng Quay thành công");
-                        break;
-                     case 3:
-                        KhamNgoc.KHAM_NGOC.clear();
-                        KhamNgoc.gI().loadKhamNgoc();
-                        Service.getInstance().sendThongBao(player, "Load Khảm Ngọc thành công");
-                        break;
-                     case 4:
-                        RuongSuuTam.listRuong.clear();
-                        RuongSuuTam.listCaiTrang.clear();
-                        RuongSuuTam.listPhuKien.clear();
-                        RuongSuuTam.listPet.clear();
-                        RuongSuuTam.listLinhThu.clear();
-                        RuongSuuTam.listThuCuoi.clear();
-                        RuongSuuTam.gI().loadRuongSuuTam();
-                        Service.getInstance().sendThongBao(player, "Load Rương Sưu Tầm thành công");
-                        break;
+                  try (java.sql.Connection con = DBService.gI().getConnectionForGame()) {
+                     switch (select) {
+                        case 0:
+                           ServiceDataDAO.loadBangTin(con);
+                           Service.getInstance().sendThongBao(player, "Reloaded Bulletins successfully");
+                           break;
+                        case 1:
+                           ServiceDataDAO.loadPhucLoi(con);
+                           ServiceDataDAO.loadPhucLoiTab(con);
+                           Service.getInstance().sendThongBao(player, "Reloaded Welfare successfully");
+                           break;
+                        case 2:
+                           ServiceDataDAO.loadMocTamBao(con);
+                           Service.getInstance().sendThongBao(player, "Reloaded Milestones successfully");
+                           break;
+                        case 3:
+                           ServiceDataDAO.loadKhamNgoc(con);
+                           Service.getInstance().sendThongBao(player, "Reloaded Gem Sockets successfully");
+                           break;
+                        case 4:
+                           ServiceDataDAO.loadRuongSuuTam(con);
+                           Service.getInstance().sendThongBao(player, "Reloaded Collection Book successfully");
+                           break;
+                     }
+                  } catch (Exception e) {
+                     Log.error(NpcFactory.class, e, "Error reloading data via NPC menu");
+                     Service.getInstance().sendThongBao(player, "Error reloading data. Check logs.");
                   }
+                  break;
                }
                case ConstNpc.MENU_DANHHIEU: {
                   switch (select) {

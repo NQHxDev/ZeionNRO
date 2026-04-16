@@ -3,17 +3,25 @@ package nro.services;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import nro.jdbc.DBService;
 import nro.models.item.Item;
 import nro.models.item.ItemOption;
 import nro.models.player.Player;
 import nro.server.io.Message;
-import nro.utils.Log;
 import nro.utils.Util;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Tầm Bảo - đọc vật phẩm từ SQL, cấu trúc giống Phúc Lợi.
@@ -22,6 +30,8 @@ import org.json.simple.JSONValue;
  * - Nếu pool thiếu slot, sẽ bù bằng fallback IDs.
  * - Ghi lịch sử thắng vào history_tambao.
  */
+@Getter
+@Setter
 public class TamBao {
 
    // ====== cấu hình ======
@@ -50,61 +60,11 @@ public class TamBao {
    private TamBao() {
    }
 
-   public void loadItem_TamBao() {
+   public void clear() {
       POOLS.clear();
       POOL_VIP_FLAGS.clear();
       POOL_TILE.clear();
       DEFAULT_KEY_ITEM_ID = -1;
-
-      final String sql = """
-                SELECT id, key_item_id, item_id, quantity, item_options, tile_trung_thuong, des,
-                       start_at, end_at, enabled
-                FROM tambao_items
-                WHERE enabled = 1
-                  AND (start_at IS NULL OR start_at <= NOW())
-                  AND (end_at IS NULL OR end_at >= NOW())
-                ORDER BY id ASC
-            """;
-
-      int totalRows = 0;
-      try (Connection con = DBService.gI().getConnectionForGame();
-            PreparedStatement ps = con.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery()) {
-
-         JSONValue jv = new JSONValue();
-
-         while (rs.next()) {
-            totalRows++;
-            int keyId = rs.getInt("key_item_id");
-            POOLS.computeIfAbsent(keyId, k -> new ArrayList<>());
-            POOL_VIP_FLAGS.computeIfAbsent(keyId, k -> new ArrayList<>());
-            POOL_TILE.computeIfAbsent(keyId, k -> new ArrayList<>());
-
-            Integer singleId = getNullableInt(rs, "item_id");
-            Integer singleQty = getNullableInt(rs, "quantity");
-            String optCompact = rs.getString("item_options");
-            int tilePercent = rs.getInt("tile_trung_thuong"); // 1 == 1%
-
-            if (singleId != null && singleQty != null) {
-               Item it = ItemService.gI().createNewItem(singleId.shortValue(), singleQty);
-               if (optCompact != null && !optCompact.isEmpty()) {
-                  addOptionsFromCompact(optCompact, it);
-               }
-
-               POOLS.get(keyId).add(it);
-               POOL_VIP_FLAGS.get(keyId).add(DEFAULT_VIP_FLAG);
-               POOL_TILE.get(keyId).add(Math.max(0, Math.min(100, tilePercent))); // clamp 0..100
-            }
-         }
-
-         // Chỉ chọn key mặc định, KHÔNG bù fallback ở đây
-         if (!POOLS.isEmpty() && DEFAULT_KEY_ITEM_ID == -1) {
-            DEFAULT_KEY_ITEM_ID = POOLS.keySet().iterator().next();
-         }
-         Log.success("Load tambao_items: rows=" + totalRows + ", pools=" + POOLS.size());
-      } catch (Exception e) {
-         Log.error(TamBao.class, e, "Lỗi loadItem_TamBao()");
-      }
    }
 
    private void padWithFallback(int keyId, List<Item> list) {
@@ -493,41 +453,6 @@ public class TamBao {
    // LOAD MỐC TẦM BẢO (đọc giống Phúc Lợi) — GIỮ LẠI từ code của bạn, chỉ parse
    // options chuẩn
    // =========================================================
-   public void load_mocTamBao() {
-      MOC_TAMBAO.clear();
-      final String sql = "SELECT * FROM moc_vong_quay"; // hoặc đổi sang bảng mới nếu bạn muốn
-      try (Connection con = DBService.gI().getConnectionForGame();
-            PreparedStatement ps = con.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery()) {
-
-         JSONValue jsonValue = new JSONValue();
-         while (rs.next()) {
-            TamBao_Item tambao = new TamBao_Item();
-            int id_moc = rs.getInt("id");
-            int templateId = rs.getInt("item_id");
-
-            tambao.template = ItemService.gI().getTemplate(templateId);
-            tambao.quantity = rs.getInt("quantity");
-            tambao.createTime = System.currentTimeMillis();
-            tambao.max_value = rs.getInt("max_value");
-            tambao.id_moc = id_moc;
-
-            tambao.itemOptions.clear();
-            String raw = rs.getString("item_options");
-            Object parsed = jsonValue.parse(raw);
-            if (parsed instanceof JSONArray arr) {
-               for (Object entry : arr) {
-                  // hỗ trợ [{id,param}] hoặc [id,param] hoặc chuỗi JSON
-                  addOptionFromFlexibleEntry(entry, tambao);
-               }
-            }
-            MOC_TAMBAO.add(tambao);
-         }
-         Log.success("Load Mốc Tầm Bảo thành công (" + MOC_TAMBAO.size() + ")");
-      } catch (Exception e) {
-         e.printStackTrace();
-      }
-   }
 
    // =========================================================
    // HELPERS

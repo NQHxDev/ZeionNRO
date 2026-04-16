@@ -192,22 +192,28 @@ public class ServerManager {
 
    private void activeCommandLine() {
       new Thread(() -> {
-         Scanner sc = new Scanner(System.in);
-         while (true) {
-            String line = sc.nextLine();
-            if (line.equals("baotri")) {
-               new Thread(() -> {
-                  Maintenance.gI().start(5);
-               }).start();
-            } else if (line.equals("athread")) {
-               ServerNotify.gI().notify("Debug server: " + Thread.activeCount());
-            } else if (line.equals("nplayer")) {
-               Log.error("Player in game: " + Client.gI().getPlayers().size());
-            } else if (line.equals("a")) {
-               new Thread(() -> {
-                  Client.gI().close();
-               }).start();
+         try (Scanner sc = new Scanner(System.in)) {
+            while (isRunning) {
+               if (sc.hasNextLine()) {
+                  String line = sc.nextLine();
+                  if (line.equals("baotri")) {
+                     new Thread(() -> {
+                        Maintenance.gI().start(5);
+                     }).start();
+                  } else if (line.equals("athread")) {
+                     ServerNotify.gI().notify("Debug server: " + Thread.activeCount());
+                     Log.log("Thread Server: " + Thread.activeCount());
+                  } else if (line.equals("nplayer")) {
+                     Log.log("Player in game: " + Client.gI().getPlayers().size());
+                  } else if (line.equals("a")) {
+                     new Thread(() -> {
+                        Client.gI().close();
+                     }).start();
+                  }
+               }
             }
+         } catch (Exception e) {
+            Log.error(ServerManager.class, e, "Lỗi command line");
          }
       }).start();
    }
@@ -311,12 +317,9 @@ public class ServerManager {
          Log.error(ServerManager.class, e);
       }
       // try {
-      // ConsignManager.getInstance().close();
-      // } catch (Exception e) {
-      // Log.error(ServerManager.class, e);
-      // }
-      Client.gI().close();
-      Log.success("SUCCESSFULLY MAINTENANCE!...................................");
+      Log.success("----------------------------------------------------");
+      Log.success("      >>> MAINTENANCE COMPLETED SUCCESSFULLY <<<    ");
+      Log.success("----------------------------------------------------");
       System.exit(0);
    }
 

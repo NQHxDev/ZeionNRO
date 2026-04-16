@@ -1,25 +1,20 @@
 package nro.services;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import nro.models.item.Item;
 import nro.models.item.ItemOption;
 import nro.models.player.Player;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import nro.jdbc.DBService;
 import nro.jdbc.daos.PlayerDAO;
 
+import lombok.Getter;
+import lombok.Setter;
 import nro.server.io.Message;
-import nro.utils.Log;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 
+@Getter
+@Setter
 public class PhucLoi {
 
    private int id;
@@ -241,68 +236,6 @@ public class PhucLoi {
                      "|7|Còn thiếu " + (phucloi.max_count - countPlayer(pl, phucloi)) + " Coin");
             }
          }
-      }
-   }
-
-   public void load_PhucLoi() {
-      try {
-         Connection con = DBService.gI().getConnectionForGame();
-         PreparedStatement ps = con.prepareStatement("select * from phuc_loi");
-         ResultSet rs = ps.executeQuery();
-         while (rs.next()) {
-            PhucLoiManager phucloimanager = new PhucLoiManager();
-            phucloimanager.tab_name = rs.getString("name");
-            phucloimanager.max_tab = rs.getInt("max_tab");
-            phucloimanager.id_tab = rs.getInt("id_tab");
-            phucloimanager.info_phucloi = rs.getString("info_phucloi");
-            phucloimanager.action = rs.getInt("action");
-            phucloimanager.tichLuy = rs.getString("tich_luy");
-            PHUCLOI_MANAGER.add(phucloimanager);
-         }
-         Log.success("Load phuc_loi thành công (" + PHUCLOI_MANAGER.size() + ")");
-      } catch (SQLException e) {
-         Log.error(PhucLoi.class, e, "Lỗi load database");
-         System.exit(0);
-      }
-   }
-
-   public void load_PhucLoiTab() {
-      try {
-         Connection con = DBService.gI().getConnectionForGame();
-         PreparedStatement ps = con.prepareStatement("select * from phuc_loi_tab");
-         ResultSet rs = ps.executeQuery();
-         JSONValue jv = new JSONValue();
-         JSONArray dataArray = null;
-         JSONObject dataObject = null;
-         while (rs.next()) {
-            PhucLoi phucloi = new PhucLoi();
-            phucloi.id = rs.getInt("id");
-            phucloi.tab_id = rs.getInt("tab_id");
-            phucloi.name = rs.getString("name");
-            phucloi.max_count = rs.getInt("max_count");
-            phucloi.active = rs.getByte("active");
-            dataArray = (JSONArray) jv.parse(rs.getString("list_item"));
-            int size = dataArray.size();
-            for (int i = 0; i < size; i++) {
-               dataObject = (JSONObject) jv.parse(String.valueOf(dataArray.get(i)));
-               int itemID = Integer.parseInt(String.valueOf(dataObject.get("id")));
-               int quantity = Integer.parseInt(String.valueOf(dataObject.get("quantity")));
-               JSONArray options = (JSONArray) dataObject.get("options");
-               Item item = ItemService.gI().createNewItem((short) itemID, quantity);
-               for (int j = 0; j < options.size(); j++) {
-                  JSONObject obj = (JSONObject) options.get(j);
-                  int optionID = ((Long) obj.get("id")).intValue();
-                  int param = ((Long) obj.get("param")).intValue();
-                  item.itemOptions.add(new ItemOption(optionID, param));
-               }
-               phucloi.PHUCLOI_LIST_ITEM.add(item);
-            }
-            PhucLoi.PHUCLOI_TEMPLATES.add(phucloi);
-         }
-         Log.success("Load PHUCLOI_TEMPLATES thành công (" + PHUCLOI_TEMPLATES.size() + ")");
-      } catch (SQLException e) {
-         Log.error(PhucLoi.class, e, "Lỗi load database");
-         System.exit(0);
       }
    }
 

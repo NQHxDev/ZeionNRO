@@ -1,18 +1,14 @@
 package nro.services;
 
 import java.io.IOException;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
 import nro.consts.ConstNpc;
-import nro.jdbc.DBService;
 import nro.models.item.Item;
 import nro.models.item.ItemOption;
 import nro.models.player.Player;
 import nro.server.io.Message;
-import nro.utils.Log;
 
 public class RuongSuuTam {
 
@@ -36,52 +32,6 @@ public class RuongSuuTam {
          i = new RuongSuuTam();
       }
       return i;
-   }
-
-   public void loadRuongSuuTam() {
-      try {
-         PreparedStatement ps = DBService.gI().getConnectionForGame().prepareStatement("SELECT * FROM `ruong_suu_tam`");
-         ResultSet rs = ps.executeQuery();
-         try {
-            while (rs.next()) {
-               RuongSuuTamTemplate ruong = new RuongSuuTamTemplate();
-               ruong.id = rs.getInt("id");
-               ruong.type = rs.getByte("type");
-               ruong.id_item = rs.getInt("id_item");
-               ruong.option_id = rs.getInt("option_id");
-               ruong.param = rs.getInt("param");
-               Item it;
-               if (ruong.type == 0) {
-                  it = ItemService.gI().createNewItem((short) ruong.id_item, 1);
-                  it.itemOptions.add(new ItemOption(ruong.option_id, ruong.param));
-                  listCaiTrang.add(it);
-               } else if (ruong.type == 1) {
-                  it = ItemService.gI().createNewItem((short) ruong.id_item, 1);
-                  it.itemOptions.add(new ItemOption(ruong.option_id, ruong.param));
-                  listPhuKien.add(it);
-               } else if (ruong.type == 2) {
-                  it = ItemService.gI().createNewItem((short) ruong.id_item, 1);
-                  it.itemOptions.add(new ItemOption(ruong.option_id, ruong.param));
-                  listPet.add(it);
-               } else if (ruong.type == 3) {
-                  it = ItemService.gI().createNewItem((short) ruong.id_item, 1);
-                  it.itemOptions.add(new ItemOption(ruong.option_id, ruong.param));
-                  listLinhThu.add(it);
-               } else if (ruong.type == 4) {
-                  it = ItemService.gI().createNewItem((short) ruong.id_item, 1);
-                  it.itemOptions.add(new ItemOption(ruong.option_id, ruong.param));
-                  listThuCuoi.add(it);
-               }
-               listRuong.add(ruong);
-            }
-            Log.success("Load Ruong Suu Tam thành công (" + listRuong.size() + ")");
-         } finally {
-            rs.close();
-            ps.close();
-         }
-      } catch (Exception ex) {
-         ex.printStackTrace();
-      }
    }
 
    public void Send_RuongSuuTamTemplate(Player pl) {

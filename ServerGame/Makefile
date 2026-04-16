@@ -16,24 +16,24 @@ RESET  := \033[0m
 all: build
 
 build:
-	@printf " $(BLUE)>>>$(RESET) Đang biên dịch ServerGame ...\n"
+	@printf " $(BLUE)>>>$(RESET) Compiling ServerGame ...\n"
 	@$(MVN) clean package -DskipTests
-	@printf " $(GREEN)>>>$(RESET) Build thành công! File JAR nằm trong thư mục target\n"
+	@printf " $(GREEN)>>>$(RESET) Build Successful! JAR file is in the target directory\n"
 	@cp $(JAR_NAME) ./$(FINAL_JAR)
-	@printf " $(GREEN)>>>$(RESET) Đã cập nhật ./$(FINAL_JAR) thành công!\n"
+	@printf " $(GREEN)>>>$(RESET) Updated ./$(FINAL_JAR) successfully!\n"
 
 clean:
-	@printf " $(RED)>>>$(RESET) Đang dọn dẹp dự án...\n"
+	@printf " $(RED)>>>$(RESET) Cleaning project...\n"
 	@$(MVN) clean
 	@rm -f $(FINAL_JAR)
 
 run: build
-	@printf " $(GREEN)>>>$(RESET) Đang khởi chạy ServerGame Game Server ...\n"
+	@printf " $(GREEN)>>>$(RESET) Launching ServerGame Game Server ...\n"
 	@$(JAVA) -Djava.awt.headless=true -jar $(FINAL_JAR)
 
 kill:
-	@printf " $(RED)>>>$(RESET) Đang tắt các tiến trình ServerGame đang chạy...\n"
-	@pkill -f $(FINAL_JAR) || printf "Không tìm thấy tiến trình đang chạy.\n"
+	@printf " $(RED)>>>$(RESET) Stopping running ServerGame processes...\n"
+	@pkill -f $(FINAL_JAR) || printf "No running processes found.\n"
 
 update: build
-	@printf " $(GREEN)>>>$(RESET) Dự án đã được cập nhật bản build mới nhất.\n"
+	@printf " $(GREEN)>>>$(RESET) Project updated to the latest build.\n"

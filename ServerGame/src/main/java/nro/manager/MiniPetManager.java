@@ -1,13 +1,9 @@
 package nro.manager;
 
-import nro.jdbc.DBService;
 import nro.models.item.MinipetTemplate;
 
 import lombok.Getter;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,24 +16,6 @@ public class MiniPetManager implements IManager<MinipetTemplate> {
 
    public static MiniPetManager gI() {
       return INSTANCE;
-   }
-
-   public void load() {
-      try {
-         PreparedStatement ps = DBService.gI().getConnectionForGame().prepareStatement("SELECT * FROM mini_pet");
-         ResultSet rs = ps.executeQuery();
-         while (rs.next()) {
-            int id = rs.getInt("id_temp");
-            short head = rs.getShort("head");
-            short body = rs.getShort("body");
-            short leg = rs.getShort("leg");
-            add(new MinipetTemplate(id, head, body, leg));
-         }
-         ps.close();
-         rs.close();
-      } catch (SQLException e) {
-         throw new RuntimeException(e);
-      }
    }
 
    @Override
