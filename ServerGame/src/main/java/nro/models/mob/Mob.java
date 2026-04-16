@@ -35,7 +35,7 @@ public class Mob {
 
    public boolean actived;
 
-   private long targetID;
+   // private long targetID;
 
    public Mob(Mob mob) {
       this.point = new MobPoint(this);
@@ -79,9 +79,9 @@ public class Mob {
 
    public synchronized void injured(Player plAtt, double damage, boolean dieWhenHpFull) {
       if (!this.isDie()) {
-         if (plAtt != null) {
-            this.targetID = plAtt.id;
-         }
+         // if (plAtt != null) {
+         // this.targetID = plAtt.id;
+         // }
          this.addPlayerAttack(plAtt);
 
          if (damage >= this.point.hp) {

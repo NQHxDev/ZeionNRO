@@ -232,6 +232,10 @@ public class Map implements Runnable {
                itemMap = new ItemMap(zone, 378, 1, 0, 0, -1);
                break;
          }
+
+         if (itemMap != null) {
+            zone.addItem(itemMap);
+         }
       }
 
    }

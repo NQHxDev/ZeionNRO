@@ -14,6 +14,7 @@ import nro.models.map.phoban.DoanhTrai;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gson.Gson;
 import nro.models.player.Player;
 import nro.server.Client;
 import nro.server.Manager;
@@ -26,12 +27,10 @@ import nro.utils.Util;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
 public class Clan {
 
    public static int NEXT_ID = 0;
+   private static final Gson gson = new Gson();
 
    public int clanMessageId = 0;
 
@@ -316,95 +315,77 @@ public class Clan {
    }
 
    public void insert() {
-      JSONArray dataArray = new JSONArray();
-      for (ClanMember cm : this.members) {
-         JSONObject dataObject = new JSONObject();
-         dataObject.put("id", cm.id);
-         dataObject.put("name", cm.name);
-         dataObject.put("head", cm.head);
-         dataObject.put("body", cm.body);
-         dataObject.put("leg", cm.leg);
-         dataObject.put("role", cm.role);
-         dataObject.put("donate", cm.donate);
-         dataObject.put("receive_donate", cm.receiveDonate);
-         dataObject.put("member_point", cm.memberPoint);
-         dataObject.put("clan_point", cm.clanPoint);
-         dataObject.put("join_time", cm.joinTime);
-         dataObject.put("ask_pea_time", cm.timeAskPea);
-         dataObject.put("power", cm.powerPoint);
-         dataArray.add(dataObject);
-      }
-      String member = dataArray.toJSONString();
-      PreparedStatement ps = null;
-      try (Connection con = DBService.gI().getConnectionForClan();) {
-         ps = con.prepareStatement("insert into clan_sv" + Manager.SERVER
-               + "(id, name, slogan, img_id, power_point, max_member, clan_point, level, members) "
-               + "values (?,?,?,?,?,?,?,?,?)");
-         ps.setInt(1, this.id);
-         ps.setString(2, this.name);
-         ps.setString(3, this.slogan);
-         ps.setInt(4, this.imgId);
-         ps.setDouble(5, this.powerPoint);
-         ps.setByte(6, this.maxMember);
-         ps.setInt(7, this.clanPoint);
-         ps.setInt(8, this.level);
-         ps.setString(9, member);
-         ps.executeUpdate();
-         ps.close();
-      } catch (Exception e) {
-         Log.error(Clan.class, e, "Có lỗi khi insert clan vào db");
-      }
+      String memberJson = gson.toJson(this.members);
+      int clanId = this.id;
+      String clanName = this.name;
+      String clanSlogan = this.slogan;
+      int clanImgId = this.imgId;
+      double clanPowerPoint = this.powerPoint;
+      byte clanMaxMember = this.maxMember;
+      int clanClanPoint = this.clanPoint;
+      int clanLevel = this.level;
+
+      Manager.run(() -> {
+         try (Connection con = DBService.gI().getConnectionForClan();
+               PreparedStatement ps = con.prepareStatement("insert into clan_sv" + Manager.SERVER
+                     + "(id, name, slogan, img_id, power_point, max_member, clan_point, level, members) "
+                     + "values (?,?,?,?,?,?,?,?,?)")) {
+            ps.setInt(1, clanId);
+            ps.setString(2, clanName);
+            ps.setString(3, clanSlogan);
+            ps.setInt(4, clanImgId);
+            ps.setDouble(5, clanPowerPoint);
+            ps.setByte(6, clanMaxMember);
+            ps.setInt(7, clanClanPoint);
+            ps.setInt(8, clanLevel);
+            ps.setString(9, memberJson);
+            ps.executeUpdate();
+         } catch (Exception e) {
+            Log.error(Clan.class, e, "Có lỗi khi insert clan vào db");
+         }
+      });
    }
 
    public void update() {
-      JSONArray dataArray = new JSONArray();
-      JSONObject dataObject = new JSONObject();
-      for (ClanMember cm : this.members) {
-         dataObject.put("id", cm.id);
-         dataObject.put("name", cm.name);
-         dataObject.put("head", cm.head);
-         dataObject.put("body", cm.body);
-         dataObject.put("leg", cm.leg);
-         dataObject.put("role", cm.role);
-         dataObject.put("donate", cm.donate);
-         dataObject.put("receive_donate", cm.receiveDonate);
-         dataObject.put("member_point", cm.memberPoint);
-         dataObject.put("clan_point", cm.clanPoint);
-         dataObject.put("join_time", cm.joinTime);
-         dataObject.put("ask_pea_time", cm.timeAskPea);
-         dataArray.add(dataObject.toJSONString());
-         dataObject.clear();
-      }
-      String member = dataArray.toJSONString();
-      Connection con = null;
-      PreparedStatement ps = null;
-      try {
-         con = DBService.gI().getConnectionForClan();
-      } catch (Exception e) {
-      }
-      try {
-         ps = con.prepareStatement("update clan_sv" + Manager.SERVER
-               + " set slogan = ?, img_id = ?, power_point = ?, max_member = ?, clan_point = ?, "
-               + "level = ?, members = ? where id = ? limit 1");
-         ps.setString(1, this.slogan);
-         ps.setInt(2, this.imgId);
-         ps.setDouble(3, this.powerPoint);
-         ps.setByte(4, this.maxMember);
-         ps.setInt(5, this.clanPoint);
-         ps.setInt(6, this.level);
-         ps.setString(7, member);
-         ps.setInt(8, this.id);
-         ps.executeUpdate();
-         ps.close();
-      } catch (Exception e) {
-         Log.error(Clan.class, e, "Có lỗi khi insert clan vào db");
-      } finally {
+      String memberJson = gson.toJson(this.members);
+      String clanSlogan = this.slogan;
+      int clanImgId = this.imgId;
+      double clanPowerPoint = this.powerPoint;
+      byte clanMaxMember = this.maxMember;
+      int clanClanPoint = this.clanPoint;
+      int clanLevel = this.level;
+      int clanId = this.id;
+
+      Manager.run(() -> {
+         Connection con = null;
+         PreparedStatement ps = null;
          try {
-            ps.close();
+            con = DBService.gI().getConnectionForClan();
+            ps = con.prepareStatement("update clan_sv" + Manager.SERVER
+                  + " set slogan = ?, img_id = ?, power_point = ?, max_member = ?, clan_point = ?, "
+                  + "level = ?, members = ? where id = ? limit 1");
+
+            ps.setString(1, clanSlogan);
+            ps.setInt(2, clanImgId);
+            ps.setDouble(3, clanPowerPoint);
+            ps.setByte(4, clanMaxMember);
+            ps.setInt(5, clanClanPoint);
+            ps.setInt(6, clanLevel);
+            ps.setString(7, memberJson);
+            ps.setInt(8, clanId);
+            ps.executeUpdate();
          } catch (Exception e) {
+            Log.error(Clan.class, e, "Có lỗi khi update clan vào db");
+         } finally {
+            if (ps != null) {
+               try {
+                  ps.close();
+               } catch (Exception e) {
+               }
+            }
+            DBService.gI().release(con);
          }
-         DBService.gI().release(con);
-      }
+      });
    }
 
 }
