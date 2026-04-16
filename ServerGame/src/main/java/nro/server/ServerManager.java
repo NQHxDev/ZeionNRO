@@ -6,8 +6,7 @@ import nro.jdbc.daos.AccountDAO;
 import nro.jdbc.daos.HistoryTransactionDAO;
 import nro.jdbc.daos.PlayerDAO;
 import nro.login.LoginSession;
-import nro.manager.ConsignManager;
-import nro.manager.TopManager;
+
 import nro.models.boss.BossFactory;
 import nro.models.boss.BossManager;
 import nro.models.map.challenge.MartialCongressManager;
@@ -15,7 +14,7 @@ import nro.models.map.dungeon.DungeonManager;
 import nro.models.map.phoban.BanDoKhoBau;
 import nro.models.map.phoban.DoanhTrai;
 import nro.models.player.Player;
-//import nro.netty.NettyServer;
+
 import nro.server.io.Session;
 import nro.services.ClanService;
 import nro.utils.Log;
@@ -27,8 +26,7 @@ import lombok.Setter;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -46,7 +44,7 @@ public class ServerManager {
 
    public static String timeStart;
 
-   public static final Map CLIENTS = new HashMap();
+   public static final Map<String, Integer> CLIENTS = new HashMap<>();
 
    public static String NAME = "";
    public static int PORT = 14445;

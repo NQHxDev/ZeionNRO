@@ -1,6 +1,5 @@
 package nro.models.boss;
 
-import java.io.IOException;
 import nro.consts.ConstMap;
 import nro.consts.ConstPlayer;
 import nro.consts.ConstRatio;
@@ -33,7 +32,6 @@ import nro.consts.ConstAchive;
 import nro.jdbc.daos.PlayerDAO;
 import nro.models.item.ItemOption;
 import nro.models.map.mabu.MabuWar14h;
-import nro.server.io.Message;
 
 public abstract class Boss extends Player implements BossInterface {
 
@@ -239,27 +237,6 @@ public abstract class Boss extends Player implements BossInterface {
    }
 
    public long lastTimeChat;
-
-   private void BaoHpBoss() {
-      try {
-         Message msg;
-         if (this.isBoss && this.nPoint.hp >= 2123456789) {
-            if (Util.canDoWithTime(lastTimeChat, 1500)) {
-               String text = "|2|<-" + this.name + "->" + "\n\n"
-                     + "|7|Máu Còn lại : " + Util.powerToStringnew(this.nPoint.hp) + "\n"
-                     + "|3|< " + Util.format(this.nPoint.hp) + " >";
-               msg = new Message(44);
-               msg.writer().writeInt((int) this.id);
-               msg.writer().writeUTF(text);
-               Service.getInstance().sendMessAllPlayerInMap(this, msg);
-               msg.cleanup();
-               lastTimeChat = System.currentTimeMillis();
-            }
-         }
-      } catch (IOException e) {
-         Log.error(SkillService.class, e);
-      }
-   }
 
    @Override
    public void update() {
@@ -773,8 +750,6 @@ public abstract class Boss extends Player implements BossInterface {
 
    public void DoXungQuanh(Player pl, int item, int sl, int soluongroi) {
       int a = 0;
-      int x = this.location.x;
-      int y = this.zone.map.yPhysicInTop(x, this.location.y - 24);
       for (int k = 0; k < soluongroi; k++) {
          ItemMap itemMap32 = new ItemMap(pl.zone, item, sl,
                this.location.x + a, this.zone.map.yPhysicInTop(this.location.x, this.location.y - 24), pl.id);
@@ -788,7 +763,7 @@ public abstract class Boss extends Player implements BossInterface {
          ItemMap itemMap33 = new ItemMap(pl.zone, item, sl,
                this.location.x, this.zone.map.yPhysicInTop(this.location.x, this.location.y - 24), pl.id);
          Service.getInstance().dropItemMap(pl.zone, itemMap33);
-         TaskService.gI().checkDoneTaskKillBoss(pl, this);// check nhiệm vụ
+         TaskService.gI().checkDoneTaskKillBoss(pl, this);
       }
    }
 
@@ -797,7 +772,7 @@ public abstract class Boss extends Player implements BossInterface {
          ItemMap itemMap33 = new ItemMap(pl.zone, item, sl,
                this.location.x, this.zone.map.yPhysicInTop(this.location.x, this.location.y - 24), pl.id);
          Service.getInstance().dropItemMap(pl.zone, itemMap33);
-         TaskService.gI().checkDoneTaskKillBoss(pl, this);// check nhiệm vụ
+         TaskService.gI().checkDoneTaskKillBoss(pl, this);
       }
    }
 

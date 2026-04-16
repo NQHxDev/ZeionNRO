@@ -1,23 +1,18 @@
 package nro.models.intrinsic;
 
-import nro.models.player.Player;
 import nro.services.IntrinsicService;
 
 public class IntrinsicPlayer {
-
-   private Player player;
 
    public byte countOpen;
 
    public Intrinsic intrinsic;
 
-   public IntrinsicPlayer(Player player) {
-      this.player = player;
+   public IntrinsicPlayer() {
       this.intrinsic = IntrinsicService.gI().getIntrinsicById(0);
    }
 
    public void dispose() {
-      this.player = null;
       this.intrinsic = null;
    }
 }

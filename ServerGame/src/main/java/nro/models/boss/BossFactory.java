@@ -1,27 +1,82 @@
 package nro.models.boss;
 
 import nro.models.boss.BossMoi.DaiThanh;
+import nro.models.boss.BossMoi.GiamNguc;
+import nro.models.boss.BossMoi.Gogeta;
+import nro.models.boss.BossMoi.RobotHuyDiet;
 import nro.models.boss.BossMoi.Soi_3_Dau;
+
+import nro.models.boss.BossMoiLam.Bido;
+import nro.models.boss.BossMoiLam.Bill_Bi_Ngo;
+import nro.models.boss.BossMoiLam.Brojack;
+import nro.models.boss.BossMoiLam.Bujin;
+import nro.models.boss.BossMoiLam.Coller_Gold;
+import nro.models.boss.BossMoiLam.Hatchiyack;
+import nro.models.boss.BossMoiLam.Heart_Gold;
+import nro.models.boss.BossMoiLam.Kogu;
+import nro.models.boss.BossMoiLam.SuperBrojack;
+import nro.models.boss.BossMoiLam.SuperZamasu;
+import nro.models.boss.BossMoiLam.Thong_Che_Kilo;
+import nro.models.boss.BossMoiLam.Zangya;
+
 import nro.models.boss.BossNew.Along;
 import nro.models.boss.BossNew.Kaido;
 import nro.models.boss.BossNew.LufyThanNika;
 import nro.models.boss.BossNew.Mihalk;
 import nro.models.boss.BossNew.TienHacAm;
+
+import nro.models.boss.KhungLong.KhungLong;
+import nro.models.boss.KhungLong.KhungLong1;
+import nro.models.boss.KhungLong.KhungLong2;
+import nro.models.boss.KhungLong.KhungLong3;
+import nro.models.boss.KhungLong.KhungLong4;
+import nro.models.boss.KhungLong.KhungLong5;
+import nro.models.boss.KhungLong.KhungLong6;
+import nro.models.boss.KhungLong.KhungLong7;
+
 import nro.models.boss.NguHanhSon.BatGioi;
 import nro.models.boss.NguHanhSon.NgoKhong;
+
 import nro.models.boss.NgucTu.Cumber;
 import nro.models.boss.NgucTu.GokuSuper;
 import nro.models.boss.NgucTu.SuperCumber;
+
+import nro.models.boss.bill.Bill;
+import nro.models.boss.bill.Whis;
+
+import nro.models.boss.bosstuonglai.BLACKROSE;
 import nro.models.boss.bosstuonglai.Blackgoku;
+import nro.models.boss.bosstuonglai.BongBang;
 import nro.models.boss.bosstuonglai.Itachi;
 import nro.models.boss.bosstuonglai.MabuTuongLai;
 import nro.models.boss.bosstuonglai.RongDen;
 import nro.models.boss.bosstuonglai.SoiBasil;
 import nro.models.boss.bosstuonglai.Superblackgoku;
 import nro.models.boss.bosstuonglai.WhisDetu;
+import nro.models.boss.bosstuonglai.ZamasToiThuong;
 import nro.models.boss.bosstuonglai.ZenoDetu;
+
+import nro.models.boss.broly.SuperBroly;
+
+import nro.models.boss.cell.SieuBoHung;
+import nro.models.boss.cell.XenBoHung;
+import nro.models.boss.cell.XenBoHung1;
+import nro.models.boss.cell.XenBoHung2;
+import nro.models.boss.cell.XenBoHungHoanThien;
+import nro.models.boss.cell.XenCon;
 import nro.models.boss.cell.XenMax;
+
+import nro.models.boss.chill.Chill;
+import nro.models.boss.chill.Chill2;
+
+import nro.models.boss.cold.Cooler;
+import nro.models.boss.cold.Cooler2;
+
+import nro.models.boss.fide.FideDaiCa1;
+import nro.models.boss.fide.FideDaiCa2;
+import nro.models.boss.fide.FideDaiCa3;
 import nro.models.boss.fide.FideGold;
+
 import nro.models.boss.mabu_war.BuiBui_Tang2;
 import nro.models.boss.mabu_war.BuiBui_Tang3;
 import nro.models.boss.mabu_war.Calich_Tang5;
@@ -32,26 +87,57 @@ import nro.models.boss.mabu_war.Mabu_14H;
 import nro.models.boss.mabu_war.Mabu_Tang6;
 import nro.models.boss.mabu_war.SuperBu_14H;
 import nro.models.boss.mabu_war.Yacon_Tang4;
+
+import nro.models.boss.nappa.Kuku;
+import nro.models.boss.nappa.MapDauDinh;
+import nro.models.boss.nappa.Rambo;
+
+import nro.models.boss.robotsatthu.Android19;
+import nro.models.boss.robotsatthu.Android20;
+import nro.models.boss.robotsatthu.KingKong;
+import nro.models.boss.robotsatthu.Pic;
+import nro.models.boss.robotsatthu.Poc;
+
+import nro.models.boss.tieudoisatthu.So1;
+import nro.models.boss.tieudoisatthu.So2;
+import nro.models.boss.tieudoisatthu.So3;
+import nro.models.boss.tieudoisatthu.So4;
+import nro.models.boss.tieudoisatthu.TieuDoiTruong;
+
 import nro.models.boss.vip.BabyVegeta;
+import nro.models.boss.vip.CadicSuperSaiyan;
 import nro.models.boss.vip.DraburaFrost;
 import nro.models.boss.vip.EvilBuu;
 import nro.models.boss.vip.GohanZombie;
+import nro.models.boss.vip.GokuSuperSaiyan;
 import nro.models.boss.vip.HeartsGold;
 import nro.models.boss.vip.JirenCuongNo;
+import nro.models.boss.vip.RongDen1Sao;
+import nro.models.boss.vip.SaiyanGodTrunks;
 import nro.models.boss.vip.SuperBrolyHuyenThoai;
 import nro.models.boss.vip.SuperZamasuWhite;
+import nro.models.boss.vip.ToppoGOD;
 import nro.models.boss.vip.VegetaHakai;
+import nro.models.boss.vip.ZamasuZombie;
+
+import nro.models.boss.traidat.CHICHITHO;
+import nro.models.boss.traidat.POCTHO;
+import nro.models.boss.traidat.BULMA;
+
+import nro.models.boss.tramtau.Champa;
+import nro.models.boss.tramtau.Vados;
+
 import nro.models.map.Map;
 import nro.models.map.Zone;
 import nro.models.map.mabu.MabuWar;
 import nro.models.map.mabu.MabuWar14h;
-import nro.server.Manager;
+
 import nro.services.MapService;
+
 import nro.utils.Log;
 
 public class BossFactory {
 
-   // id boss
    public static final int BROLY = -1;
    public static final int SUPER_BROLY = -2;
    public static final int TRUNG_UY_TRANG = -3;

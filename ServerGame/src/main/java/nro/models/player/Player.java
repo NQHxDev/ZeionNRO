@@ -341,19 +341,19 @@ public class Player {
       setClothes = new SetClothes(this);
       effectSkill = new EffectSkill(this);
       fusion = new Fusion(this);
-      playerIntrinsic = new IntrinsicPlayer(this);
+      playerIntrinsic = new IntrinsicPlayer();
       rewardBlackBall = new RewardBlackBall(this);
-      effectFlagBag = new EffectFlagBag(this);
+      effectFlagBag = new EffectFlagBag();
       // ----------------------------------------------------------------------
       iDMark = new IDMark();
       combineNew = new CombineNew();
-      playerTask = new TaskPlayer(this);
-      friends = new ListFriendEnemy<>(this);
-      enemies = new ListFriendEnemy<>(this);
+      playerTask = new TaskPlayer();
+      friends = new ListFriendEnemy<>();
+      enemies = new ListFriendEnemy<>();
       itemTime = new ItemTime(this);
       itemTimesieucap = new ItemTimeSieuCap(this);
-      charms = new Charms(this);
-      gift = new Gift(this);
+      charms = new Charms();
+      gift = new Gift();
       effectSkin = new EffectSkin(this);
       skillSpecial = new SkillSpecial(this);
       event = new PlayerEvent(this);
@@ -621,21 +621,23 @@ public class Player {
       }
    }
 
-   private void checkLocation() {
-      if (this.location.x > this.zone.map.mapWidth || this.location.x < 0
-            || this.location.y > this.zone.map.mapHeight || this.location.y < 0) {
-         if (this.inventory.gold >= 500000000) {
-            this.inventory.subGold(500000000);
-         } else {
-            this.inventory.gold = 0;
-         }
-         PlayerService.gI().sendInfoHpMpMoney(this);
-         ChangeMapService.gI().changeMapNonSpaceship(this, this.gender + 21, 400, 336);
-         Service.getInstance().sendBigMessage(this, 1139, "|1|Do phát hiện có hành vi bất thường nên\n "
-               + "chúng tôi đã đưa bạn về nhà và xử phạt 500Tr vàng\n"
-               + "|7|nếu còn tiếp tục tái phạm sẽ khóa vĩnh viễn");
-      }
-   }
+   // private void checkLocation() {
+   // if (this.location.x > this.zone.map.mapWidth || this.location.x < 0
+   // || this.location.y > this.zone.map.mapHeight || this.location.y < 0) {
+   // if (this.inventory.gold >= 500000000) {
+   // this.inventory.subGold(500000000);
+   // } else {
+   // this.inventory.gold = 0;
+   // }
+   // PlayerService.gI().sendInfoHpMpMoney(this);
+   // ChangeMapService.gI().changeMapNonSpaceship(this, this.gender + 21, 400,
+   // 336);
+   // Service.getInstance().sendBigMessage(this, 1139, "|1|Do phát hiện có hành vi
+   // bất thường nên\n "
+   // + "chúng tôi đã đưa bạn về nhà và xử phạt 500Tr vàng\n"
+   // + "|7|nếu còn tiếp tục tái phạm sẽ khóa vĩnh viễn");
+   // }
+   // }
 
    public boolean isPl() {
       return !isPet && !isBoss && !isMiniPet;

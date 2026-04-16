@@ -34,6 +34,7 @@ public class Clan {
    public static int NEXT_ID = 0;
 
    public int clanMessageId = 0;
+
    private final List<ClanMessage> clanMessages;
 
    public static final byte LEADER = 0;
