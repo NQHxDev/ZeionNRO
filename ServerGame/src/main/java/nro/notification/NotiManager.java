@@ -26,7 +26,11 @@ public class NotiManager {
       return instance;
    }
 
-   private static List<Notification> notifications = new ArrayList<Notification>();
+   private static List<Notification> notifications = new ArrayList<>();
+
+   public List<Notification> getNotifications() {
+      return notifications;
+   }
 
    private static Alert alert;
 

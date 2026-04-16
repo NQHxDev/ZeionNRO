@@ -56,6 +56,8 @@ import nro.power.PowerLimitManager;
 import nro.services.ItemService;
 import nro.services.MapService;
 import nro.utils.Log;
+import nro.utils.Util;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -84,6 +86,7 @@ import java.util.ArrayList;
 
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nro.models.PartManager.PartDetail;
@@ -261,12 +264,15 @@ public class Manager {
 
    private Manager() {
       try {
+         Log.log("Đang bắt đầu load server.properties...");
          loadProperties();
+         Log.log("Đang bắt đầu load game.properties...");
          gameConfig = new GameConfig();
       } catch (IOException ex) {
          Log.error(Manager.class, ex, "L峄梚 load properites");
          System.exit(0);
       }
+      Log.log("Đang bắt đầu load database...");
       loadDatabase();
       NpcFactory.createNpcConMeo();
       NpcFactory.createNpcRongThieng();
@@ -772,6 +778,7 @@ public class Manager {
          Log.success("Load npc template th脿nh c么ng (" + NPC_TEMPLATES.size() + ")");
 
          initMap();
+         Log.success("Init Map thành công!");
 
          // load clan
          ps = con.prepareStatement("select * from clan_sv" + SERVER);
@@ -847,17 +854,41 @@ public class Manager {
          RuongSuuTam.gI().loadRuongSuuTam();
          PhongThiNghiem.gI().loadPhongThiNghiem();
          CardManager.getInstance().load();
+
+         Log.success("Load Card thành công (" + CardManager.getInstance().getCardTemplates().size() + ")");
+
          PowerLimitManager.getInstance().load();
+         Log.success("Load Power Limit thành công (" + PowerLimitManager.getInstance().getPowers().size() + ")");
+
          CaptionManager.getInstance().load();
+         Log.success("Load Caption thành công (" + CaptionManager.getInstance().getCaptions().size() + ")");
+
          AttributeTemplateManager.getInstance().load();
+         Log.success(
+               "Load Attribute Template thành công (" + AttributeTemplateManager.getInstance().getList().size() + ")");
+
          loadAttributeServer();
+         Log.success("Load Attribute Server thành công");
+
          loadEventCount();
+         Log.success("Load Event Count thành công");
+
          EffectEventManager.gI().load();
+         Log.success("Load Effect Event Manager thành công (" + EffectEventManager.gI().getTemplates().size() + ")");
+
          NotiManager.getInstance().load();
+         Log.success("Load Noti Manager thành công (" + NotiManager.getInstance().getNotifications().size() + ")");
+
          // ConsignManager.getInstance().load();
          AchiveManager.getInstance().load();
+         Log.success("Load Achievement thành công (" + AchiveManager.getInstance().getList().size() + ")");
+
          MiniPetManager.gI().load();
+         Log.success("Load Mini Pet thành công (" + MiniPetManager.gI().getList().size() + ")");
+
          PetFollowManager.gI().load();
+         Log.success("Load Pet Follow thành công (" + PetFollowManager.gI().getList().size() + ")");
+
       } catch (Exception e) {
          Log.error(Manager.class, e, "L峄梚 load database");
          System.exit(0);
@@ -1003,7 +1034,32 @@ public class Manager {
 
    public void loadProperties() throws IOException {
       Properties properties = new Properties();
-      properties.load(new FileInputStream("config/server.properties"));
+      String fileName = "config/server.properties";
+      File file = new File(fileName);
+      Log.log("Kiểm tra file: " + file.getAbsolutePath());
+      if (!file.exists()) {
+         Log.error("Không tìm thấy file: " + fileName);
+      } else {
+         Log.log("File tồn tại. Đang mở FileInputStream...");
+      }
+
+      try (FileInputStream fis = new FileInputStream(file)) {
+         Log.log("Đã mở FileInputStream. Đang nạp Properties (Giới hạn 30s)...");
+         try {
+            Util.runWithTimeout(() -> {
+               try {
+                  properties.load(fis);
+               } catch (IOException e) {
+                  throw new RuntimeException(e);
+               }
+            }, 30, TimeUnit.SECONDS);
+            Log.log("Nạp Properties thành công...");
+         } catch (Exception e) {
+            Log.error("Lỗi nạp properties (có thể do treo): " + e.getMessage());
+            throw new IOException("Timeout hoặc lỗi khi nạp properties", e);
+         }
+      }
+
       Object value = null;
       // ###Config db
       if ((value = properties.get("server.db.driver")) != null) {

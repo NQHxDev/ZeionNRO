@@ -23,6 +23,7 @@ import nro.utils.Util;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.awt.GraphicsEnvironment;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -67,8 +68,11 @@ public class ServerManager {
    private DungeonManager dungeonManager;
 
    public void init() {
+      Log.log("Đang khởi tạo Manager...");
       Manager.gI();
+      Log.log("Đang dọn dẹp lịch sử giao dịch...");
       HistoryTransactionDAO.deleteHistory();
+      Log.log("Đang khởi tạo Boss...");
       BossFactory.initBoss();
       this.controller = new Controller();
       if (updateTimeLogin) {
@@ -88,6 +92,7 @@ public class ServerManager {
       Log.banner();
       Log.log("Hệ điều hành: " + System.getProperty("os.name"));
       Log.log("Phiên bản Java: " + System.getProperty("java.version"));
+      Log.log("Đang kiểm tra môi trường...");
       timeStart = TimeUtil.getTimeNow("dd/MM/yyyy HH:mm:ss");
       ServerManager.gI().run();
    }
@@ -95,14 +100,22 @@ public class ServerManager {
    public void run() {
       isRunning = true;
 
-      JFrame frame = new JFrame("Ngọc rồng Free 2025");
-      frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      ImageIcon icon = new ImageIcon("");
-      frame.setIconImage(icon.getImage());
-      JPanel panel = new panel();
-      frame.add(panel);
-      frame.pack();
-      frame.setVisible(true);
+      if (!GraphicsEnvironment.isHeadless()) {
+         try {
+            JFrame frame = new JFrame("Ngọc rồng Free 2025");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            ImageIcon icon = new ImageIcon("");
+            frame.setIconImage(icon.getImage());
+            JPanel panel = new panel();
+            frame.add(panel);
+            frame.pack();
+            frame.setVisible(true);
+         } catch (Exception e) {
+            Log.log("Không thể khởi tạo giao diện (Headless).");
+         }
+      } else {
+         Log.log("Môi trường Headless: Đã tắt giao diện cửa sổ.");
+      }
 
       activeCommandLine();
       activeGame();

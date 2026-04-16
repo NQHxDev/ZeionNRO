@@ -6,7 +6,17 @@ import nro.models.player.Player;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Random;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import nro.models.boss.BossManager;
@@ -140,6 +150,21 @@ public class Util {
       }
 
       return (neg ? "-" : "") + nf.format(val) + suf;
+   }
+
+   public static void runWithTimeout(Runnable runnable, long timeout, TimeUnit unit) throws Exception {
+      CompletableFuture<Void> future = CompletableFuture.runAsync(runnable);
+      try {
+         future.get(timeout, unit);
+      } catch (TimeoutException e) {
+         future.cancel(true);
+         throw e;
+      } catch (ExecutionException e) {
+         if (e.getCause() instanceof Exception) {
+            throw (Exception) e.getCause();
+         }
+         throw e;
+      }
    }
 
    public static String format(double power) {

@@ -29,7 +29,7 @@ clean:
 
 run: build
 	@printf " $(GREEN)>>>$(RESET) Đang khởi chạy ServerGame Game Server ...\n"
-	@$(JAVA) -jar $(FINAL_JAR)
+	@$(JAVA) -Djava.awt.headless=true -jar $(FINAL_JAR)
 
 kill:
 	@printf " $(RED)>>>$(RESET) Đang tắt các tiến trình ServerGame đang chạy...\n"
