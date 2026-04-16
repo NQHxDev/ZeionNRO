@@ -28,7 +28,7 @@ public class CombineServiceNew {
 
    // private static final int COST_DOI_VE_DOI_DO_HUY_DIET = 500000000;
    // private static final int COST_DAP_DO_KICH_HOAT = 500000000;
-   private static final int COST_DOI_MANH_KICH_HOAT = 500000000;
+   // private static final int COST_DOI_MANH_KICH_HOAT = 500000000;
 
    private static final long COST = 100_000_000L;
 
@@ -3577,11 +3577,9 @@ public class CombineServiceNew {
          }
          if (sachTuyetKy != null) {
             int luotTay = 0;
-            ItemOption optionLevel = null;
             for (ItemOption io : sachTuyetKy.itemOptions) {
                if (io.optionTemplate.id == 242) {
                   luotTay = io.param;
-                  optionLevel = io;
                   break;
                }
             }
@@ -3594,7 +3592,6 @@ public class CombineServiceNew {
                Service.getInstance().sendThongBao(player, "Còn cái nịt mà tẩy");
                return;
             }
-            int tyle = new Random().nextInt(10);
             for (int i = 1; i < sachTuyetKy.itemOptions.size(); i++) {
                if (sachTuyetKy.itemOptions.get(i).optionTemplate.id == 242) {
                   sachTuyetKy.itemOptions.get(i).param -= 1;
@@ -4253,7 +4250,6 @@ public class CombineServiceNew {
          if (!player.combineNew.itemsCombine.isEmpty()) {
             Item item = player.combineNew.itemsCombine.get(0);
             Item dangusac = player.combineNew.itemsCombine.get(1);
-            int star = 0;
             short[] chiso = { 229, 230, 231, 232 };
             byte randomDo = (byte) new Random().nextInt(chiso.length);
             int lvchiso = 0;
@@ -4266,7 +4262,6 @@ public class CombineServiceNew {
             for (ItemOption io : item.itemOptions) {
                if (io.optionTemplate.id == 229 || io.optionTemplate.id == 230 || io.optionTemplate.id == 231
                      || io.optionTemplate.id == 232) {
-                  star = io.param;
                   optionStar = io;
                   break;
                }
@@ -4348,7 +4343,6 @@ public class CombineServiceNew {
                Service.getInstance().sendThongBaoOK(player, "hãy chuẩn bị 1000 xu vàng phí linh hoá");
                return;
             }
-            int star = 0;
             short[] chiso = { 224, 225, 226 };
             byte randomDo = (byte) new Random().nextInt(chiso.length);
             int lvchiso = Util.nextInt(5000, 10000);
@@ -4359,7 +4353,6 @@ public class CombineServiceNew {
 
             for (ItemOption io : item.itemOptions) {
                if (io.optionTemplate.id == 224 || io.optionTemplate.id == 225 || io.optionTemplate.id == 226) {
-                  star = io.param;
                   optionStar = io;
                   break;
                }
