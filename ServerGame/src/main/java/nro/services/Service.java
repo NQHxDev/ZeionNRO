@@ -36,7 +36,6 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import nro.models.boss.Boss;
 
@@ -260,9 +259,9 @@ public class Service {
          // }
 
          OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);
-         double cpuUsage = osBean.getSystemCpuLoad();
-         long totalMemory = osBean.getTotalPhysicalMemorySize();
-         long usedMemory = totalMemory - osBean.getFreePhysicalMemorySize();
+         double cpuUsage = osBean.getCpuLoad();
+         long totalMemory = osBean.getTotalMemorySize();
+         long usedMemory = totalMemory - osBean.getFreeMemorySize();
          double memoryUsage = (double) usedMemory / totalMemory;
 
          DecimalFormat decimalFormat = new DecimalFormat("0.0%");
@@ -935,8 +934,7 @@ public class Service {
    }
 
    public void sendsoxo(Player pl, int winNum, boolean kqua) {
-      Locale locale = new Locale("vi", "VN");
-      NumberFormat num = NumberFormat.getInstance(locale);
+      NumberFormat num = NumberFormat.getInstance(Util.locale);
       String lose = "Con số trúng thưởng là " + winNum + "\nChúc bạn may mắn lần sau!!";
       String win = "Chúc mừng bạn đã đoán trúng số " + winNum + " của giải lần này";
       Message msg;
@@ -1745,8 +1743,6 @@ public class Service {
       Message msg;
       try {
          msg = new Message(-94);
-         long now = System.currentTimeMillis();
-
          for (Skill skill : pl.playerSkill.skills) {
 
             skill.lastTimeUseThisSkill = 0; // hoặc now - skill.coolDown
@@ -1888,7 +1884,6 @@ public class Service {
             msg.writer().writeShort(pl.pet.nPoint.maxStamina); // stamina full
             msg.writer().writeByte(pl.pet.nPoint.crit); // crit
             msg.writer().writeDouble(pl.pet.nPoint.def); // def
-            int sizeSkill = pl.pet.playerSkill.skills.size();
             msg.writer().writeByte(4); // counnt pet skill
             for (int i = 0; i < pl.pet.playerSkill.skills.size(); i++) {
                if (pl.pet.playerSkill.skills.get(i).skillId != -1) {

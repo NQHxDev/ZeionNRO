@@ -11,7 +11,14 @@ import nro.manager.PetFollowManager;
 import nro.models.item.Item;
 import nro.models.item.ItemOption;
 import nro.models.item.MinipetTemplate;
-import nro.models.map.*;
+import nro.models.map.Map;
+import nro.models.map.NamekBall;
+import nro.models.map.Satellite;
+import nro.models.map.SatelliteDefense;
+import nro.models.map.SatelliteExp;
+import nro.models.map.SatelliteHP;
+import nro.models.map.SatelliteMP;
+import nro.models.map.Zone;
 import nro.models.map.dungeon.zones.ZSnakeRoad;
 import nro.models.map.war.NamekBallWar;
 import nro.models.player.Inventory;
@@ -35,12 +42,7 @@ import java.util.Random;
 import nro.data.ItemData;
 import nro.jdbc.daos.PlayerDAO;
 import nro.models.boss.BossManager;
-import nro.models.npc.specialnpc.MabuEgg;
 
-/**
- * @author Tuỳ Chỉnh Bởi Văn Tuấn 0337766460
- * @copyright 💖 GirlkuN 💖
- */
 public class UseItem {
 
    private static final int ITEM_BOX_TO_BODY_OR_BAG = 0;
@@ -1465,33 +1467,35 @@ public class UseItem {
       }
    }
 
-   private void OpenPokemon(Player pl, Item item) {
-      if (InventoryService.gI().getCountEmptyBag(pl) > 0) {
-         short[] thuong = { 16, 15 };
-         byte index = (byte) Util.nextInt(0, thuong.length - 1);
-         if (Util.isTrue(50, 100)) {
-            Item it = ItemService.gI().createNewItem(thuong[index]);
-            it.itemOptions.add(new ItemOption(73, 0));
-            InventoryService.gI().addItemBag(pl, it, 1);
-            Service.getInstance().sendThongBao(pl, "Bạn đã nhận được " + it.template.name);
-         } else {
-            Item it = ItemService.gI().createNewItem((short) ConstItem.POKEMON);
-            it.itemOptions.add(new ItemOption(50, Util.nextInt(5, 20)));
-            it.itemOptions.add(new ItemOption(14, Util.nextInt(5, 10)));
-            if (Util.isTrue(90, 100)) {
-               it.itemOptions.add(new ItemOption(93, Util.nextInt(2, 5)));
-            } else {
-               it.itemOptions.add(new ItemOption(73, 1));
-            }
-            InventoryService.gI().addItemBag(pl, it, 1);
-            Service.getInstance().sendThongBao(pl, "Bạn đã nhận được " + it.template.name);
-         }
-         InventoryService.gI().subQuantityItemsBag(pl, item, 1);
-         InventoryService.gI().sendItemBags(pl);
-      } else {
-         Service.getInstance().sendThongBao(pl, "Hàng trang đã đầy");
-      }
-   }
+   // private void OpenPokemon(Player pl, Item item) {
+   // if (InventoryService.gI().getCountEmptyBag(pl) > 0) {
+   // short[] thuong = { 16, 15 };
+   // byte index = (byte) Util.nextInt(0, thuong.length - 1);
+   // if (Util.isTrue(50, 100)) {
+   // Item it = ItemService.gI().createNewItem(thuong[index]);
+   // it.itemOptions.add(new ItemOption(73, 0));
+   // InventoryService.gI().addItemBag(pl, it, 1);
+   // Service.getInstance().sendThongBao(pl, "Bạn đã nhận được " +
+   // it.template.name);
+   // } else {
+   // Item it = ItemService.gI().createNewItem((short) ConstItem.POKEMON);
+   // it.itemOptions.add(new ItemOption(50, Util.nextInt(5, 20)));
+   // it.itemOptions.add(new ItemOption(14, Util.nextInt(5, 10)));
+   // if (Util.isTrue(90, 100)) {
+   // it.itemOptions.add(new ItemOption(93, Util.nextInt(2, 5)));
+   // } else {
+   // it.itemOptions.add(new ItemOption(73, 1));
+   // }
+   // InventoryService.gI().addItemBag(pl, it, 1);
+   // Service.getInstance().sendThongBao(pl, "Bạn đã nhận được " +
+   // it.template.name);
+   // }
+   // InventoryService.gI().subQuantityItemsBag(pl, item, 1);
+   // InventoryService.gI().sendItemBags(pl);
+   // } else {
+   // Service.getInstance().sendThongBao(pl, "Hàng trang đã đầy");
+   // }
+   // }
 
    private void openphapsu(Player pl, Item item) {
       if (InventoryService.gI().getCountEmptyBag(pl) > 0) {
@@ -2590,69 +2594,70 @@ public class UseItem {
       }
    }
 
-   private void openboxkichhoat(Player pl, Item item) {
-      if (InventoryService.gI().getCountEmptyBag(pl) > 0) {
-         short[] temp = { 76, 188, 189, 190, 441, 442, 447, 2010, 2009, 865, 938, 939, 940, 16, 17, 18, 19, 20, 946,
-               947, 948, 382, 383, 384, 385 };
-         int[][] gold = { { 5000, 20000 } };
-         byte index = (byte) Util.nextInt(0, temp.length - 1);
-         short[] icon = new short[2];
-         icon[0] = item.template.iconID;
-         if (index <= 3 && index >= 0) {
-            pl.inventory.addGold(Util.nextInt(gold[0][0], gold[0][1]));
-            PlayerService.gI().sendInfoHpMpMoney(pl);
-            icon[1] = 930;
-         } else {
+   // private void openboxkichhoat(Player pl, Item item) {
+   // if (InventoryService.gI().getCountEmptyBag(pl) > 0) {
+   // short[] temp = { 76, 188, 189, 190, 441, 442, 447, 2010, 2009, 865, 938, 939,
+   // 940, 16, 17, 18, 19, 20, 946,
+   // 947, 948, 382, 383, 384, 385 };
+   // int[][] gold = { { 5000, 20000 } };
+   // byte index = (byte) Util.nextInt(0, temp.length - 1);
+   // short[] icon = new short[2];
+   // icon[0] = item.template.iconID;
+   // if (index <= 3 && index >= 0) {
+   // pl.inventory.addGold(Util.nextInt(gold[0][0], gold[0][1]));
+   // PlayerService.gI().sendInfoHpMpMoney(pl);
+   // icon[1] = 930;
+   // } else {
 
-            Item it = ItemService.gI().createNewItem(temp[index]);
-            if (temp[index] == 441) {
-               it.itemOptions.add(new ItemOption(95, 5));
-            } else if (temp[index] == 442) {
-               it.itemOptions.add(new ItemOption(96, 5));
-            } else if (temp[index] == 447) {
-               it.itemOptions.add(new ItemOption(101, 5));
-            } else if (temp[index] >= 2009 && temp[index] <= 2010) {
-               it.itemOptions.add(new ItemOption(30, 0));
-            } else if (temp[index] == 865) {
-               it.itemOptions.add(new ItemOption(30, 0));
-               if (Util.isTrue(1, 20)) {
-                  it.itemOptions.add(new ItemOption(93, 365));
-               } else {
-                  it.itemOptions.add(new ItemOption(93, Util.nextInt(1, 30)));
-               }
-            } else if (temp[index] >= 938 && temp[index] <= 940) {
-               it.itemOptions.add(new ItemOption(77, 35));
-               it.itemOptions.add(new ItemOption(103, 35));
-               it.itemOptions.add(new ItemOption(50, 35));
-               if (Util.isTrue(1, 50)) {
-                  it.itemOptions.add(new ItemOption(116, 0));
-               } else {
-                  it.itemOptions.add(new ItemOption(93, Util.nextInt(1, 30)));
-               }
-            } else if (temp[index] >= 946 && temp[index] <= 948) {
-               it.itemOptions.add(new ItemOption(77, 35));
-               it.itemOptions.add(new ItemOption(103, 35));
-               it.itemOptions.add(new ItemOption(50, 35));
-               if (Util.isTrue(1, 20)) {
-                  it.itemOptions.add(new ItemOption(93, 365));
-               } else {
-                  it.itemOptions.add(new ItemOption(93, Util.nextInt(1, 30)));
-               }
-            } else {
-               it.itemOptions.add(new ItemOption(73, 0));
-            }
-            InventoryService.gI().addItemBag(pl, it, 0);
-            icon[1] = it.template.iconID;
+   // Item it = ItemService.gI().createNewItem(temp[index]);
+   // if (temp[index] == 441) {
+   // it.itemOptions.add(new ItemOption(95, 5));
+   // } else if (temp[index] == 442) {
+   // it.itemOptions.add(new ItemOption(96, 5));
+   // } else if (temp[index] == 447) {
+   // it.itemOptions.add(new ItemOption(101, 5));
+   // } else if (temp[index] >= 2009 && temp[index] <= 2010) {
+   // it.itemOptions.add(new ItemOption(30, 0));
+   // } else if (temp[index] == 865) {
+   // it.itemOptions.add(new ItemOption(30, 0));
+   // if (Util.isTrue(1, 20)) {
+   // it.itemOptions.add(new ItemOption(93, 365));
+   // } else {
+   // it.itemOptions.add(new ItemOption(93, Util.nextInt(1, 30)));
+   // }
+   // } else if (temp[index] >= 938 && temp[index] <= 940) {
+   // it.itemOptions.add(new ItemOption(77, 35));
+   // it.itemOptions.add(new ItemOption(103, 35));
+   // it.itemOptions.add(new ItemOption(50, 35));
+   // if (Util.isTrue(1, 50)) {
+   // it.itemOptions.add(new ItemOption(116, 0));
+   // } else {
+   // it.itemOptions.add(new ItemOption(93, Util.nextInt(1, 30)));
+   // }
+   // } else if (temp[index] >= 946 && temp[index] <= 948) {
+   // it.itemOptions.add(new ItemOption(77, 35));
+   // it.itemOptions.add(new ItemOption(103, 35));
+   // it.itemOptions.add(new ItemOption(50, 35));
+   // if (Util.isTrue(1, 20)) {
+   // it.itemOptions.add(new ItemOption(93, 365));
+   // } else {
+   // it.itemOptions.add(new ItemOption(93, Util.nextInt(1, 30)));
+   // }
+   // } else {
+   // it.itemOptions.add(new ItemOption(73, 0));
+   // }
+   // InventoryService.gI().addItemBag(pl, it, 0);
+   // icon[1] = it.template.iconID;
 
-         }
-         InventoryService.gI().subQuantityItemsBag(pl, item, 1);
-         InventoryService.gI().sendItemBags(pl);
+   // }
+   // InventoryService.gI().subQuantityItemsBag(pl, item, 1);
+   // InventoryService.gI().sendItemBags(pl);
 
-         CombineServiceNew.gI().sendEffectOpenItem(pl, icon[0], icon[1]);
-      } else {
-         Service.getInstance().sendThongBao(pl, "Hàng trang đã đầy");
-      }
-   }
+   // CombineServiceNew.gI().sendEffectOpenItem(pl, icon[0], icon[1]);
+   // } else {
+   // Service.getInstance().sendThongBao(pl, "Hàng trang đã đầy");
+   // }
+   // }
 
    private void openPhieuCaiTrangHaiTac(Player pl, Item item) {
       if (InventoryService.gI().getCountEmptyBag(pl) > 0) {
@@ -2783,16 +2788,17 @@ public class UseItem {
       }
    }
 
-   private void openMabuEgg(Player pl, Item item) {
-      if (pl.mabuEgg == null) {
-         MabuEgg.createMabuEgg(pl);
-         InventoryService.gI().subQuantityItemsBag(pl, item, 1);
-         InventoryService.gI().sendItemBags(pl);
-         Service.getInstance().sendThongBao(pl, "Bạn đã bắt đầu ấp Trứng Mabu");
-      } else {
-         Service.getInstance().sendThongBao(pl, "Vui lòng Hủy hoặc Nở trứng Mabu ở nhà");
-      }
-   }
+   // private void openMabuEgg(Player pl, Item item) {
+   // if (pl.mabuEgg == null) {
+   // MabuEgg.createMabuEgg(pl);
+   // InventoryService.gI().subQuantityItemsBag(pl, item, 1);
+   // InventoryService.gI().sendItemBags(pl);
+   // Service.getInstance().sendThongBao(pl, "Bạn đã bắt đầu ấp Trứng Mabu");
+   // } else {
+   // Service.getInstance().sendThongBao(pl, "Vui lòng Hủy hoặc Nở trứng Mabu ở
+   // nhà");
+   // }
+   // }
 
    private void useItemTime(Player pl, Item item) {
       boolean updatePoint = false;

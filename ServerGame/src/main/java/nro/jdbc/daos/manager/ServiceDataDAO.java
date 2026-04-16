@@ -75,6 +75,7 @@ public class ServiceDataDAO {
       loadAchievements(con);
       loadMiniPets(con);
       loadPetFollows(con);
+      loadConsignmentItems(con);
    }
 
    public static void loadBangTin(Connection con) {
@@ -135,12 +136,12 @@ public class ServiceDataDAO {
             if (itemsData != null) {
                for (ItemData d : itemsData) {
                   Item it = ItemService.gI().createNewItem((short) d.id, d.quantity);
-                  
+
                   // Sử dụng Robust Parser cho options của item
                   if (d.rawOptions != null) {
                      it.itemOptions.addAll(parseItemOptions(d.rawOptions.toString()));
                   }
-                  
+
                   pl.PHUCLOI_LIST_ITEM.add(it);
                }
             }
@@ -555,6 +556,78 @@ public class ServiceDataDAO {
       }
    }
 
+   public static void loadConsignmentItems(Connection con) {
+      String sql = "SELECT * FROM consignment_shop";
+      try (PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery()) {
+         nro.models.consignment.ConsignmentShop shop = nro.models.consignment.ConsignmentShop.getInstance();
+         shop.getList().clear();
+         int count = 0;
+         while (rs.next()) {
+            short itemId = rs.getShort("item_id");
+            int quantity = rs.getInt("quantity");
+            nro.models.consignment.ConsignmentItem item = ItemService.gI().createNewConsignmentItem(itemId, quantity);
+            item.setConsignorID(rs.getLong("consignor_id"));
+            item.setTab(rs.getByte("tab"));
+            item.setPriceGold(rs.getInt("gold"));
+            item.setPriceGem(rs.getInt("gem"));
+            item.setUpTop(rs.getBoolean("up_top"));
+            item.setSold(rs.getBoolean("sold"));
+            item.createTime = rs.getLong("time_consign");
+
+            String optionsJson = rs.getString("item_options");
+            item.itemOptions.addAll(parseItemOptions(optionsJson));
+
+            int daysExpired = shop.getDaysExpried(item.createTime);
+            if (daysExpired > 3 && daysExpired < 6) {
+               shop.addExpiredItem(item);
+            }
+            if (daysExpired < 6) {
+               shop.addItem(item);
+            }
+            count++;
+         }
+         Log.success("Consignment Items loaded successfully (" + count + ")");
+      } catch (SQLException e) {
+         Log.error(ServiceDataDAO.class, e, "Error loading consignment items");
+      }
+   }
+
+   public static void saveConsignmentItems(Connection con) {
+      try (PreparedStatement truncateStatement = con.prepareStatement("TRUNCATE consignment_shop");
+            PreparedStatement insertStatement = con.prepareStatement(
+                  "INSERT INTO `consignment_shop`(`id`, `consignor_id`, `tab`, `item_id`, `gold`, `gem`, `quantity`, `item_options`, `up_top`, `sold`,`time_consign`) VALUES (? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+         truncateStatement.executeUpdate();
+
+         List<nro.models.consignment.ConsignmentItem> list = nro.models.consignment.ConsignmentShop.getInstance()
+               .getList();
+         int id = 0;
+         for (nro.models.consignment.ConsignmentItem it : list) {
+            if (it != null) {
+               insertStatement.setInt(1, id++);
+               insertStatement.setLong(2, it.getConsignorID());
+               insertStatement.setInt(3, it.getTab());
+               insertStatement.setShort(4, it.template.id);
+               insertStatement.setInt(5, it.getPriceGold());
+               insertStatement.setInt(6, it.getPriceGem());
+               insertStatement.setInt(7, it.quantity);
+
+               // Chuyển sang JSON GSON chuẩn: [{"id":..., "param":...}, ...]
+               insertStatement.setString(8, gson.toJson(it.itemOptions));
+
+               insertStatement.setBoolean(9, it.isUpTop());
+               insertStatement.setBoolean(10, it.isSold());
+               insertStatement.setLong(11, it.createTime);
+               insertStatement.addBatch();
+            }
+         }
+         insertStatement.executeBatch();
+         Log.log("Consignment items saved successfully (" + list.size() + ")");
+      } catch (SQLException e) {
+         Log.error(ServiceDataDAO.class, e, "Error saving consignment items");
+      }
+   }
+
    private static void loadPetFollows(Connection con) {
       PetFollowManager.gI().getList().clear();
       String sql = "SELECT * FROM pet_follow";
@@ -576,7 +649,9 @@ public class ServiceDataDAO {
    }
 
    /**
-    * Robust Parser: Tự động nhận diện và xử lý cả hai định dạng JSON Option (Mảng và Object)
+    * Robust Parser: Tự động nhận diện và xử lý cả hai định dạng JSON Option (Mảng
+    * và Object)
+    * 
     * @param json Chuỗi JSON từ Database
     * @return Danh sách ItemOption đã parse
     */
@@ -614,8 +689,8 @@ public class ServiceDataDAO {
    private static class ItemData {
       int id;
       int quantity;
-      
-      @SerializedName(value="options", alternate={"list_option", "item_options"})
+
+      @SerializedName(value = "options", alternate = { "list_option", "item_options" })
       JsonElement rawOptions;
    }
 

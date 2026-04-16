@@ -901,8 +901,8 @@ public class PetService {
    }
 
    private long[] getDataPetNormal() {
-      double[] hpmp = { 1700, 1800, 1900, 2000, 2100, 2200 };
       long[] petData = new long[5];
+
       petData[0] = Util.nextInt(400, 1050) * 20; // hp
       petData[1] = Util.nextInt(400, 1050) * 20; // mp
       petData[2] = Util.nextInt(200, 450); // dame
@@ -991,25 +991,25 @@ public class PetService {
       return petData;
    }
 
-   private long[] getDataPetDaiThanh() {
-      long[] petData = new long[5];
-      petData[0] = Util.nextInt(800, 1250) * 20; // hp
-      petData[1] = Util.nextInt(800, 5250) * 20; // mp
-      petData[2] = Util.nextInt(800, 5600); // dame
-      petData[3] = Util.nextInt(300, 600); // def
-      petData[4] = Util.nextInt(20, 15); // crit
-      return petData;
-   }
+   // private long[] getDataPetDaiThanh() {
+   // long[] petData = new long[5];
+   // petData[0] = Util.nextInt(800, 1250) * 20; // hp
+   // petData[1] = Util.nextInt(800, 5250) * 20; // mp
+   // petData[2] = Util.nextInt(800, 5600); // dame
+   // petData[3] = Util.nextInt(300, 600); // def
+   // petData[4] = Util.nextInt(20, 15); // crit
+   // return petData;
+   // }
 
-   private long[] getDataPetNew() {
-      long[] petData = new long[5];
-      petData[0] = Util.nextInt(8000, 12500) * 20; // hp
-      petData[1] = Util.nextInt(8000, 52500) * 20; // mp
-      petData[2] = Util.nextInt(8000, 56000); // dame
-      petData[3] = Util.nextInt(3000, 6000); // def
-      petData[4] = Util.nextInt(20, 15); // crit
-      return petData;
-   }
+   // private long[] getDataPetNew() {
+   // long[] petData = new long[5];
+   // petData[0] = Util.nextInt(8000, 12500) * 20; // hp
+   // petData[1] = Util.nextInt(8000, 52500) * 20; // mp
+   // petData[2] = Util.nextInt(8000, 56000); // dame
+   // petData[3] = Util.nextInt(3000, 6000); // def
+   // petData[4] = Util.nextInt(20, 15); // crit
+   // return petData;
+   // }
 
    private long[] getDataPetNew1() {
       long[] petData = new long[5];

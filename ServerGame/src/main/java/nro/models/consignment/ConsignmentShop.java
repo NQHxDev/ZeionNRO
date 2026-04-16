@@ -272,7 +272,7 @@ public class ConsignmentShop {
 
    public void buy(Player player, short itemID, byte monneyType, int money) {
       for (ConsignmentItem item : list) {
-         if (item.template.id == itemID && monneyType == monneyType && money == money) {
+         if (item.template.id == itemID) {
             if (item.isSold()) {
                NpcService.gI().createTutorial(player, -1, "Vật phẩm đã được bán");
                return;

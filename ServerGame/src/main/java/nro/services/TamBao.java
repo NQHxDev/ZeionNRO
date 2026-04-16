@@ -2,7 +2,6 @@ package nro.services;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,9 +15,8 @@ import nro.models.item.ItemOption;
 import nro.models.player.Player;
 import nro.server.io.Message;
 import nro.utils.Util;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -36,9 +34,12 @@ public class TamBao {
 
    // ====== cấu hình ======
    private static final int REQUIRED_SLOTS = 14;
-   private static final int[] FALLBACK_IDS = { 220, 221, 222, 223, 224, 15, 15, 17, 18, 19, 20, 381, 382, 383, 384,
-         385 };
-   private static final int DEFAULT_VIP_FLAG = 0;
+   private static final int[] FALLBACK_IDS = {
+         220, 221, 222, 223, 224, 15, 15,
+         17, 18, 19, 20, 381, 382, 383,
+         384, 385 };
+
+   // private static final int DEFAULT_VIP_FLAG = 0;
    private static final int DEFAULT_FALLBACK_KEY = 1778;
    public static final List<TamBao_Item> MOC_TAMBAO = new ArrayList<>();
    private final Map<Integer, List<Integer>> POOL_TILE = new HashMap<>();
@@ -67,24 +68,24 @@ public class TamBao {
       DEFAULT_KEY_ITEM_ID = -1;
    }
 
-   private void padWithFallback(int keyId, List<Item> list) {
-      List<Integer> vipFlags = POOL_VIP_FLAGS.get(keyId);
-      List<Integer> tiles = POOL_TILE.get(keyId); // <<< thêm
-      if (vipFlags == null || tiles == null) {
-         return;
-      }
+   // private void padWithFallback(int keyId, List<Item> list) {
+   // List<Integer> vipFlags = POOL_VIP_FLAGS.get(keyId);
+   // List<Integer> tiles = POOL_TILE.get(keyId); // <<< thêm
+   // if (vipFlags == null || tiles == null) {
+   // return;
+   // }
 
-      int need = REQUIRED_SLOTS - list.size();
-      int idx = 0;
-      while (need-- > 0) {
-         int itemId = FALLBACK_IDS[idx % FALLBACK_IDS.length];
-         Item fb = ItemService.gI().createNewItem((short) itemId, 1);
-         list.add(fb);
-         vipFlags.add(DEFAULT_VIP_FLAG);
-         tiles.add(0); // fallback không có tile riêng
-         idx++;
-      }
-   }
+   // int need = REQUIRED_SLOTS - list.size();
+   // int idx = 0;
+   // while (need-- > 0) {
+   // int itemId = FALLBACK_IDS[idx % FALLBACK_IDS.length];
+   // Item fb = ItemService.gI().createNewItem((short) itemId, 1);
+   // list.add(fb);
+   // vipFlags.add(DEFAULT_VIP_FLAG);
+   // tiles.add(0); // fallback không có tile riêng
+   // idx++;
+   // }
+   // }
 
    private static class SpinPool {
 
@@ -457,87 +458,87 @@ public class TamBao {
    // =========================================================
    // HELPERS
    // =========================================================
-   private static Integer getNullableInt(ResultSet rs, String col) {
-      try {
-         int v = rs.getInt(col);
-         return rs.wasNull() ? null : v;
-      } catch (Exception e) {
-         return null;
-      }
-   }
+   // private static Integer getNullableInt(ResultSet rs, String col) {
+   // try {
+   // int v = rs.getInt(col);
+   // return rs.wasNull() ? null : v;
+   // } catch (Exception e) {
+   // return null;
+   // }
+   // }
 
-   private void addOptionsFromCompact(String compact, Item target) {
-      // "30-1,77-50" -> (30,1) (77,50)
-      String[] parts = compact.split(",");
-      for (String p : parts) {
-         p = p.trim();
-         if (p.isEmpty()) {
-            continue;
-         }
-         String[] kv = p.split("-");
-         if (kv.length < 2) {
-            continue;
-         }
-         int id = Integer.parseInt(kv[0].trim());
-         int param = Integer.parseInt(kv[1].trim());
-         target.itemOptions.add(new ItemOption(id, param));
-      }
-   }
+   // private void addOptionsFromCompact(String compact, Item target) {
+   // // "30-1,77-50" -> (30,1) (77,50)
+   // String[] parts = compact.split(",");
+   // for (String p : parts) {
+   // p = p.trim();
+   // if (p.isEmpty()) {
+   // continue;
+   // }
+   // String[] kv = p.split("-");
+   // if (kv.length < 2) {
+   // continue;
+   // }
+   // int id = Integer.parseInt(kv[0].trim());
+   // int param = Integer.parseInt(kv[1].trim());
+   // target.itemOptions.add(new ItemOption(id, param));
+   // }
+   // }
 
    // parse 1 vật phẩm từ JSONObject:
    // {"id":457,"quantity":9999,"options":[{"id":30,"param":1},...]}
-   private Item parseItemObject(JSONObject obj) {
-      if (obj == null)
-         return null;
-      Object idv = obj.get("id");
-      Object qv = obj.get("quantity");
-      if (idv == null || qv == null)
-         return null;
+   // private Item parseItemObject(JSONObject obj) {
+   // if (obj == null)
+   // return null;
+   // Object idv = obj.get("id");
+   // Object qv = obj.get("quantity");
+   // if (idv == null || qv == null)
+   // return null;
 
-      int id = toInt(idv);
-      int qty = toInt(qv);
-      Item it = ItemService.gI().createNewItem((short) id, qty);
+   // int id = toInt(idv);
+   // int qty = toInt(qv);
+   // Item it = ItemService.gI().createNewItem((short) id, qty);
 
-      Object opts = obj.get("options");
-      if (opts instanceof JSONArray arr) {
-         for (Object entry : arr) {
-            addOptionFromFlexibleEntry(entry, it);
-         }
-      }
-      return it;
-   }
+   // Object opts = obj.get("options");
+   // if (opts instanceof JSONArray arr) {
+   // for (Object entry : arr) {
+   // addOptionFromFlexibleEntry(entry, it);
+   // }
+   // }
+   // return it;
+   // }
 
    // chấp nhận {id,param} hoặc [id,param] hoặc chuỗi JSON tương ứng
-   private void addOptionFromFlexibleEntry(Object entry, Item target) {
-      JSONValue jv = new JSONValue();
-      if (entry instanceof JSONObject jo) {
-         int oid = toInt(jo.get("id"));
-         int par = toInt(jo.get("param"));
-         target.itemOptions.add(new ItemOption(oid, par));
-         return;
-      }
-      if (entry instanceof JSONArray pair) {
-         if (pair.size() >= 2) {
-            int oid = toInt(pair.get(0));
-            int par = toInt(pair.get(1));
-            target.itemOptions.add(new ItemOption(oid, par));
-         }
-         return;
-      }
-      if (entry instanceof String s) {
-         Object again = jv.parse(s);
-         if (again != null && again != entry)
-            addOptionFromFlexibleEntry(again, target);
-      }
-   }
+   // private void addOptionFromFlexibleEntry(Object entry, Item target) {
+   // JSONValue jv = new JSONValue();
+   // if (entry instanceof JSONObject jo) {
+   // int oid = toInt(jo.get("id"));
+   // int par = toInt(jo.get("param"));
+   // target.itemOptions.add(new ItemOption(oid, par));
+   // return;
+   // }
+   // if (entry instanceof JSONArray pair) {
+   // if (pair.size() >= 2) {
+   // int oid = toInt(pair.get(0));
+   // int par = toInt(pair.get(1));
+   // target.itemOptions.add(new ItemOption(oid, par));
+   // }
+   // return;
+   // }
+   // if (entry instanceof String s) {
+   // Object again = jv.parse(s);
+   // if (again != null && again != entry)
+   // addOptionFromFlexibleEntry(again, target);
+   // }
+   // }
 
-   private int toInt(Object o) {
-      if (o == null)
-         return 0;
-      if (o instanceof Number n)
-         return n.intValue();
-      return Integer.parseInt(String.valueOf(o));
-   }
+   // private int toInt(Object o) {
+   // if (o == null)
+   // return 0;
+   // if (o instanceof Number n)
+   // return n.intValue();
+   // return Integer.parseInt(String.valueOf(o));
+   // }
 
    // clone base item + set quantity; copy option theo template id/param
    private Item cloneWithQuantity(Item base, int quantity) {
@@ -563,17 +564,17 @@ public class TamBao {
 
    // serialize item -> JSON giống Phúc Lợi để tiện xem log
    private String itemToJson(Item it) {
-      JSONObject obj = new JSONObject();
-      obj.put("id", (int) it.template.id);
-      obj.put("quantity", it.quantity);
-      JSONArray opts = new JSONArray();
+      JsonObject obj = new JsonObject();
+      obj.addProperty("id", (int) it.template.id);
+      obj.addProperty("quantity", it.quantity);
+      JsonArray opts = new JsonArray();
       for (ItemOption io : it.itemOptions) {
-         JSONObject o = new JSONObject();
-         o.put("id", io.optionTemplate.id);
-         o.put("param", io.param);
+         JsonObject o = new JsonObject();
+         o.addProperty("id", io.optionTemplate.id);
+         o.addProperty("param", io.param);
          opts.add(o);
       }
-      obj.put("options", opts);
-      return obj.toJSONString();
+      obj.add("options", opts);
+      return obj.toString();
    }
 }

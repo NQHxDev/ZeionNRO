@@ -44,8 +44,7 @@ public class MapService {
     */
    public int[][] readTileIndexTileType(int tileTypeFocus) {
       int[][] tileIndexTileType = null;
-      try {
-         DataInputStream dis = new DataInputStream(new FileInputStream("resources/data/nro/map/tile_set_info"));
+      try (DataInputStream dis = new DataInputStream(new FileInputStream("resources/data/nro/map/tile_set_info"))) {
          int numTileMap = dis.readByte();
          tileIndexTileType = new int[numTileMap][];
          for (int i = 0; i < numTileMap; i++) {
@@ -73,8 +72,7 @@ public class MapService {
    // tilemap for paint
    public int[][] readTileMap(int mapId) {
       int[][] tileMap = null;
-      try {
-         DataInputStream dis = new DataInputStream(new FileInputStream("resources/map/" + mapId));
+      try (DataInputStream dis = new DataInputStream(new FileInputStream("resources/map/" + mapId))) {
          int w = dis.readByte();
          int h = dis.readByte();
          tileMap = new int[h][w];
@@ -83,7 +81,6 @@ public class MapService {
                tileMap[i][j] = dis.readByte();
             }
          }
-         dis.close();
       } catch (Exception e) {
          e.printStackTrace();
       }

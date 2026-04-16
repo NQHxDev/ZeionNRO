@@ -10,8 +10,8 @@ import nro.models.player.PetFollow;
 import nro.models.player.Player;
 import nro.server.io.Message;
 import nro.utils.Util;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 
@@ -276,26 +276,26 @@ public class InventoryService {
       return false;
    }
 
-   private boolean isItemIncremental(Item item) { // item cộng dồn số lượng
-      switch (item.template.type) {
-         case 8: // vật phẩm nhiệm vụ
-         case 25: // rađa dò ngọc namếc
-            if (isminipet(item.template.id)) {
-               return false;
-            }
-         case 33: // mảnh rada
-         case 14: // đá nâng cấp
-         case 50: // vé đổi đồ hủy diệt
-         case 27: // đồ tạp
-         case 30: // sao pha lê
-         case 12: // ngọc rồng
-         case 6: // đậu thần
-         case 29: // item time, đồ ăn
-            return true;
-         default:
-            return false;
-      }
-   }
+   // private boolean isItemIncremental(Item item) { // item cộng dồn số lượng
+   // switch (item.template.type) {
+   // case 8: // vật phẩm nhiệm vụ
+   // case 25: // rađa dò ngọc namếc
+   // if (isminipet(item.template.id)) {
+   // return false;
+   // }
+   // case 33: // mảnh rada
+   // case 14: // đá nâng cấp
+   // case 50: // vé đổi đồ hủy diệt
+   // case 27: // đồ tạp
+   // case 30: // sao pha lê
+   // case 12: // ngọc rồng
+   // case 6: // đậu thần
+   // case 29: // item time, đồ ăn
+   // return true;
+   // default:
+   // return false;
+   // }
+   // }
 
    private byte isItemIncrementalOption(Item item) { // trả về id option template
       int temp = item.template.id;
@@ -1149,23 +1149,15 @@ public class InventoryService {
       return null;
    }
 
-   private byte getNumPeaBag(Player player) {
-      return getNumPea(player.inventory.itemsBag);
-   }
-
-   private byte getNumPeaBox(Player player) {
-      return getNumPea(player.inventory.itemsBox);
-   }
-
-   private byte getNumPea(List<Item> items) {
-      byte num = 0;
-      for (Item item : items) {
-         if (item.isNotNullItem() && item.template.type == 6) {
-            num += item.quantity;
-         }
-      }
-      return num;
-   }
+   // private byte getNumPea(List<Item> items) {
+   // byte num = 0;
+   // for (Item item : items) {
+   // if (item.isNotNullItem() && item.template.type == 6) {
+   // num += item.quantity;
+   // }
+   // }
+   // return num;
+   // }
 
    public byte getCountEmptyBag(Player player) {
       return getCountEmptyListItem(player.inventory.itemsBag);
@@ -1190,37 +1182,45 @@ public class InventoryService {
    }
 
    public String itemsBagToString(Player player) {
-      JSONArray dataBag = new JSONArray();
+      JsonArray dataBag = new JsonArray();
+
       for (Item item : player.inventory.itemsBag) {
-         JSONObject dataItem = new JSONObject();
+         JsonObject dataItem = new JsonObject();
+
          if (item.isNotNullItem()) {
-            JSONArray options = new JSONArray();
-            dataItem.put("temp_id", item.template.id);
-            dataItem.put("quantity", item.quantity);
+            JsonArray options = new JsonArray();
+
+            dataItem.addProperty("temp_id", item.template.id);
+            dataItem.addProperty("quantity", item.quantity);
+
             for (ItemOption io : item.itemOptions) {
-               JSONArray option = new JSONArray();
+               JsonArray option = new JsonArray();
                option.add(io.optionTemplate.id);
                option.add(io.param);
                options.add(option);
             }
-            dataItem.put("option", options);
+
+            dataItem.add("option", options);
          } else {
-            JSONArray options = new JSONArray();
-            dataItem.put("temp_id", -1);
-            dataItem.put("quantity", 0);
-            dataItem.put("create_time", 0);
-            dataItem.put("option", options);
+            JsonArray options = new JsonArray();
+
+            dataItem.addProperty("temp_id", -1);
+            dataItem.addProperty("quantity", 0);
+            dataItem.addProperty("create_time", 0);
+            dataItem.add("option", options);
          }
+
          dataBag.add(dataItem);
       }
-      String itemsBag = dataBag.toJSONString();
-      return itemsBag;
+
+      return dataBag.toString();
    }
 
    public Item findItemBagByIndex(Player player, int index) {
       if (player.inventory.itemsBag.get(index).isNotNullItem()) {
          return player.inventory.itemsBag.get(index);
       }
+
       return null;
    }
 
@@ -1229,6 +1229,7 @@ public class InventoryService {
       if (item == null) {
          return -1;
       }
+
       return item.quantity;
    }
 }

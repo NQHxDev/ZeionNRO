@@ -316,6 +316,11 @@ public class ServerManager {
       } catch (Exception e) {
          Log.error(ServerManager.class, e);
       }
+      try {
+         nro.manager.ConsignManager.getInstance().close();
+      } catch (Exception e) {
+         Log.error(ServerManager.class, e);
+      }
       // try {
       Log.success("----------------------------------------------------");
       Log.success("      >>> MAINTENANCE COMPLETED SUCCESSFULLY <<<    ");
