@@ -1,5 +1,3 @@
-# Zeion NRO Monorepo Master Makefile
-
 # Configurations
 DATA_URL := https://github.com/NQHxDev/ZeionNRO/releases/download/Data/HashiramaData.zip
 DATA_FILE := HashiramaData.zip
@@ -26,7 +24,8 @@ setup:
 		echo "\033[0;33m>>> Assets missing. Downloading from GitHub Release...\033[0m"; \
 		curl -L $(DATA_URL) -o $(DATA_FILE); \
 		echo "\033[0;34m>>> Extracting data pack...\033[0m"; \
-		unzip -q $(DATA_FILE); \
+		unzip -q $(DATA_FILE) -d ServerGame; \
+		rm -rf ServerGame/__MACOSX; \
 		rm $(DATA_FILE); \
 		echo "\033[0;32m>>> Data Pack installed successfully!\033[0m"; \
 	else \
