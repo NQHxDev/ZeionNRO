@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import model.User;
 import model.UserManager;
 import server.Server;
-import util.Log;
 
 public class Session {
 

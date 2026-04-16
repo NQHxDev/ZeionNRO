@@ -30,7 +30,8 @@ public class Util {
    private static final Random rand;
    private static final SimpleDateFormat dateFormat;
    private static SimpleDateFormat dateFormatDay = new SimpleDateFormat("yyyy-MM-dd");
-   private static final Locale locale = new Locale("vi", "VN");
+
+   public static final Locale locale = Locale.of("vi", "VN");
    private static final NumberFormat num = NumberFormat.getInstance(locale);
 
    static {
@@ -52,7 +53,6 @@ public class Util {
    }
 
    public static String numberToMoney(long power) {
-      Locale locale = new Locale("vi", "VN");
       NumberFormat num = NumberFormat.getInstance(locale);
       num.setMaximumFractionDigits(1);
       if (power >= 1000000000) {
@@ -67,8 +67,7 @@ public class Util {
    }
 
    public static String powerToStringnew(double power) {
-      Locale localee = new Locale("vi", "VN");
-      NumberFormat number = NumberFormat.getInstance(localee);
+      NumberFormat number = NumberFormat.getInstance(locale);
       number.setMaximumFractionDigits(1);
       if (power >= 1000000000000000000000000000D) {
          return number.format((double) power / 1000000000000000000000000000D) + " Tỷ Tỷ Tỷ";
@@ -94,7 +93,6 @@ public class Util {
    }
 
    public static String powerToString(double power) {
-      Locale locale = new Locale("vi", "VN");
       NumberFormat num = NumberFormat.getInstance(locale);
       num.setMaximumFractionDigits(1);
       if (power >= 1000000000) {
@@ -120,7 +118,6 @@ public class Util {
    }
 
    public static String powerToString_Long(long power) {
-      Locale locale = new Locale("vi", "VN");
       NumberFormat nf = NumberFormat.getInstance(locale);
       nf.setMaximumFractionDigits(1);
       nf.setMinimumFractionDigits(0);

@@ -32,12 +32,12 @@ public class Log {
         System.out.println(RED + "[ERROR] " + RESET + text);
     }
 
-    public static void error(Class<?> clazz, Exception ex, String logs) {
+    public static void error(Class<?> clazz, Throwable ex, String logs) {
         System.out.println(RED + "[ERROR] " + RESET + clazz.getSimpleName() + ": " + logs);
         if (ex != null) ex.printStackTrace();
     }
 
-    public static void error(Class<?> clazz, Exception ex) {
+    public static void error(Class<?> clazz, Throwable ex) {
         System.out.println(RED + "[ERROR] " + RESET + clazz.getSimpleName() + ": " + ex.getMessage());
         if (ex != null) ex.printStackTrace();
     }

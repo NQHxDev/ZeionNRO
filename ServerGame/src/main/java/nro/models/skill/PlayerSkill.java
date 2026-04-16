@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import java.util.ArrayList;
 import java.util.List;
+import nro.utils.Log;
 
 /**
  * @author Tuỳ Chỉnh Bởi Văn Tuấn 0337766460
@@ -51,9 +52,10 @@ public class PlayerSkill {
     /** Bọc runnable để không làm chết task nếu có exception */
     private Runnable safe(Runnable r) {
         return () -> {
-            try { r.run(); } catch (Throwable t) {
-                // TODO: thay bằng logger của bạn
-                t.printStackTrace();
+            try {
+                r.run();
+            } catch (Throwable t) {
+                Log.error(PlayerSkill.class, t, "Error running scheduled task");
             }
         };
     }

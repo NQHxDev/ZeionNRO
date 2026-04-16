@@ -109,6 +109,7 @@ public class Player {
    public long lastTimeDame;
    public long dametong = 0;
    public int chuyensinh;
+   public double pet_power;
    public int MaxGoldTradeDay;
    public int chuaco2;
    public int chuaco3;

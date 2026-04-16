@@ -2,6 +2,7 @@ package nro.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class TimeUtil {
@@ -56,18 +57,21 @@ public class TimeUtil {
    }
 
    public static int getCurrDay() {
-      Date date = new Date();
-      return date.getDay();
+      Calendar cal = Calendar.getInstance();
+
+      return cal.get(Calendar.DAY_OF_WEEK) - 1;
    }
 
    public static int getCurrHour() {
-      Date date = new Date();
-      return date.getHours();
+      Calendar cal = Calendar.getInstance();
+
+      return cal.get(Calendar.HOUR_OF_DAY);
    }
 
    public static int getCurrMin() {
-      Date date = new Date();
-      return date.getMinutes();
+      Calendar cal = Calendar.getInstance();
+
+      return cal.get(Calendar.MINUTE);
    }
 
    public static String getTimeLeft(long lastTime, int secondTarget) {

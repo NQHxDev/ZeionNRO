@@ -116,14 +116,13 @@ public class SendEffect {
    }
 
    public void sendDanhHieu(Player player, int id) {
-      Message me = null;
       try {
          int ycongdanhhieu = 0;
 
          switch (id) {
             case 1:
                if (player.DH1 == true && player.IdDanhHieu_1 >= 100) {
-                  me = createMessage(player, player.IdDanhHieu_1, ycongdanhhieu);
+                  createMessage(player, player.IdDanhHieu_1, ycongdanhhieu);
                }
                break;
             case 2:
@@ -131,7 +130,7 @@ public class SendEffect {
                   ycongdanhhieu -= 20;
                }
                if (player.DH2 == true && player.IdDanhHieu_2 >= 100) {
-                  me = createMessage(player, player.IdDanhHieu_2, ycongdanhhieu);
+                  createMessage(player, player.IdDanhHieu_2, ycongdanhhieu);
                }
                break;
             case 3:
@@ -142,7 +141,7 @@ public class SendEffect {
                   ycongdanhhieu -= 20;
                }
                if (player.DH3 == true && player.IdDanhHieu_3 >= 100) {
-                  me = createMessage(player, player.IdDanhHieu_3, ycongdanhhieu);
+                  createMessage(player, player.IdDanhHieu_3, ycongdanhhieu);
                }
                break;
             case 4:
@@ -156,7 +155,7 @@ public class SendEffect {
                   ycongdanhhieu -= 20;
                }
                if (player.DH4 == true && player.IdDanhHieu_4 >= 100) {
-                  me = createMessage(player, player.IdDanhHieu_4, ycongdanhhieu);
+                  createMessage(player, player.IdDanhHieu_4, ycongdanhhieu);
                }
                break;
             case 5:
@@ -173,7 +172,7 @@ public class SendEffect {
                   ycongdanhhieu -= 20;
                }
                if (player.DH5 == true && player.IdDanhHieu_5 >= 100) {
-                  me = createMessage(player, player.IdDanhHieu_5, ycongdanhhieu);
+                  createMessage(player, player.IdDanhHieu_5, ycongdanhhieu);
                }
                break;
          }
@@ -183,14 +182,13 @@ public class SendEffect {
    }
 
    public void sendDanhHieuAll(Player player, Player p2, int id) {
-      Message me;
       try {
          int ycongdanhhieu = 0;
 
          switch (id) {
             case 1:
                if (player.DH1 == true && player.IdDanhHieu_1 >= 100) {
-                  me = createMessage2(player, p2, player.IdDanhHieu_1, ycongdanhhieu);
+                  createMessage2(player, p2, player.IdDanhHieu_1, ycongdanhhieu);
                }
                break;
             case 2:
@@ -198,7 +196,7 @@ public class SendEffect {
                   ycongdanhhieu -= 20;
                }
                if (player.DH2 == true && player.IdDanhHieu_2 >= 100) {
-                  me = createMessage2(player, p2, player.IdDanhHieu_2, ycongdanhhieu);
+                  createMessage2(player, p2, player.IdDanhHieu_2, ycongdanhhieu);
                }
                break;
             case 3:
@@ -209,7 +207,7 @@ public class SendEffect {
                   ycongdanhhieu -= 20;
                }
                if (player.DH3 == true && player.IdDanhHieu_3 >= 100) {
-                  me = createMessage2(player, p2, player.IdDanhHieu_3, ycongdanhhieu);
+                  createMessage2(player, p2, player.IdDanhHieu_3, ycongdanhhieu);
                }
                break;
             case 4:
@@ -223,7 +221,7 @@ public class SendEffect {
                   ycongdanhhieu -= 20;
                }
                if (player.DH4 == true && player.IdDanhHieu_4 >= 100) {
-                  me = createMessage2(player, p2, player.IdDanhHieu_4, ycongdanhhieu);
+                  createMessage2(player, p2, player.IdDanhHieu_4, ycongdanhhieu);
                }
                break;
             case 5:
@@ -240,7 +238,7 @@ public class SendEffect {
                   ycongdanhhieu -= 20;
                }
                if (player.DH5 == true && player.IdDanhHieu_5 >= 100) {
-                  me = createMessage2(player, p2, player.IdDanhHieu_5, ycongdanhhieu);
+                  createMessage2(player, p2, player.IdDanhHieu_5, ycongdanhhieu);
                }
                break;
          }
