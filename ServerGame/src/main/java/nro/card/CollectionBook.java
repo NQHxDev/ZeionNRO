@@ -1,6 +1,5 @@
 package nro.card;
 
-import nro.models.player.Player;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,11 +9,6 @@ public class CollectionBook {
    @Getter
    @Setter
    private List<Card> cards;
-   private Player player;
-
-   public CollectionBook(Player player) {
-      this.player = player;
-   }
 
    public void init() {
       List<CardTemplate> cardTemplates = CardManager.getInstance().getCardTemplates();
@@ -47,6 +41,7 @@ public class CollectionBook {
             return card;
          }
       }
+
       return null;
    }
 
@@ -56,6 +51,7 @@ public class CollectionBook {
             return card;
          }
       }
+
       return null;
    }
 
@@ -65,6 +61,7 @@ public class CollectionBook {
             return card;
          }
       }
+
       return null;
    }
 }

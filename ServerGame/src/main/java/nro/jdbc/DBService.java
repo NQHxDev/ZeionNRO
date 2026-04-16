@@ -15,20 +15,15 @@ public class DBService {
    public static int MAX_CONN = 2;
    private static final Connection[] connections = new Connection[10];
 
-   private static DBService i;
+   private static DBService instance;
    public static String dbName;
 
-   private ConnPool connPool;
-
    public static DBService gI() {
-      if (i == null) {
-         i = new DBService();
+      if (instance == null) {
+         instance = new DBService();
       }
-      return i;
-   }
 
-   private DBService() {
-      this.connPool = ConnPool.gI();
+      return instance;
    }
 
    public synchronized Connection getConnectionForLogin() throws SQLException {

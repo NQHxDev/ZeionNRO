@@ -957,12 +957,13 @@ public class GodGK {
                List<Card> cards = gson.fromJson(rs.getString("collection_book"), new TypeToken<List<Card>>() {
                }.getType());
 
-               CollectionBook book = new CollectionBook(player);
+               CollectionBook book = new CollectionBook();
                if (cards != null) {
                   book.setCards(cards);
                } else {
                   book.setCards(new ArrayList<>());
                }
+
                book.init();
                player.setCollectionBook(book);
                List<Item> itemsBody = player.inventory.itemsBody;
@@ -1951,12 +1952,13 @@ public class GodGK {
                List<Card> cards = gson.fromJson(rs.getString("collection_book"), new TypeToken<List<Card>>() {
                }.getType());
 
-               CollectionBook book = new CollectionBook(player);
+               CollectionBook book = new CollectionBook();
                if (cards != null) {
                   book.setCards(cards);
                } else {
                   book.setCards(new ArrayList<>());
                }
+
                book.init();
                player.setCollectionBook(book);
                List<Item> itemsBody = player.inventory.itemsBody;

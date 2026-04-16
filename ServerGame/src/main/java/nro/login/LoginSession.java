@@ -31,7 +31,7 @@ public class LoginSession {
    long timeConnected;
    public String strRecvByteCount = "";
    public boolean isCancel;
-   private Vector sendingMessage;
+   private Vector<Message> sendingMessage;
    private String host;
    private int port;
 
@@ -179,7 +179,7 @@ public class LoginSession {
    private class Sender implements Runnable {
 
       public Sender() {
-         sendingMessage = new Vector();
+         sendingMessage = new Vector<>();
       }
 
       public void AddMessage(Message message) {

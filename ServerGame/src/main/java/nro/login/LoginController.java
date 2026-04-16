@@ -108,7 +108,9 @@ public class LoginController {
          if (session != null) {
             try {
                byte status = ms.reader().readByte();
-               if (status == 0) {// thất bại
+
+               // Đăng nhập thất bại
+               if (status == 0) {
                   int userID = ms.reader().readInt();
                   boolean isAdmin = ms.reader().readBoolean();
                   boolean actived = ms.reader().readBoolean();
@@ -141,6 +143,8 @@ public class LoginController {
                   session.timeWait = 0;
                   session.loginSuccess = true;
                   DataGame.sendVersionGame(session);
+
+                  System.out.println("NQHxDev Session: " + session.userId + " - " + lastTimeLogout);
                } else {
 
                   String text = ms.reader().readUTF();
@@ -154,7 +158,6 @@ public class LoginController {
       } catch (IOException ex) {
          ex.printStackTrace();
       }
-
    }
 
    public void onConnectionFail() {

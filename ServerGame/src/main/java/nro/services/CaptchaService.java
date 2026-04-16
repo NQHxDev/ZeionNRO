@@ -28,13 +28,11 @@ public class CaptchaService {
       final String hash;
       final long expAt;
       final String ip;
-      int attempts;
 
       Entry(String hash, long expAt, String ip) {
          this.hash = hash;
          this.expAt = expAt;
          this.ip = ip;
-         this.attempts = 0;
       }
    }
 
