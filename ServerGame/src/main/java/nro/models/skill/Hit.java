@@ -1,6 +1,5 @@
 package nro.models.skill;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,25 +8,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author Tuỳ Chỉnh Bởi Văn Tuấn 0337766460
- */
 @Setter
 @Getter
 public class Hit {
-    private List<Integer> hits;
-    private Map<Integer, Integer> targets;
+   private List<Integer> hits;
+   private Map<Integer, Integer> targets;
 
-    public Hit() {
-        hits = new ArrayList<>();
-        targets = new HashMap<>();
-    }
+   public Hit() {
+      hits = new ArrayList<>();
+      targets = new HashMap<>();
+   }
 
-    public void addTarget(int targetID, int type) {
-        targets.put(targetID, type);
-    }
+   public void addTarget(int targetID, int type) {
+      targets.put(targetID, type);
+   }
 
-    public void addHit(int damage) {
-        hits.add(damage);
-    }
+   public void addHit(int damage) {
+      hits.add(damage);
+   }
 }

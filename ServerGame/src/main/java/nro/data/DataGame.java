@@ -37,20 +37,28 @@ public class DataGame {
    private static final String MOUNT_NUM = "733:1,734:2,735:3,743:4,744:5,746:6,795:7,849:8,897:9,920:10,1092:11,1135:12,1148:13,1176:14";
    public static final Map<String, Short> MAP_MOUNT_NUM = new HashMap<>();
 
-   private static final byte[] dart = FileIO.readFile("resources/data/nro/update_data/dart");
-   private static final byte[] arrow = FileIO.readFile("resources/data/nro/update_data/arrow");
-   private static final byte[] effect = FileIO.readFile("resources/data/nro/update_data/effect");
-   private static final byte[] image = FileIO.readFile("resources/data/nro/update_data/image");
-   private static final byte[] skill = FileIO.readFile("resources/data/nro/update_data/skill");
+   private static byte[] readFileWithLog(String path) {
+      Log.log("DataGame: [INFO] Đang nạp " + path);
+      return FileIO.readFile(path);
+   }
+
+   private static final byte[] dart = readFileWithLog("resources/data/nro/update_data/dart");
+   private static final byte[] arrow = readFileWithLog("resources/data/nro/update_data/arrow");
+   private static final byte[] effect = readFileWithLog("resources/data/nro/update_data/effect");
+   private static final byte[] image = readFileWithLog("resources/data/nro/update_data/image");
+   private static final byte[] skill = readFileWithLog("resources/data/nro/update_data/skill");
 
    static {
+      Log.log("DataGame: [INFO] Đang khởi tạo static block...");
       String[] array = MOUNT_NUM.split(",");
       for (String str : array) {
          String[] data = str.split(":");
          short num = (short) (Short.parseShort(data[1]) + 30000);
          MAP_MOUNT_NUM.put(data[0], num);
       }
+      Log.log("DataGame: [INFO] Đang khởi tạo Resources...");
       Resources.getInstance().init();
+      Log.log("DataGame: [INFO] Khởi tạo static block hoàn tất.");
    }
 
    public static void sendVersionGame(Session session) {

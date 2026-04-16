@@ -1,34 +1,39 @@
 # Configurations
-JAVA_HOME := $(shell /usr/libexec/java_home -v 21)
-JAVA := $(JAVA_HOME)/bin/java
-JAVAC := $(JAVA_HOME)/bin/javac
-MVN := /opt/homebrew/bin/mvn
+JAVA := java
+MVN := mvn
 JAR_NAME := target/VIP-1.0-RELEASE-jar-with-dependencies.jar
 FINAL_JAR := ServerGame.jar
+
+# Colors
+BLUE   := \033[0;34m
+GREEN  := \033[0;32m
+RED    := \033[0;31m
+YELLOW := \033[0;33m
+RESET  := \033[0m
 
 .PHONY: all build clean run kill update
 
 all: build
 
 build:
-	@echo " \033[0;34m>>>\033[0m Đang biên dịch ServerGame ..."
-	@JAVA_HOME=$(JAVA_HOME) $(MVN) clean package -DskipTests
-	@echo " \033[0;32m>>>\033[0m Build thành công! File JAR nằm trong thư mục target"
+	@printf " $(BLUE)>>>$(RESET) Compiling ServerGame ...\n"
+	@$(MVN) clean package -DskipTests
+	@printf " $(GREEN)>>>$(RESET) Build Successful! JAR file is in the target directory\n"
 	@cp $(JAR_NAME) ./$(FINAL_JAR)
-	@echo " \033[0;32m>>>\033[0m Đã cập nhật ./$(FINAL_JAR) thành công!"
+	@printf " $(GREEN)>>>$(RESET) Updated ./$(FINAL_JAR) successfully!\n"
 
 clean:
-	@echo " \033[0;31m>>>\033[0m Đang dọn dẹp dự án..."
+	@printf " $(RED)>>>$(RESET) Cleaning project...\n"
 	@$(MVN) clean
 	@rm -f $(FINAL_JAR)
 
 run: build
-	@echo " \033[0;32m>>>\033[0m Đang khởi chạy ServerGame Game Server ..."
-	@$(JAVA) -jar $(FINAL_JAR)
+	@printf " $(GREEN)>>>$(RESET) Launching ServerGame Game Server ...\n"
+	@$(JAVA) -Djava.awt.headless=true -jar $(FINAL_JAR)
 
 kill:
-	@echo " \033[0;31m>>>\033[0m Đang tắt các tiến trình ServerGame đang chạy..."
-	@pkill -f $(FINAL_JAR) || echo "Không tìm thấy tiến trình đang chạy."
+	@printf " $(RED)>>>$(RESET) Stopping running ServerGame processes...\n"
+	@pkill -f $(FINAL_JAR) || printf "No running processes found.\n"
 
 update: build
-	@echo " \033[0;32m>>>\033[0m Dự án đã được cập nhật bản build mới nhất."
+	@printf " $(GREEN)>>>$(RESET) Project updated to the latest build.\n"

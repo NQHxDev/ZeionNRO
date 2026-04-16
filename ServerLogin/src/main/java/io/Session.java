@@ -9,8 +9,10 @@ import java.util.ArrayList;
 import model.User;
 import model.UserManager;
 import server.Server;
+import util.Log;
 
 public class Session {
+
    public String sessionName;
    private int serverID;
    private Controller controller;
@@ -108,8 +110,6 @@ public class Session {
    public void setServer(Message ms) {
       try {
          this.serverID = ms.reader().readInt();
-         System.out.println("set server: " + this.serverID);
-         System.out.println("remove all user");
          UserManager.getInstance().removeAllUserWithServerID(this.serverID);
          int size = ms.reader().readInt();
          for (int i = 0; i < size; ++i) {
@@ -120,7 +120,6 @@ public class Session {
             User user = new User(username, password, this.serverID, clientID, this);
             user.setUserID(userID);
             UserManager.getInstance().add(user);
-            System.out.println("add user: " + username);
          }
       } catch (IOException ex) {
          ex.printStackTrace();

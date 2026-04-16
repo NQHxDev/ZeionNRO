@@ -1,5 +1,7 @@
 package io;
 
+import util.Log;
+
 import java.io.IOException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -29,7 +31,7 @@ public class Controller {
             break;
          }
          default: {
-            System.out.println("cmd: " + ms.command);
+            Log.info("cmd: " + ms.command);
          }
       }
    }
@@ -39,7 +41,7 @@ public class Controller {
          int userID = ms.reader().readInt();
          User user = UserManager.getInstance().find(userID);
          if (user != null) {
-            System.out.println("logout user: " + user.getUsername());
+            Log.info("Logout user: " + user.getUsername());
             UserManager.getInstance().remove(user);
          }
       } catch (IOException ex) {
@@ -73,6 +75,7 @@ public class Controller {
 
    public void onDisconnected() {
       UserManager.getInstance().removeAllUserWithServerID(this.session.getServerID());
-      System.out.println("client " + this.session.sessionName + " ket noi thanh cong!");
+
+      Log.info("Client disconnected: " + this.session.sessionName);
    }
 }

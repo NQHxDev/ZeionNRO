@@ -2009,7 +2009,6 @@ public class UseItem {
 
    public void HopQua10Thang3(Player pl, Item it) {
       if (InventoryService.gI().getCountEmptyBag(pl) > 3) {
-         int gender = pl.gender;
          int[] id = { 1794, 1795, 1796, 1563, 1564, 1565, 1559, 1560 };
          int[] idpet = { 778, 779 };
          int[] idvongco = { 1359, 1360 };
@@ -2069,7 +2068,6 @@ public class UseItem {
 
    public void HopQua10Thang3VIP(Player pl, Item it) {
       if (InventoryService.gI().getCountEmptyBag(pl) > 3) {
-         int gender = pl.gender;
          int[] id = { 1794, 1795, 1796, 1563, 1564, 1565, 1559, 1560 };
          int[] idpet = { 778, 779 };
          if (Util.isTrue(1, 200)) {
@@ -2199,7 +2197,6 @@ public class UseItem {
    private void openbox2010(Player pl, Item item) {
       if (InventoryService.gI().getCountEmptyBag(pl) > 0) {
          short[] temp = { 17, 16, 15, 675, 676, 677, 678, 679, 680, 681, 580, 581, 582 };
-         int[][] gold = { { 5000, 20000 } };
          byte index = (byte) Util.nextInt(0, temp.length - 1);
          short[] icon = new short[2];
          icon[0] = item.template.iconID;
@@ -2245,7 +2242,6 @@ public class UseItem {
                if (Manager.EVENT_SEVER == idsukien) {
                   if (InventoryService.gI().getCountEmptyBag(pl) > 0) {
                      short[] temp = { 16, 15, 865, 999, 1000, 1001, 739, 742, 743 };
-                     int[][] gold = { { 5000, 20000 } };
                      byte index = (byte) Util.nextInt(0, temp.length - 1);
                      short[] icon = new short[2];
                      icon[0] = item.template.iconID;

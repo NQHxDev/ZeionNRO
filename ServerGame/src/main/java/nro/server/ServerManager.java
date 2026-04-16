@@ -6,8 +6,7 @@ import nro.jdbc.daos.AccountDAO;
 import nro.jdbc.daos.HistoryTransactionDAO;
 import nro.jdbc.daos.PlayerDAO;
 import nro.login.LoginSession;
-import nro.manager.ConsignManager;
-import nro.manager.TopManager;
+
 import nro.models.boss.BossFactory;
 import nro.models.boss.BossManager;
 import nro.models.map.challenge.MartialCongressManager;
@@ -15,7 +14,7 @@ import nro.models.map.dungeon.DungeonManager;
 import nro.models.map.phoban.BanDoKhoBau;
 import nro.models.map.phoban.DoanhTrai;
 import nro.models.player.Player;
-//import nro.netty.NettyServer;
+
 import nro.server.io.Session;
 import nro.services.ClanService;
 import nro.utils.Log;
@@ -24,11 +23,11 @@ import nro.utils.Util;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.awt.GraphicsEnvironment;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -46,7 +45,7 @@ public class ServerManager {
 
    public static String timeStart;
 
-   public static final Map CLIENTS = new HashMap();
+   public static final Map<String, Integer> CLIENTS = new HashMap<>();
 
    public static String NAME = "";
    public static int PORT = 14445;
@@ -69,8 +68,11 @@ public class ServerManager {
    private DungeonManager dungeonManager;
 
    public void init() {
+      Log.log("Đang khởi tạo Manager...");
       Manager.gI();
+      Log.log("Đang dọn dẹp lịch sử giao dịch...");
       HistoryTransactionDAO.deleteHistory();
+      Log.log("Đang khởi tạo Boss...");
       BossFactory.initBoss();
       this.controller = new Controller();
       if (updateTimeLogin) {
@@ -90,6 +92,7 @@ public class ServerManager {
       Log.banner();
       Log.log("Hệ điều hành: " + System.getProperty("os.name"));
       Log.log("Phiên bản Java: " + System.getProperty("java.version"));
+      Log.log("Đang kiểm tra môi trường...");
       timeStart = TimeUtil.getTimeNow("dd/MM/yyyy HH:mm:ss");
       ServerManager.gI().run();
    }
@@ -97,14 +100,22 @@ public class ServerManager {
    public void run() {
       isRunning = true;
 
-      JFrame frame = new JFrame("Ngọc rồng Free 2025");
-      frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      ImageIcon icon = new ImageIcon("");
-      frame.setIconImage(icon.getImage());
-      JPanel panel = new panel();
-      frame.add(panel);
-      frame.pack();
-      frame.setVisible(true);
+      if (!GraphicsEnvironment.isHeadless()) {
+         try {
+            JFrame frame = new JFrame("Ngọc rồng Free 2025");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            ImageIcon icon = new ImageIcon("");
+            frame.setIconImage(icon.getImage());
+            JPanel panel = new panel();
+            frame.add(panel);
+            frame.pack();
+            frame.setVisible(true);
+         } catch (Exception e) {
+            Log.log("Không thể khởi tạo giao diện (Headless).");
+         }
+      } else {
+         Log.log("Môi trường Headless: Đã tắt giao diện cửa sổ.");
+      }
 
       activeCommandLine();
       activeGame();
@@ -181,22 +192,28 @@ public class ServerManager {
 
    private void activeCommandLine() {
       new Thread(() -> {
-         Scanner sc = new Scanner(System.in);
-         while (true) {
-            String line = sc.nextLine();
-            if (line.equals("baotri")) {
-               new Thread(() -> {
-                  Maintenance.gI().start(5);
-               }).start();
-            } else if (line.equals("athread")) {
-               ServerNotify.gI().notify("Debug server: " + Thread.activeCount());
-            } else if (line.equals("nplayer")) {
-               Log.error("Player in game: " + Client.gI().getPlayers().size());
-            } else if (line.equals("a")) {
-               new Thread(() -> {
-                  Client.gI().close();
-               }).start();
+         try (Scanner sc = new Scanner(System.in)) {
+            while (isRunning) {
+               if (sc.hasNextLine()) {
+                  String line = sc.nextLine();
+                  if (line.equals("baotri")) {
+                     new Thread(() -> {
+                        Maintenance.gI().start(5);
+                     }).start();
+                  } else if (line.equals("athread")) {
+                     ServerNotify.gI().notify("Debug server: " + Thread.activeCount());
+                     Log.log("Thread Server: " + Thread.activeCount());
+                  } else if (line.equals("nplayer")) {
+                     Log.log("Player in game: " + Client.gI().getPlayers().size());
+                  } else if (line.equals("a")) {
+                     new Thread(() -> {
+                        Client.gI().close();
+                     }).start();
+                  }
+               }
             }
+         } catch (Exception e) {
+            Log.error(ServerManager.class, e, "Lỗi command line");
          }
       }).start();
    }
@@ -300,12 +317,9 @@ public class ServerManager {
          Log.error(ServerManager.class, e);
       }
       // try {
-      // ConsignManager.getInstance().close();
-      // } catch (Exception e) {
-      // Log.error(ServerManager.class, e);
-      // }
-      Client.gI().close();
-      Log.success("SUCCESSFULLY MAINTENANCE!...................................");
+      Log.success("----------------------------------------------------");
+      Log.success("      >>> MAINTENANCE COMPLETED SUCCESSFULLY <<<    ");
+      Log.success("----------------------------------------------------");
       System.exit(0);
    }
 
