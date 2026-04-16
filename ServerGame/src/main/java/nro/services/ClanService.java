@@ -16,8 +16,11 @@ import nro.server.Manager;
 import nro.server.io.Message;
 import nro.utils.Log;
 import nro.utils.Util;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.GsonBuilder;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -1098,27 +1101,27 @@ public class ClanService {
          ps = con.prepareStatement("update clan_sv" + Manager.SERVER
                + " set slogan = ?, img_id = ?, power_point = ?, max_member = ?, clan_point = ?, "
                + "level = ?, members = ? where id = ? limit 1");
+         Gson gson = new GsonBuilder().create();
          for (Clan clan : Manager.CLANS) {
-            JSONArray dataArray = new JSONArray();
-            JSONObject dataObject = new JSONObject();
+            JsonArray dataArray = new JsonArray();
             for (ClanMember cm : clan.members) {
-               dataObject.put("id", cm.id);
-               dataObject.put("power", cm.powerPoint);
-               dataObject.put("name", cm.name);
-               dataObject.put("head", cm.head);
-               dataObject.put("body", cm.body);
-               dataObject.put("leg", cm.leg);
-               dataObject.put("role", cm.role);
-               dataObject.put("donate", cm.donate);
-               dataObject.put("receive_donate", cm.receiveDonate);
-               dataObject.put("member_point", cm.memberPoint);
-               dataObject.put("clan_point", cm.clanPoint);
-               dataObject.put("join_time", cm.joinTime);
-               dataObject.put("ask_pea_time", cm.timeAskPea);
-               dataArray.add(dataObject.toJSONString());
-               dataObject.clear();
+               JsonObject dataObject = new JsonObject();
+               dataObject.addProperty("id", cm.id);
+               dataObject.addProperty("power", cm.powerPoint);
+               dataObject.addProperty("name", cm.name);
+               dataObject.addProperty("head", cm.head);
+               dataObject.addProperty("body", cm.body);
+               dataObject.addProperty("leg", cm.leg);
+               dataObject.addProperty("role", cm.role);
+               dataObject.addProperty("donate", cm.donate);
+               dataObject.addProperty("receive_donate", cm.receiveDonate);
+               dataObject.addProperty("member_point", cm.memberPoint);
+               dataObject.addProperty("clan_point", cm.clanPoint);
+               dataObject.addProperty("join_time", cm.joinTime);
+               dataObject.addProperty("ask_pea_time", cm.timeAskPea);
+               dataArray.add(gson.toJson(dataObject));
             }
-            String member = dataArray.toJSONString();
+            String member = gson.toJson(dataArray);
             ps.setString(1, clan.slogan);
             ps.setInt(2, clan.imgId);
             ps.setDouble(3, clan.powerPoint);

@@ -10,6 +10,7 @@ import nro.consts.ConstMap;
 import nro.consts.ConstPlayer;
 import nro.data.DataGame;
 
+import nro.jdbc.daos.MapTemplateDAO;
 import nro.jdbc.DBService;
 import nro.jdbc.daos.AccountDAO;
 import nro.jdbc.daos.ShopDAO;
@@ -58,6 +59,9 @@ import nro.utils.Log;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -398,107 +402,7 @@ public class Manager {
          System.out.println("Load part thanh cong");
 
          // load map template
-         ps = con.prepareStatement("select count(id) from map_template", ResultSet.TYPE_SCROLL_INSENSITIVE,
-               ResultSet.CONCUR_READ_ONLY);
-         rs = ps.executeQuery();
-         if (rs.first()) {
-            int countRow = rs.getShort(1);
-            MAP_TEMPLATES = new MapTemplate[countRow];
-            ps = con.prepareStatement("select * from map_template");
-            rs = ps.executeQuery();
-            short i = 0;
-            while (rs.next()) {
-               MapTemplate mapTemplate = new MapTemplate();
-               int mapId = rs.getInt("id");
-               String mapName = rs.getString("name");
-               mapTemplate.id = mapId;
-               mapTemplate.name = mapName;
-               // load data
-               dataArray = (JSONArray) jv.parse(rs.getString("data"));
-               mapTemplate.type = Byte.parseByte(String.valueOf(dataArray.get(0)));
-               mapTemplate.planetId = Byte.parseByte(String.valueOf(dataArray.get(1)));
-               mapTemplate.bgType = Byte.parseByte(String.valueOf(dataArray.get(2)));
-               mapTemplate.tileId = Byte.parseByte(String.valueOf(dataArray.get(3)));
-               mapTemplate.bgId = Byte.parseByte(String.valueOf(dataArray.get(4)));
-               dataArray.clear();
-               mapTemplate.zones = rs.getByte("zones");
-               mapTemplate.maxPlayerPerZone = rs.getByte("max_player");
-               // load waypoints
-               dataArray = (JSONArray) jv.parse(rs.getString("waypoints")
-                     .replaceAll("\\[\"\\[", "[[")
-                     .replaceAll("\\]\"\\]", "]]")
-                     .replaceAll("\",\"", ","));
-               for (int j = 0; j < dataArray.size(); j++) {
-                  WayPoint wp = new WayPoint();
-                  JSONArray dtwp = (JSONArray) jv.parse(String.valueOf(dataArray.get(j)));
-                  wp.name = String.valueOf(dtwp.get(0));
-                  wp.minX = Short.parseShort(String.valueOf(dtwp.get(1)));
-                  wp.minY = Short.parseShort(String.valueOf(dtwp.get(2)));
-                  wp.maxX = Short.parseShort(String.valueOf(dtwp.get(3)));
-                  wp.maxY = Short.parseShort(String.valueOf(dtwp.get(4)));
-                  wp.isEnter = Byte.parseByte(String.valueOf(dtwp.get(5))) == 1;
-                  wp.isOffline = Byte.parseByte(String.valueOf(dtwp.get(6))) == 1;
-                  wp.goMap = Short.parseShort(String.valueOf(dtwp.get(7)));
-                  wp.goX = Short.parseShort(String.valueOf(dtwp.get(8)));
-                  wp.goY = Short.parseShort(String.valueOf(dtwp.get(9)));
-                  mapTemplate.wayPoints.add(wp);
-                  dtwp.clear();
-               }
-               dataArray.clear();
-               // load mobs
-               dataArray = (JSONArray) jv.parse(rs.getString("mobs").replaceAll("\\\"", ""));
-               mapTemplate.mobTemp = new byte[dataArray.size()];
-               mapTemplate.mobLevel = new byte[dataArray.size()];
-               mapTemplate.mobHp = new double[dataArray.size()];
-               mapTemplate.mobX = new short[dataArray.size()];
-               mapTemplate.mobY = new short[dataArray.size()];
-               for (int j = 0; j < dataArray.size(); j++) {
-                  JSONArray dtm = (JSONArray) jv.parse(String.valueOf(dataArray.get(j)));
-                  mapTemplate.mobTemp[j] = Byte.parseByte(String.valueOf(dtm.get(0)));
-                  mapTemplate.mobLevel[j] = Byte.parseByte(String.valueOf(dtm.get(1)));
-                  mapTemplate.mobHp[j] = Double.parseDouble(String.valueOf(dtm.get(2)));
-                  mapTemplate.mobX[j] = Short.parseShort(String.valueOf(dtm.get(3)));
-                  mapTemplate.mobY[j] = Short.parseShort(String.valueOf(dtm.get(4)));
-                  dtm.clear();
-               }
-               dataArray.clear();
-               // load npc
-               dataArray = (JSONArray) jv.parse(rs.getString("npcs").replaceAll("\\\"", ""));
-               mapTemplate.npcId = new byte[dataArray.size()];
-               mapTemplate.npcX = new short[dataArray.size()];
-               mapTemplate.npcY = new short[dataArray.size()];
-               mapTemplate.npcAvatar = new short[dataArray.size()];
-               for (int j = 0; j < dataArray.size(); j++) {
-                  JSONArray dtn = (JSONArray) jv.parse(String.valueOf(dataArray.get(j)));
-                  mapTemplate.npcId[j] = Byte.parseByte(String.valueOf(dtn.get(0)));
-                  mapTemplate.npcX[j] = Short.parseShort(String.valueOf(dtn.get(1)));
-                  mapTemplate.npcY[j] = Short.parseShort(String.valueOf(dtn.get(2)));
-                  mapTemplate.npcAvatar[j] = Short.parseShort(String.valueOf(dtn.get(3)));
-                  dtn.clear();
-               }
-               dataArray.clear();
-               // Bật effect map ở đây
-               dataArray = (JSONArray) jv.parse(rs.getString("effect"));
-               for (int j = 0; j < dataArray.size(); j++) {
-                  EffectMap em = new EffectMap();
-                  dataObject = (JSONObject) jv.parse(dataArray.get(j).toString());
-                  em.setKey(String.valueOf(dataObject.get("key")));
-                  em.setValue(String.valueOf(dataObject.get("value")));
-                  mapTemplate.effectMaps.add(em);
-               }
-               if (Manager.EVENT_SEVER == 3) {
-                  EffectMap em = new EffectMap();
-                  em.setKey("beff");
-                  em.setValue("11");
-                  mapTemplate.effectMaps.add(em);
-               }
-               dataArray.clear();
-               dataObject.clear();
-
-               MAP_TEMPLATES[i++] = mapTemplate;
-            }
-            Log.success("Load map template th脿nh c么ng (" + MAP_TEMPLATES.length + ")");
-         }
+         MAP_TEMPLATES = MapTemplateDAO.load(con);
 
          // load skill
          ps = con.prepareStatement("select * from skill_template order by nclass_id, slot");
@@ -1285,6 +1189,33 @@ public class Manager {
          }
       }
       return null;
+   }
+
+   private JsonArray parseMapData(String json) {
+      if (json == null || json.isEmpty()) {
+         return new JsonArray();
+      }
+      try {
+         JsonElement element = JsonParser.parseString(json);
+         if (element.isJsonArray()) {
+            JsonArray array = element.getAsJsonArray();
+            // Check if it's the weird "Array of Strings" format: ["[...]","[...]"]
+            if (array.size() > 0 && array.get(0).isJsonPrimitive() && array.get(0).getAsJsonPrimitive().isString()) {
+               String firstContent = array.get(0).getAsString();
+               if (firstContent.trim().startsWith("[")) {
+                  JsonArray newArray = new JsonArray();
+                  for (JsonElement e : array) {
+                     newArray.add(JsonParser.parseString(e.getAsString()));
+                  }
+                  return newArray;
+               }
+            }
+            return array;
+         }
+      } catch (Exception e) {
+         Log.error(Manager.class, e, "Error parsing map data: " + json);
+      }
+      return new JsonArray();
    }
 
 }

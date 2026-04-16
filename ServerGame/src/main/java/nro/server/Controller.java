@@ -396,11 +396,11 @@ public class Controller {
                   int toX = player.location.x;
                   int toY = player.location.y;
                   try {
+                     @SuppressWarnings("unused")
                      byte b = _msg.reader().readByte();
+
                      toX = _msg.reader().readShort();
                      toY = _msg.reader().readShort();
-
-                     System.out.println("NQHxLog: " + b + " " + toX + " " + toY);
                   } catch (Exception e) {
                   }
                   PlayerService.gI().playerMove(player, toX, toY);
