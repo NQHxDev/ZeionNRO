@@ -268,8 +268,8 @@ public class Manager {
          loadProperties();
          Log.log("Đang bắt đầu load game.properties...");
          gameConfig = new GameConfig();
-      } catch (IOException ex) {
-         Log.error(Manager.class, ex, "L峄梚 load properites");
+      } catch (Exception ex) {
+         Log.error(Manager.class, ex, "Lỗi load properties");
          System.exit(0);
       }
       Log.log("Đang bắt đầu load database...");
@@ -1060,6 +1060,7 @@ public class Manager {
          }
       }
 
+      Log.log("Đang bắt đầu gán Properties từ server.properties...");
       Object value = null;
       // ###Config db
       if ((value = properties.get("server.db.driver")) != null) {
@@ -1101,6 +1102,7 @@ public class Manager {
          executeCommand = properties.getProperty("execute.command");
       }
 
+      Log.log("Đang gán Server Config...");
       // ###Config sv
       if ((value = properties.get("server.port")) != null) {
          ServerManager.PORT = Integer.parseInt(String.valueOf(value));
@@ -1130,7 +1132,12 @@ public class Manager {
          }
       }
       // DataGame.LINK_IP_PORT = "FreeAll:14.225.209.128:14445:0";
-      DataGame.LINK_IP_PORT = linkServer.substring(0, linkServer.length() - 1);
+      Log.log("Đang gán LINK_IP_PORT...");
+      if (!linkServer.isEmpty()) {
+         DataGame.LINK_IP_PORT = linkServer.substring(0, linkServer.length() - 1);
+      } else {
+         Log.warning("Không tìm thấy bất kỳ server.svX nào trong properties!");
+      }
       if ((value = properties.get("server.waitlogin")) != null) {
          SECOND_WAIT_LOGIN = Byte.parseByte(String.valueOf(value));
       }

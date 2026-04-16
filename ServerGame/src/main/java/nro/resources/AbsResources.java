@@ -5,6 +5,8 @@ import nro.resources.entity.EffectData;
 import nro.resources.entity.ImageByName;
 import nro.resources.entity.MobData;
 import nro.utils.FileUtils;
+import nro.utils.Log;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -36,12 +38,20 @@ public abstract class AbsResources {
    }
 
    public void init() {
+      long st = System.currentTimeMillis();
+      Log.log("AbsResources: Bắt đầu khởi tạo DataVersion...");
       initDataVersion();
+      Log.log("AbsResources: Bắt đầu khởi tạo BGSmallVersion...");
       initBGSmallVersion();
+      Log.log("AbsResources: Bắt đầu khởi tạo SmallVersion...");
       initSmallVersion();
+      Log.log("AbsResources: Bắt đầu khởi tạo IBN...");
       initIBN();
+      Log.log("AbsResources: Bắt đầu khởi tạo MobData...");
       initMobData();
+      Log.log("AbsResources: Bắt đầu khởi tạo EffectData...");
       initEffectData();
+      Log.log("AbsResources: Khởi tạo hoàn tất (" + (System.currentTimeMillis() - st) + "ms)");
    }
 
    public void initEffectData() {
@@ -123,11 +133,10 @@ public abstract class AbsResources {
             for (File f : files) {
                String name = f.getName();
                int id = Integer.parseInt(FileUtils.cutPng(name));
-               backgroundVersion[i][id] = (byte) (Files.readAllBytes(f.toPath()).length % 127);
-
+               backgroundVersion[i][id] = (byte) (f.length() % 127);
             }
          }
-      } catch (IOException e) {
+      } catch (Exception e) {
          e.printStackTrace();
       }
    }
@@ -152,10 +161,10 @@ public abstract class AbsResources {
                String name = f.getName();
                name = FileUtils.cutPng(name);
                int id = Integer.parseInt(name);
-               smallVersion[i][id] = (byte) (Files.readAllBytes(f.toPath()).length % 127);
+               smallVersion[i][id] = (byte) (f.length() % 127);
             }
          }
-      } catch (IOException ex) {
+      } catch (Exception ex) {
          ex.printStackTrace();
       }
    }

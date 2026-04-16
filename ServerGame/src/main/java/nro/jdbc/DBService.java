@@ -35,7 +35,6 @@ public class DBService {
       if (connections[0] == null || connections[0].isClosed()) {
          try {
             connections[0] = getConnection();
-            return getConnectionForLogin();
          } catch (Exception ex) {
             ex.printStackTrace();
          }
@@ -52,7 +51,6 @@ public class DBService {
       if (connections[1] == null || connections[1].isClosed()) {
          try {
             connections[1] = getConnection();
-            return getConnectionForLogout();
          } catch (Exception ex) {
             ex.printStackTrace();
          }
@@ -69,7 +67,6 @@ public class DBService {
       if (connections[2] == null || connections[2].isClosed()) {
          try {
             connections[2] = getConnection();
-            return getConnectionForSaveData();
          } catch (Exception ex) {
             ex.printStackTrace();
          }
@@ -86,7 +83,6 @@ public class DBService {
       if (connections[3] == null || connections[3].isClosed()) {
          try {
             connections[3] = getConnection();
-            return getConnectionForGame();
          } catch (Exception ex) {
             ex.printStackTrace();
          }
@@ -103,7 +99,6 @@ public class DBService {
       if (connections[4] == null || connections[4].isClosed()) {
          try {
             connections[4] = getConnection();
-            return getConnectionForClan();
          } catch (Exception ex) {
             ex.printStackTrace();
          }
@@ -120,7 +115,6 @@ public class DBService {
       if (connections[5] == null || connections[5].isClosed()) {
          try {
             connections[5] = getConnection();
-            return getConnectionForAutoSave();
          } catch (Exception ex) {
             ex.printStackTrace();
          }
@@ -137,7 +131,6 @@ public class DBService {
       if (connections[6] == null || connections[6].isClosed()) {
          try {
             connections[6] = getConnection();
-            return getConnectionForSaveHistory();
          } catch (Exception ex) {
             ex.printStackTrace();
          }
@@ -154,7 +147,6 @@ public class DBService {
       if (connections[7] == null || connections[7].isClosed()) {
          try {
             connections[7] = getConnection();
-            return getConnectionForGetPlayer();
          } catch (Exception ex) {
             ex.printStackTrace();
          }
@@ -171,7 +163,6 @@ public class DBService {
       if (connections[8] == null || connections[8].isClosed()) {
          try {
             connections[8] = getConnection();
-            return getConnectionCreatPlayer();
          } catch (Exception ex) {
             ex.printStackTrace();
          }
