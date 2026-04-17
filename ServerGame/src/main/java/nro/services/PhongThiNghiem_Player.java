@@ -1,17 +1,16 @@
 package nro.services;
 
 import lombok.Getter;
-import nro.models.player.Player;
+import lombok.Setter;
 
-/**
- *
- * @author Hoàng Việt - 0857853150
- *
- */
-public class PhongThiNghiem_Player extends Player {
-    @Getter
-    public int idBinh;
-    @Getter
-    public long timeCheTao;
+public class PhongThiNghiem_Player {
+
+   @Getter
+   @Setter
+   public int id;
+
+   @Getter
+   @Setter
+   public long time;
 
 }

@@ -2129,7 +2129,7 @@ public class NPoint {
             KhamNgoc manager = KHAM_NGOC.get(j);
             for (int k = 0; k < manager.khamNgocTemplates.size(); k++) {
                KhamNgocTemplate template = manager.khamNgocTemplates.get(k);
-               if (this.player.khamNgoc.get(j).levelNro >= template.level) {
+               if (this.player.khamNgoc.get(j).level >= template.level) {
                   ItemOption io = template.options;
                   switch (io.optionTemplate.id) {
                      case 0: // Tấn công +#

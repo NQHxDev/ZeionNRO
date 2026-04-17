@@ -90,11 +90,11 @@ public class PhongThiNghiem {
 
          for (int j = 0; j < pl.phongThiNghiem.size(); j++) {
             PhongThiNghiem_Player manager = pl.phongThiNghiem.get(j);
-            msg.writer().writeInt(manager.idBinh);
-            msg.writer().writeLong(manager.timeCheTao - System.currentTimeMillis());
-            if (manager.idBinh != -1 && manager.timeCheTao > 0 && manager.timeCheTao - System.currentTimeMillis() > 0) {
-               msg.writer().writeUTF(Util.msToTime(manager.timeCheTao - System.currentTimeMillis()));
-            } else if (manager.idBinh != -1 && manager.timeCheTao - System.currentTimeMillis() <= 0) {
+            msg.writer().writeInt(manager.id);
+            msg.writer().writeLong(manager.time - System.currentTimeMillis());
+            if (manager.id != -1 && manager.time > 0 && manager.time - System.currentTimeMillis() > 0) {
+               msg.writer().writeUTF(Util.msToTime(manager.time - System.currentTimeMillis()));
+            } else if (manager.id != -1 && manager.time - System.currentTimeMillis() <= 0) {
                msg.writer().writeUTF("Chế tạo xong");
             } else {
                msg.writer().writeUTF("");
@@ -133,17 +133,17 @@ public class PhongThiNghiem {
 
    public void nhan_item(Player pl, int id, int vitri) {
       PhongThiNghiem ptn = PHONG_THI_NGHIEM.get(id);
-      if (pl.phongThiNghiem.get(vitri).timeCheTao - System.currentTimeMillis() > 0) {
+      if (pl.phongThiNghiem.get(vitri).time - System.currentTimeMillis() > 0) {
          Service.getInstance().sendThongBao(pl, "Chưa xong mà");
          return;
       }
-      if (pl.phongThiNghiem.get(vitri).idBinh == -1 || pl.phongThiNghiem.get(vitri).timeCheTao == 0) {
+      if (pl.phongThiNghiem.get(vitri).id == -1 || pl.phongThiNghiem.get(vitri).time == 0) {
          Service.getInstance().sendThongBao(pl, "Không thể thực hiện");
          return;
       }
       if (InventoryService.gI().getCountEmptyBag(pl) > 0) {
-         pl.phongThiNghiem.get(vitri).idBinh = -1;
-         pl.phongThiNghiem.get(vitri).timeCheTao = 0;
+         pl.phongThiNghiem.get(vitri).id = -1;
+         pl.phongThiNghiem.get(vitri).time = 0;
          Item it = ItemService.gI().createNewItem((short) ptn.idItem_Nhan);
          // if (ptn.idItem_Nhan == 1274){
          // it.itemOptions.add(new ItemOption(50, 20));
@@ -160,7 +160,7 @@ public class PhongThiNghiem {
    public void tangTocPtn(Player pl, int id, int vitri) {
       PhongThiNghiem_Player ptnPL = pl.phongThiNghiem.get(vitri);
       PhongThiNghiem ptn = PHONG_THI_NGHIEM.get(id);
-      if (ptnPL.timeCheTao - System.currentTimeMillis() <= 0) {
+      if (ptnPL.time - System.currentTimeMillis() <= 0) {
          Service.getInstance().sendThongBao(pl, "Đã chế tạo xong. Không thể Tăng tốc");
          return;
       }
@@ -177,7 +177,7 @@ public class PhongThiNghiem {
    public void huyPtn(Player pl, int id, int vitri) {
       PhongThiNghiem_Player ptnPL = pl.phongThiNghiem.get(vitri);
       PhongThiNghiem ptn = PHONG_THI_NGHIEM.get(id);
-      if (ptnPL.timeCheTao - System.currentTimeMillis() <= 0) {
+      if (ptnPL.time - System.currentTimeMillis() <= 0) {
          Service.getInstance().sendThongBao(pl, "Đã chế tạo xong. Không thể Hủy bỏ");
          return;
       }

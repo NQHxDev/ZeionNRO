@@ -874,6 +874,7 @@ public class Service {
    //
    // }
    // }
+
    public String get_HanhTinh(int hanhtinh) {
       switch (hanhtinh) {
          case 0:

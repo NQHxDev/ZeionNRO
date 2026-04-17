@@ -857,6 +857,7 @@ public class Zone {
             msg.writer().writeBoolean(wp.isOffline);
             msg.writer().writeUTF(wp.name);
          }
+
          // mob
          List<Mob> mobs = this.mobs;
          msg.writer().writeByte(mobs.size());

@@ -7766,17 +7766,17 @@ public class NpcFactory {
                         return;
                      }
                      InventoryService.gI().subQuantityItemsBag(player, item, max_quatity);
-                     manager.levelNro++;
+                     manager.level++;
                      InventoryService.gI().sendItemBags(player);
                      player.nPoint.calPoint();
                      Service.getInstance().point(player);
                      KhamNgoc.gI().Send_KhamNgoc_Player(player);
-                     if (manager.levelNro == 0) {
+                     if (manager.level == 0) {
                         Service.getInstance().sendThongBao(player,
                               "|2|Kích hoạt thành công Ngọc rồng " + (nro + 1) + " sao");
                      } else {
                         Service.getInstance().sendThongBao(player,
-                              "|2|Nâng thành công Ngọc rồng " + (nro + 1) + " sao lên Cấp " + manager.levelNro);
+                              "|2|Nâng thành công Ngọc rồng " + (nro + 1) + " sao lên Cấp " + manager.level);
                      }
                   }
                   break;
@@ -7788,8 +7788,8 @@ public class NpcFactory {
                         InventoryService.gI().subQuantityItemsBag(player, item, ptn.items.get(i).quantity);
                      }
                      InventoryService.gI().sendItemBags(player);
-                     player.phongThiNghiem.get(player.vitriBinhDieuChe).idBinh = player.typeBinhDieuChe;
-                     player.phongThiNghiem.get(player.vitriBinhDieuChe).timeCheTao = System.currentTimeMillis()
+                     player.phongThiNghiem.get(player.vitriBinhDieuChe).id = player.typeBinhDieuChe;
+                     player.phongThiNghiem.get(player.vitriBinhDieuChe).time = System.currentTimeMillis()
                            + (ptn.thoi_gian * 1000 * 60);
                      PhongThiNghiem.gI().Send_PhongThiNghiem_Player(player);
                   }
@@ -7804,8 +7804,8 @@ public class NpcFactory {
                      }
                      if (thoiVang != null && thoiVang.quantity >= PhongThiNghiem.SO_LUONG) {
                         PhongThiNghiem_Player ptnPl = new PhongThiNghiem_Player();
-                        ptnPl.idBinh = -1;
-                        ptnPl.timeCheTao = 0;
+                        ptnPl.id = -1;
+                        ptnPl.time = 0;
                         player.phongThiNghiem.add(ptnPl);
                         InventoryService.gI().subQuantityItemsBag(player, thoiVang, PhongThiNghiem.SO_LUONG);
                         InventoryService.gI().sendItemBags(player);
@@ -7829,8 +7829,8 @@ public class NpcFactory {
                         InventoryService.gI().addItemBag(player, it, 0);
                      }
                      InventoryService.gI().sendItemBags(player);
-                     player.phongThiNghiem.get(player.vitriBinhDieuChe).idBinh = -1;
-                     player.phongThiNghiem.get(player.vitriBinhDieuChe).timeCheTao = 0;
+                     player.phongThiNghiem.get(player.vitriBinhDieuChe).id = -1;
+                     player.phongThiNghiem.get(player.vitriBinhDieuChe).time = 0;
                      PhongThiNghiem.gI().Send_PhongThiNghiem_Player(player);
                      Service.getInstance().sendThongBao(player, "Hủy Thành công " + ptn.name_binh
                            + "\n|3|Nhận lại vật phẩm:"
@@ -7848,7 +7848,7 @@ public class NpcFactory {
                      InventoryService.gI().subQuantityItemsBag(player, item, PhongThiNghiem.SO_LUONG_TANG_TOC);
                      InventoryService.gI().sendItemBags(player);
                      PhongThiNghiem ptn = PhongThiNghiem.PHONG_THI_NGHIEM.get(player.typeBinhDieuChe);
-                     player.phongThiNghiem.get(player.vitriBinhDieuChe).timeCheTao -= PhongThiNghiem.TIME_TANG_TOC;
+                     player.phongThiNghiem.get(player.vitriBinhDieuChe).time -= PhongThiNghiem.TIME_TANG_TOC;
                      PhongThiNghiem.gI().Send_PhongThiNghiem_Player(player);
                      Service.getInstance().sendThongBao(player, "Tăng tốc Thành công " + ptn.name_binh + ". Giảm "
                            + Util.msToTime(PhongThiNghiem.TIME_TANG_TOC) + " thởi gian điều chế");
