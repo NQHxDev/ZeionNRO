@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.DataOutputStream;
 
 public class ServerService {
+
    private final ServerManager manager;
 
    public ServerService(ServerManager manager) {

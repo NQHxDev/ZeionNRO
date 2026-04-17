@@ -9,7 +9,9 @@ import model.User;
 import model.UserManager;
 
 public class Controller {
+
    private Session session;
+
    private Lock lock = new ReentrantLock();
 
    public Controller(Session session) {

@@ -20,6 +20,7 @@ import nro.services.ClanService;
 import nro.utils.Log;
 import nro.utils.TimeUtil;
 import nro.utils.Util;
+import nro.core.concurrent.GameScheduler;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,8 +35,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -219,83 +218,60 @@ public class ServerManager {
    }
 
    private void activeGame() {
-      long delay = 500;
-      new Thread(() -> {
-         while (isRunning) {
-            long l1 = System.currentTimeMillis();
+      GameScheduler.SCHED.scheduleAtFixedRate(() -> {
+         try {
             BossManager.gI().updateAllBoss();
-            long l2 = System.currentTimeMillis() - l1;
-            if (l2 < delay) {
-               try {
-                  Thread.sleep(delay - l2);
-               } catch (InterruptedException e) {
-               }
-            }
+         } catch (Exception e) {
+            e.printStackTrace();
          }
-      }).start();
-      new Thread(() -> {
-         while (isRunning) {
-            long start = System.currentTimeMillis();
+      }, 0, 500, TimeUnit.MILLISECONDS);
+
+      GameScheduler.SCHED.scheduleAtFixedRate(() -> {
+         try {
             for (DoanhTrai dt : DoanhTrai.DOANH_TRAIS) {
                dt.update();
             }
             for (BanDoKhoBau bdkb : BanDoKhoBau.BAN_DO_KHO_BAUS) {
                bdkb.update();
             }
-            long timeUpdate = System.currentTimeMillis() - start;
-            // System.out.println("time update all boss: " + timeUpdate);
-            if (timeUpdate < delay) {
-               try {
-                  Thread.sleep(delay - timeUpdate);
-               } catch (InterruptedException e) {
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
+      }, 0, 500, TimeUnit.MILLISECONDS);
+
+      GameScheduler.SCHED.scheduleAtFixedRate(() -> {
+         try {
+            if (attributeManager != null) {
+               attributeManager.update();
+               if (Util.canDoWithTime(lastUpdateAttribute, 600000)) {
+                  Manager.gI().updateAttributeServer();
+                  lastUpdateAttribute = System.currentTimeMillis();
                }
             }
+         } catch (Exception e) {
+            e.printStackTrace();
          }
-      }).start();
-      new Thread(() -> {
-         while (isRunning) {
-            try {
-               long start = System.currentTimeMillis();
-               if (attributeManager != null) {
-                  attributeManager.update();
-                  if (Util.canDoWithTime(lastUpdateAttribute, 600000)) {
-                     Manager.gI().updateAttributeServer();
-                  }
-               }
-               long timeUpdate = System.currentTimeMillis() - start;
-               if (timeUpdate < delay) {
-                  Thread.sleep(delay - timeUpdate);
-               }
-            } catch (Exception e) {
-               e.printStackTrace();
-            }
-         }
-      }).start();
+      }, 0, 500, TimeUnit.MILLISECONDS);
+
       dungeonManager = new DungeonManager();
-      dungeonManager.start();
-      new Thread(dungeonManager, "Phó bản").start();
-      new Thread(() -> {
-         while (isRunning) {
-            try {
-               long start = System.currentTimeMillis();
-               MartialCongressManager.gI().update();
-               long timeUpdate = System.currentTimeMillis() - start;
-               if (timeUpdate < delay) {
-                  Thread.sleep(delay - timeUpdate);
-               }
-            } catch (Exception e) {
-               e.printStackTrace();
-            }
+      GameScheduler.SCHED.scheduleAtFixedRate(() -> {
+         try {
+            dungeonManager.update();
+         } catch (Exception e) {
+            e.printStackTrace();
          }
-      }).start();
+      }, 0, 1000, TimeUnit.MILLISECONDS);
+
+      GameScheduler.SCHED.scheduleAtFixedRate(() -> {
+         try {
+            MartialCongressManager.gI().update();
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
+      }, 0, 500, TimeUnit.MILLISECONDS);
    }
 
    public void close(long delay) {
-      try {
-         dungeonManager.shutdown();
-      } catch (Exception e) {
-         Log.error(ServerManager.class, e);
-      }
       try {
          Manager.gI().updateEventCount();
       } catch (Exception e) {
@@ -346,10 +322,10 @@ public class ServerManager {
    }
 
    public void autoTask() {
-      ScheduledExecutorService autoSave = Executors.newScheduledThreadPool(1);
-      autoSave.scheduleWithFixedDelay(() -> {
+      GameScheduler.SCHED.scheduleWithFixedDelay(() -> {
          saveAll(false);
       }, 300000, 300000, TimeUnit.MILLISECONDS);
+
       // load bảng xếp hạng npc vados
       // ScheduledExecutorService autoTopPower = Executors.newScheduledThreadPool(1);
       // autoTopPower.scheduleWithFixedDelay(() -> {

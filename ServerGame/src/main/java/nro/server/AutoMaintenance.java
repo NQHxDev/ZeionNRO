@@ -11,12 +11,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.AllArgsConstructor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 import nro.utils.Log;
 import nro.services.Service;
 import nro.services.ClanService;
+import nro.core.concurrent.GameScheduler;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -42,8 +41,7 @@ public class AutoMaintenance {
             execute();
          }
       };
-      ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-      scheduler.scheduleAtFixedRate(runnable, initalDelay, 1 * 24 * 60 * 60, TimeUnit.SECONDS);
+      GameScheduler.SCHED.scheduleAtFixedRate(runnable, initalDelay, 1 * 24 * 60 * 60, TimeUnit.SECONDS);
    }
 
    public void execute() {

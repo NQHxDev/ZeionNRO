@@ -13,12 +13,13 @@ import nro.models.npc.NpcFactory;
 import nro.models.player.Player;
 import nro.server.Manager;
 import nro.services.Service;
+import nro.utils.Log;
 import nro.utils.Util;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Map implements Runnable {
+public class Map {
 
    public static final byte T_EMPTY = 0;
    public static final byte T_TOP = 2;
@@ -120,18 +121,12 @@ public class Map implements Runnable {
       }
    }
 
-   @Override
-   public void run() {
-      while (true) {
+   public void update() {
+      for (Zone zone : this.zones) {
          try {
-            long st = System.currentTimeMillis();
-            for (Zone zone : this.zones) {
-               zone.update();
-            }
-            long timeDo = System.currentTimeMillis() - st;
-            Thread.sleep(1000 - timeDo);
+            zone.update();
          } catch (Exception e) {
-            // Logger.logException(Map.class, e, "Lỗi update map " + this.mapName);
+            Log.error(Map.class, e, "Update Zone Error - ZoneID: " + zone.zoneId + " - MapID: " + this.mapId);
          }
       }
    }

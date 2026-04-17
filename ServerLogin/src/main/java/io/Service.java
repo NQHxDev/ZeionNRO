@@ -6,6 +6,7 @@ import java.io.DataOutputStream;
 import model.User;
 
 public class Service {
+
    private Session session;
 
    public Service(Session session) {

@@ -45,8 +45,8 @@ public class DbManager {
          config.setDriverClassName(serverConfig.getDriver());
          config.setUsername(serverConfig.getUsername());
          config.setPassword(serverConfig.getPassword());
-         config.addDataSourceProperty("minimumIdle", 10);
-         config.addDataSourceProperty("maximumPoolSize", 50);
+         config.addDataSourceProperty("minimumIdle", 2);
+         config.addDataSourceProperty("maximumPoolSize", 10);
          config.addDataSourceProperty("cachePrepStmts", "true");
          config.addDataSourceProperty("prepStmtCacheSize", "250");
          config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");

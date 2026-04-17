@@ -9,26 +9,40 @@ import java.util.ArrayList;
 import model.User;
 import model.UserManager;
 import server.Server;
+import util.LoginScheduler;
 
 public class Session {
 
    public String sessionName;
+
    private int serverID;
+
    private Controller controller;
+
    private Service service;
+
    public int id;
+
    private final byte[] key = "arriety".getBytes();
+
    public Socket sc;
+
    public DataInputStream dis;
+
    public DataOutputStream dos;
+
    public boolean connected;
+
    public boolean isLoginSuccess;
+
    private byte curR;
+
    private byte curW;
+
    private Sender sender;
-   private Thread collectorThread;
-   protected Thread sendThread;
+
    public boolean sendKeyComplete;
+
    public boolean isClosed;
 
    public Session(Socket sc, int id) throws IOException {
@@ -42,11 +56,8 @@ public class Session {
       this.controller = new Controller(this);
       this.service = new Service(this);
       this.sender = new Sender();
-      this.sendThread = new Thread(this.sender);
-      this.sendThread.setName("sender id: " + this.id);
-      this.collectorThread = new Thread(new MessageCollector());
-      this.collectorThread.setName("reader id: " + this.id);
-      this.collectorThread.start();
+      LoginScheduler.CONNECTIONS.execute(new MessageCollector());
+
       Server.getInstance().getManager().add(this);
    }
 
@@ -172,17 +183,9 @@ public class Session {
             this.dis.close();
             this.dis = null;
          }
-         if (this.sendThread != null) {
-            this.sendThread.interrupt();
-            this.sendThread = null;
-         }
-         if (this.collectorThread != null) {
-            this.collectorThread.interrupt();
-            this.collectorThread = null;
-         }
          this.controller = null;
          this.service = null;
-         System.gc();
+         // System.gc(); // Avoid manual GC calls in best practice unless necessary
       } catch (IOException iOException) {
          // empty catch block
       }
@@ -200,7 +203,7 @@ public class Session {
          ds.flush();
          this.doSendMessage(ms);
          this.sendKeyComplete = true;
-         this.sendThread.start();
+         LoginScheduler.CONNECTIONS.execute(this.sender);
       }
    }
 

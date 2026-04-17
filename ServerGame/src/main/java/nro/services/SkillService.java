@@ -14,13 +14,12 @@ import nro.services.func.PVPServcice;
 import nro.utils.Log;
 import nro.utils.SkillUtil;
 import nro.utils.Util;
+import nro.core.concurrent.GameScheduler;
 import nro.services.func.RadaService;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import nro.models.boss.BossFactory;
 import nro.models.player.SkillSpecial;
@@ -1133,7 +1132,8 @@ public class SkillService {
                }
 
                // biến người - bình
-               ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+               // ScheduledExecutorService executorService =
+               // Executors.newSingleThreadScheduledExecutor();
 
                for (Player playerMap : player.zone.getPlayers()) {
                   if (player.skillSpecial.dir == -1 && !playerMap.isDie() && Util.getDistance(player, playerMap) <= 500
@@ -1174,9 +1174,9 @@ public class SkillService {
                      double dameHit = playerMap.nPoint.hpMax * ptdame;
                      for (int i = 0; i < 10; i++) {
                         final int index = i;
-                        executorService.schedule(() -> {
+                        GameScheduler.SCHED.schedule(() -> {
                            playerMap.injured(playerMap, dameHit, false, false);
-                           PlayerService.gI().sendInfoHpMpMoney(playerMap); // gửi in4 hp cho player bị nhốt
+                           PlayerService.gI().sendInfoHpMpMoney(playerMap);
                            this.playerAttackPlayer(player, playerMap, true);
                            if (index == 0) {
                               this.playerAttackPlayer(player, playerMap, true);
@@ -1185,10 +1185,6 @@ public class SkillService {
                      }
                   }
                }
-
-               // Sau khi hoàn thành tất cả các tác vụ, hủy bỏ ScheduledExecutorService
-               executorService.shutdown();
-
             }
          } else {
             if (player.skillSpecial.stepSkillSpecial == 0
