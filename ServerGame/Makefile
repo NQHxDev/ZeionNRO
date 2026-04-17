@@ -23,7 +23,7 @@ else
 	endif
 endif
 
-.PHONY: all build clean run kill update
+.PHONY: all build release clean run kill update
 
 all: build
 
@@ -34,21 +34,21 @@ build:
 	@cp $(JAR_NAME) ./$(FINAL_JAR)
 	@printf " $(GREEN)>>>$(RESET) Updated ./$(FINAL_JAR) successfully!\n"
 
+release:
+	@printf " $(GREEN)>>>$(RESET) Launching ServerGame...\n"
+	@$(JAVA) -Djava.awt.headless=true -jar $(FINAL_JAR)
+
 clean:
 	@printf " $(RED)>>>$(RESET) Cleaning project...\n"
 	@$(MVN) clean
 	@rm -f $(FINAL_JAR)
 
-run: build
+run: kill build release
+
+kill:
 	@printf " $(GREEN)>>>$(RESET) Killing Process ...\n"
 	-@$(KILL_PORT)
 	@printf " $(GREEN)>>>$(RESET) Killing Process successfully ...\n"
-	@printf " $(GREEN)>>>$(RESET) Launching ServerGame...\n"
-	@$(JAVA) -Djava.awt.headless=true -jar $(FINAL_JAR)
-
-kill:
-	@printf " $(RED)>>>$(RESET) Stopping running ServerGame processes...\n"
-	@pkill -f $(FINAL_JAR) || printf "No running processes found.\n"
 
 update: build
 	@printf " $(GREEN)>>>$(RESET) Project updated to the latest build.\n"

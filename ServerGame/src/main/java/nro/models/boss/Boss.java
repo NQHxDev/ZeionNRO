@@ -156,7 +156,7 @@ public abstract class Boss extends Player implements BossInterface {
       }
 
       // ===== tính đồ như bình thường (calPoint sẽ gọi setPointWhenWearClothes +
-      // helper boss) =====
+      this.nPoint.setDirty();
       this.nPoint.calPoint();
 
       // ===== sau khi đã có hp (theo hpgD), giờ mới set dame % nếu cần =====
@@ -185,6 +185,7 @@ public abstract class Boss extends Player implements BossInterface {
             break;
       }
 
+      this.nPoint.setDirty();
       this.nPoint.calPoint(); // nếu hệ thống bạn thường gọi lại sau khi thay đổi dameg
 
       this.outfit = data.outfit;

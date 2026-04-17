@@ -74,7 +74,7 @@ public class ItemData {
             msg.writer().writeByte(DataGame.vsItem); //vcitem
             msg.writer().writeByte(0); //update option
             msg.writer().writeByte(Manager.ITEM_OPTION_TEMPLATES.size());
-            for (ItemOptionTemplate io : Manager.ITEM_OPTION_TEMPLATES) {
+            for (ItemOptionTemplate io : Manager.ITEM_OPTION_TEMPLATES.values()) {
                 msg.writer().writeUTF(io.name);
                 msg.writer().writeByte(io.type);
             }
@@ -96,15 +96,17 @@ public class ItemData {
             msg.writer().writeShort(count);
             for (int i = 0; i < count; i++) {
                 ItemTemplate itemTemplate = Manager.ITEM_TEMPLATES.get(i);
-                msg.writer().writeByte(itemTemplate.type);
-                msg.writer().writeByte(itemTemplate.gender);
-                msg.writer().writeUTF(itemTemplate.name);
-                msg.writer().writeUTF(itemTemplate.description);
-                msg.writer().writeByte(itemTemplate.level);
-                msg.writer().writeInt(itemTemplate.strRequire);
-                msg.writer().writeShort(itemTemplate.iconID);
-                msg.writer().writeShort(itemTemplate.part);
-                msg.writer().writeBoolean(itemTemplate.isUpToUp);
+                if (itemTemplate != null) {
+                    msg.writer().writeByte(itemTemplate.type);
+                    msg.writer().writeByte(itemTemplate.gender);
+                    msg.writer().writeUTF(itemTemplate.name);
+                    msg.writer().writeUTF(itemTemplate.description);
+                    msg.writer().writeByte(itemTemplate.level);
+                    msg.writer().writeInt(itemTemplate.strRequire);
+                    msg.writer().writeShort(itemTemplate.iconID);
+                    msg.writer().writeShort(itemTemplate.part);
+                    msg.writer().writeBoolean(itemTemplate.isUpToUp);
+                }
             }
             session.doSendMessage(msg);
             msg.cleanup();
@@ -124,16 +126,18 @@ public class ItemData {
             msg.writer().writeShort(start);
             msg.writer().writeShort(end);
             for (int i = start; i < end; i++) {
-//                System.out.println("start: " + start + " -> " + end + " id " + Manager.ITEM_TEMPLATES.get(i).id);
-                msg.writer().writeByte(Manager.ITEM_TEMPLATES.get(i).type);
-                msg.writer().writeByte(Manager.ITEM_TEMPLATES.get(i).gender);
-                msg.writer().writeUTF(Manager.ITEM_TEMPLATES.get(i).name);
-                msg.writer().writeUTF(Manager.ITEM_TEMPLATES.get(i).description);
-                msg.writer().writeByte(Manager.ITEM_TEMPLATES.get(i).level);
-                msg.writer().writeInt(Manager.ITEM_TEMPLATES.get(i).strRequire);
-                msg.writer().writeShort(Manager.ITEM_TEMPLATES.get(i).iconID);
-                msg.writer().writeShort(Manager.ITEM_TEMPLATES.get(i).part);
-                msg.writer().writeBoolean(Manager.ITEM_TEMPLATES.get(i).isUpToUp);
+                ItemTemplate item = Manager.ITEM_TEMPLATES.get(i);
+                if (item != null) {
+                    msg.writer().writeByte(item.type);
+                    msg.writer().writeByte(item.gender);
+                    msg.writer().writeUTF(item.name);
+                    msg.writer().writeUTF(item.description);
+                    msg.writer().writeByte(item.level);
+                    msg.writer().writeInt(item.strRequire);
+                    msg.writer().writeShort(item.iconID);
+                    msg.writer().writeShort(item.part);
+                    msg.writer().writeBoolean(item.isUpToUp);
+                }
             }
             session.doSendMessage(msg);
             msg.cleanup();

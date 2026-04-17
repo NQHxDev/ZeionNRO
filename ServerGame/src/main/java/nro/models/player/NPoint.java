@@ -33,6 +33,7 @@ public class NPoint {
    private Player player;
    public boolean isCrit;
    public boolean isCrit100;
+   public boolean isDirty = true;
 
    private Intrinsic intrinsic;
    private int percentDameIntrinsic;
@@ -199,6 +200,11 @@ public class NPoint {
       this.tlDameCrit = new ArrayList<>();
       this.tlSpeed = new ArrayList<>();
       this.tlSDBang = new ArrayList<>();
+      this.isDirty = true;
+   }
+
+   public void setDirty() {
+      this.isDirty = true;
    }
 
    public void initPowerLimit() {
@@ -210,6 +216,9 @@ public class NPoint {
     * Tính toán mọi chỉ số sau khi có thay đổi
     */
    public void calPoint() {
+      if (!isDirty) {
+         return;
+      }
       try {
          if (this.player.pet != null) {
             this.player.pet.nPoint.setPointWhenWearClothes();
@@ -217,6 +226,7 @@ public class NPoint {
          this.setPointWhenWearClothes();
 
          this.applyBossDoubleHpIfNeeded();
+         this.isDirty = false;
       } catch (Exception e) {
       }
    }

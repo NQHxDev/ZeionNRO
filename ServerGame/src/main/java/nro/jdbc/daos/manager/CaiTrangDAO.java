@@ -6,11 +6,11 @@ import nro.utils.Log;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.List;
+import java.util.Map;
 
 public class CaiTrangDAO {
 
-   public static void load(Connection con, List<CaiTrang> caiTrangs) {
+   public static void load(Connection con, Map<Integer, CaiTrang> caiTrangs) {
       String query = "SELECT * FROM cai_trang";
       try (PreparedStatement ps = con.prepareStatement(query);
             ResultSet rs = ps.executeQuery()) {
@@ -22,7 +22,7 @@ public class CaiTrangDAO {
                   rs.getInt("body"),
                   rs.getInt("leg"),
                   rs.getInt("bag"));
-            caiTrangs.add(caiTrang);
+            caiTrangs.put(caiTrang.tempId, caiTrang);
          }
          Log.success("Costumes (Cai Trang) loaded successfully (" + caiTrangs.size() + ")");
 

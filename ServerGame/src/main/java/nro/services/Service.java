@@ -629,6 +629,7 @@ public class Service {
    }
 
    public void point(Player player) {
+      player.nPoint.setDirty();
       player.nPoint.calPoint();
       Send_Info_NV(player);
       if (!player.isPet && !player.isBoss && !player.isBot) {

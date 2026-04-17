@@ -62,8 +62,9 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -137,14 +138,14 @@ public class Manager {
 
    public static final List<String> TOP_PLAYERS = new ArrayList<>();
 
-   public static MapTemplate[] MAP_TEMPLATES;
+   public static Map<Integer, MapTemplate> MAP_TEMPLATES = new HashMap<>();
    public static final List<nro.models.map.Map> MAPS = new ArrayList<>();
-   public static final List<ItemOptionTemplate> ITEM_OPTION_TEMPLATES = new ArrayList<>();
+   public static final Map<Integer, ItemOptionTemplate> ITEM_OPTION_TEMPLATES = new HashMap<>();
    public static final List<MobReward> MOB_REWARDS = new ArrayList<>();
    public static final RandomCollection<ItemLuckyRound> LUCKY_ROUND_REWARDS = new RandomCollection<>();
-   public static final List<ItemTemplate> ITEM_TEMPLATES = new ArrayList<>();
-   public static final List<MobTemplate> MOB_TEMPLATES = new ArrayList<>();
-   public static final List<NpcTemplate> NPC_TEMPLATES = new ArrayList<>();
+   public static final Map<Integer, ItemTemplate> ITEM_TEMPLATES = new HashMap<>();
+   public static final Map<Integer, MobTemplate> MOB_TEMPLATES = new HashMap<>();
+   public static final Map<Integer, NpcTemplate> NPC_TEMPLATES = new HashMap<>();
    public static final List<String> CAPTIONS = new ArrayList<>();
    public static final List<TaskMain> TASKS = new ArrayList<>();
    public static final List<SideTaskTemplate> SIDE_TASKS_TEMPLATE = new ArrayList<>();
@@ -152,9 +153,9 @@ public class Manager {
    public static final List<Intrinsic> INTRINSIC_TD = new ArrayList<>();
    public static final List<Intrinsic> INTRINSIC_NM = new ArrayList<>();
    public static final List<Intrinsic> INTRINSIC_XD = new ArrayList<>();
-   public static final List<HeadAvatar> HEAD_AVATARS = new ArrayList<>();
+   public static final Map<Integer, HeadAvatar> HEAD_AVATARS = new HashMap<>();
    public static final List<FlagBag> FLAGS_BAGS = new ArrayList<>();
-   public static final List<CaiTrang> CAI_TRANGS = new ArrayList<>();
+   public static final Map<Integer, CaiTrang> CAI_TRANGS = new HashMap<>();
    public static final List<NClass> NCLASS = new ArrayList<>();
    public static final List<Npc> NPCS = new ArrayList<>();
    public static List<Shop> SHOPS = new ArrayList<>();
@@ -287,7 +288,7 @@ public class Manager {
 
    private void initMap() {
       int[][] tileTyleTop = readTileIndexTileType(ConstMap.TILE_TOP);
-      for (MapTemplate mapTemp : MAP_TEMPLATES) {
+      for (MapTemplate mapTemp : MAP_TEMPLATES.values()) {
          int[][] tileMap = readTileMap(mapTemp.id);
          int[] tileTop = tileTyleTop[mapTemp.tileId - 1];
          nro.models.map.Map map = null;
@@ -446,12 +447,7 @@ public class Manager {
    }
 
    public static MapTemplate getMapTemplate(int mapID) {
-      for (MapTemplate map : MAP_TEMPLATES) {
-         if (map.id == mapID) {
-            return map;
-         }
-      }
-      return null;
+      return MAP_TEMPLATES.get(mapID);
    }
 
    public static void loadEventCount() {
@@ -733,20 +729,10 @@ public class Manager {
    }
 
    public static CaiTrang getCaiTrangByItemId(int itemId) {
-      for (CaiTrang caiTrang : CAI_TRANGS) {
-         if (caiTrang.tempId == itemId) {
-            return caiTrang;
-         }
-      }
-      return null;
+      return CAI_TRANGS.get(itemId);
    }
 
    public static MobTemplate getMobTemplateByTemp(int mobTempId) {
-      for (MobTemplate mobTemp : MOB_TEMPLATES) {
-         if (mobTemp.id == mobTempId) {
-            return mobTemp;
-         }
-      }
-      return null;
+      return MOB_TEMPLATES.get(mobTempId);
    }
 }

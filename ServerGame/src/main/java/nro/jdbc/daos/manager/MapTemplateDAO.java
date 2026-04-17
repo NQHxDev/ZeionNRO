@@ -15,23 +15,18 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MapTemplateDAO {
 
-   public static MapTemplate[] load(Connection con) {
-      MapTemplate[] mapTemplates = null;
+   public static Map<Integer, MapTemplate> load(Connection con) {
+      Map<Integer, MapTemplate> mapTemplates = new HashMap<>();
       try {
-         PreparedStatement ps = con.prepareStatement("select count(id) from map_template",
-               ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+         PreparedStatement ps = con.prepareStatement("select * from map_template");
          ResultSet rs = ps.executeQuery();
-
-         if (rs.first()) {
-            int countRow = rs.getShort(1);
-            mapTemplates = new MapTemplate[countRow];
-            ps = con.prepareStatement("select * from map_template");
-            rs = ps.executeQuery();
-            short i = 0;
-            while (rs.next()) {
-               MapTemplate mapTemplate = new MapTemplate();
+         while (rs.next()) {
+            MapTemplate mapTemplate = new MapTemplate();
                int mapId = rs.getInt("id");
                String mapName = rs.getString("name");
                mapTemplate.id = mapId;
@@ -135,13 +130,12 @@ public class MapTemplateDAO {
                   em.setValue("11");
                   mapTemplate.effectMaps.add(em);
                }
-               mapTemplates[i++] = mapTemplate;
+               mapTemplates.put(mapTemplate.id, mapTemplate);
             }
-            Log.success("Map templates loaded successfully (" + mapTemplates.length + ")");
-         }
-         rs.close();
-         ps.close();
-      } catch (Exception e) {
+            Log.success("Map templates loaded successfully (" + mapTemplates.size() + ")");
+            rs.close();
+            ps.close();
+         } catch (Exception e) {
          Log.error(MapTemplateDAO.class, e, "Error loading map templates");
       }
       return mapTemplates;
