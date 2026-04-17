@@ -19,6 +19,7 @@ import nro.server.io.Message;
 import nro.server.io.Session;
 
 import nro.services.func.ChangeMapService;
+import nro.utils.Log;
 import nro.utils.SkillUtil;
 
 public class BotManager {
@@ -55,6 +56,7 @@ public class BotManager {
          "gene", "gent", "germ", "gets", "ghee", "gibe",
          "gibs", "gift", "gigs", "gild", "gill", "gilt", "gimp", "gins", "girl", "gist", "give", "glad", "glee", "glen",
          "glow" };
+
    private final String[] TenSau = { "buns", "bunt", "buoy", "bush", "buss", "busy", "buts", "butt", "buys", "buzz",
          "byes", "byte", "cabs", "cage", "cake", "calf", "call",
          "calm", "came", "camp", "cams", "cane", "cant", "cape", "caps", "carb", "card", "care", "carp", "cars", "cart",
@@ -142,7 +144,7 @@ public class BotManager {
          // Map & zone
          Zone z = getSafeStartZone(pl);
          if (z == null) {
-            System.out.println("❌ Không tìm được map an toàn cho bot " + pl.name);
+            Log.warning("Không tìm được map an toàn cho bot " + pl.name);
             return;
          }
 
@@ -166,7 +168,7 @@ public class BotManager {
          fakeSession.player = pl;
          fakeSession.userId = (int) pl.id;
          fakeSession.actived = true;
-         fakeSession.connected = true; // ✅ giữ bot không bị kick
+         fakeSession.connected = true;
          fakeSession.loginSuccess = true;
          fakeSession.joinedGame = true;
 
@@ -179,12 +181,12 @@ public class BotManager {
          z.loadAnotherToMe(pl);
          randomFusionForBot(pl);
 
-         // 👉 lúc này mới được gửi packet
+         // lúc này mới được gửi packet
          ItemTimeService.gI().sendCanAutoPlay(pl);
          bots.add(pl);
          pets.add(pl.pet);
 
-         System.out.println("✅ Bot " + pl.name + " [" + pl.id + "] đã tạo!");
+         Log.log("Bot " + pl.name + " [" + pl.id + "] đã tạo!");
       } catch (Exception e) {
          e.printStackTrace();
       }
