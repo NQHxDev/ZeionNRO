@@ -5,6 +5,7 @@ import nro.attr.Attribute;
 import nro.attr.AttributeManager;
 import nro.consts.ConstItem;
 import nro.consts.ConstMap;
+import nro.consts.ConstNpc;
 import nro.data.DataGame;
 import nro.jdbc.DBService;
 import nro.jdbc.daos.manager.ServiceDataDAO;
@@ -38,7 +39,8 @@ import nro.models.map.SantaCity;
 import nro.models.mob.MobReward;
 import nro.models.mob.MobTemplate;
 import nro.models.npc.Npc;
-import nro.models.npc.NpcFactory;
+import nro.models.npc.special.ConMeo;
+import nro.models.npc.special.RongThieng;
 import nro.models.npc.NpcTemplate;
 import nro.models.player.Referee;
 import nro.models.shop.Shop;
@@ -62,8 +64,9 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -76,6 +79,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import nro.services.GameDuDoan;
+import nro.services.AutoBotChatService;
+import nro.services.BossFollowerService;
+import nro.core.concurrent.GameScheduler;
 
 public class Manager {
 
@@ -89,8 +95,8 @@ public class Manager {
    public static int TILE_ROI_A = 1;
    public static int TILE_ROI_B = 1;
    public static int TILE_NCAP = 0;
-   public static int EVENT_SEVER = 6;
    public static byte SUKIEN = 6;
+   public static int EVENT_SEVER = 6;
    public static String DOMAIN = "https://zeion.online/";
    public static String SERVER_NAME = "Ngọc Rồng Zeion";
    public static int EVENT_COUNT_THAN_HUY_DIET = 0;
@@ -101,11 +107,12 @@ public class Manager {
    public static String loginHost;
    public static int loginPort;
    public static int apiPort = 8080;
-   public static int bossGroup = 5;
-   public static int workerGroup = 10;
+   public static int bossGroup = 1;
+   public static int workerGroup = 8;
    public static String apiKey = "abcdef";
    public static String executeCommand;
    public static boolean debug;
+   public static boolean isBotEnabled;
    public static String NgayRunServer;
 
    public static int MAX_BAG = 109;
@@ -120,7 +127,7 @@ public class Manager {
          { 532, 259 }
    };
 
-   private static final int MAX_THREADS = 50; // Giới hạn số thread chạy cùng lúc
+   private static final int MAX_THREADS = 20;
    private static final ExecutorService threadPool = Executors.newFixedThreadPool(MAX_THREADS);
 
    public static void run(Runnable task) {
@@ -133,14 +140,14 @@ public class Manager {
 
    public static final List<String> TOP_PLAYERS = new ArrayList<>();
 
-   public static MapTemplate[] MAP_TEMPLATES;
+   public static Map<Integer, MapTemplate> MAP_TEMPLATES = new HashMap<>();
    public static final List<nro.models.map.Map> MAPS = new ArrayList<>();
-   public static final List<ItemOptionTemplate> ITEM_OPTION_TEMPLATES = new ArrayList<>();
+   public static final Map<Integer, ItemOptionTemplate> ITEM_OPTION_TEMPLATES = new HashMap<>();
    public static final List<MobReward> MOB_REWARDS = new ArrayList<>();
    public static final RandomCollection<ItemLuckyRound> LUCKY_ROUND_REWARDS = new RandomCollection<>();
-   public static final List<ItemTemplate> ITEM_TEMPLATES = new ArrayList<>();
-   public static final List<MobTemplate> MOB_TEMPLATES = new ArrayList<>();
-   public static final List<NpcTemplate> NPC_TEMPLATES = new ArrayList<>();
+   public static final Map<Integer, ItemTemplate> ITEM_TEMPLATES = new HashMap<>();
+   public static final Map<Integer, MobTemplate> MOB_TEMPLATES = new HashMap<>();
+   public static final Map<Integer, NpcTemplate> NPC_TEMPLATES = new HashMap<>();
    public static final List<String> CAPTIONS = new ArrayList<>();
    public static final List<TaskMain> TASKS = new ArrayList<>();
    public static final List<SideTaskTemplate> SIDE_TASKS_TEMPLATE = new ArrayList<>();
@@ -148,9 +155,9 @@ public class Manager {
    public static final List<Intrinsic> INTRINSIC_TD = new ArrayList<>();
    public static final List<Intrinsic> INTRINSIC_NM = new ArrayList<>();
    public static final List<Intrinsic> INTRINSIC_XD = new ArrayList<>();
-   public static final List<HeadAvatar> HEAD_AVATARS = new ArrayList<>();
+   public static final Map<Integer, HeadAvatar> HEAD_AVATARS = new HashMap<>();
    public static final List<FlagBag> FLAGS_BAGS = new ArrayList<>();
-   public static final List<CaiTrang> CAI_TRANGS = new ArrayList<>();
+   public static final Map<Integer, CaiTrang> CAI_TRANGS = new HashMap<>();
    public static final List<NClass> NCLASS = new ArrayList<>();
    public static final List<Npc> NPCS = new ArrayList<>();
    public static List<Shop> SHOPS = new ArrayList<>();
@@ -245,8 +252,8 @@ public class Manager {
       }
       Log.log("Đang bắt đầu load database...");
       loadDatabase();
-      NpcFactory.createNpcConMeo();
-      NpcFactory.createNpcRongThieng();
+      new ConMeo(-1, -1, -1, -1, ConstNpc.CON_MEO, 29028);
+      new RongThieng(-1, -1, -1, -1, ConstNpc.RONG_THIENG, -1);
       // Event.initEvent(gameConfig.getEvent());
       // if (Event.isEvent()) {
       // Event.getInstance().init();
@@ -283,7 +290,7 @@ public class Manager {
 
    private void initMap() {
       int[][] tileTyleTop = readTileIndexTileType(ConstMap.TILE_TOP);
-      for (MapTemplate mapTemp : MAP_TEMPLATES) {
+      for (MapTemplate mapTemp : MAP_TEMPLATES.values()) {
          int[][] tileMap = readTileMap(mapTemp.id);
          int[] tileTop = tileTyleTop[mapTemp.tileId - 1];
          nro.models.map.Map map = null;
@@ -306,7 +313,6 @@ public class Manager {
             MAPS.add(map);
             map.initMob(mapTemp.mobTemp, mapTemp.mobLevel, mapTemp.mobHp, mapTemp.mobX, mapTemp.mobY);
             map.initNpc(mapTemp.npcId, mapTemp.npcX, mapTemp.npcY, mapTemp.npcAvatar);
-            new Thread(map, "Update map " + map.mapName).start();
          }
          // new Thread(()-> {
          // try {
@@ -334,6 +340,18 @@ public class Manager {
 
       TestDame r2 = new TestDame();
       r2.initTestDame();
+
+      // Update all maps in a single task
+      GameScheduler.SCHED.scheduleAtFixedRate(() -> {
+         for (nro.models.map.Map map : MAPS) {
+            try {
+               map.update();
+            } catch (Exception e) {
+               // Log.error(Manager.class, e);
+            }
+         }
+      }, 0, 1000, TimeUnit.MILLISECONDS);
+
       Log.success("Initialization of map successful!");
    }
 
@@ -402,36 +420,36 @@ public class Manager {
       NgayRunServer = timeString + " Date: " + dateString;
       TaiXiu.gI().lastTimeEnd = System.currentTimeMillis() + 50000;
       SoMayMan.gI().lastTimeEnd = System.currentTimeMillis() + 60000;
-      new Thread(TaiXiu.gI(), "Thread TaiXiu").start();
-      new Thread(SoMayMan.gI(), "Thread SoMayMan").start();
+
+      GameScheduler.SCHED.scheduleAtFixedRate(TaiXiu.gI(), 0, 1000, TimeUnit.MILLISECONDS);
+      GameScheduler.SCHED.scheduleAtFixedRate(SoMayMan.gI(), 0, 1000, TimeUnit.MILLISECONDS);
 
       GameDuDoan.gI().lastTimeEnd = System.currentTimeMillis() + GameDuDoan.TIME_TAI_XIU;
-      new Thread(GameDuDoan.gI(), "Thread TaiXiu_Client").start();
+      GameScheduler.SCHED.scheduleAtFixedRate(GameDuDoan.gI(), 0, 1000, TimeUnit.MILLISECONDS);
       Log.log(
             "Total database loading time: " + (System.currentTimeMillis() - st) + "(ms)");
-      // new Thread(() -> {//tạo bot
-      // try {
-      // Thread.sleep(30000); // chờ 10 giây cho server ổn định
-      // for (int a = 0; a < 199; a++) {
-      // BotManager.gI().createBot();
-      // Thread.sleep(80);
-      // }
-      //// BossFollowerService.start();
-      // AutoBotChatService.gI();
-      // System.out.println("tao 199 bot thanh cong");
-      // } catch (Exception e) {
-      // e.printStackTrace();
-      // }
-      // }).start();
+      if (isBotEnabled) {
+         GameScheduler.SCHED.schedule(() -> {
+            try {
+               for (int a = 0; a < 199; a++) {
+                  nro.services.BotManager.gI().createBot();
+                  Thread.sleep(80);
+               }
+               // BossFollowerService.gI().update(); // Scheduled below
+               // AutoBotChatService.gI().update(); // Scheduled below
+               Log.success("Created 199 bots successfully");
+            } catch (Exception e) {
+               e.printStackTrace();
+            }
+         }, 30, TimeUnit.SECONDS);
+
+         GameScheduler.SCHED.scheduleAtFixedRate(() -> AutoBotChatService.gI().update(), 1, 5, TimeUnit.MINUTES);
+         GameScheduler.SCHED.scheduleAtFixedRate(() -> new BossFollowerService().update(), 1, 1, TimeUnit.MINUTES);
+      }
    }
 
    public static MapTemplate getMapTemplate(int mapID) {
-      for (MapTemplate map : MAP_TEMPLATES) {
-         if (map.id == mapID) {
-            return map;
-         }
-      }
-      return null;
+      return MAP_TEMPLATES.get(mapID);
    }
 
    public static void loadEventCount() {
@@ -591,6 +609,11 @@ public class Manager {
       } else {
          debug = false;
       }
+      if (properties.containsKey("server.isBotEnabled")) {
+         isBotEnabled = Boolean.parseBoolean(properties.getProperty("server.isBotEnabled"));
+      } else {
+         isBotEnabled = false;
+      }
       if ((value = properties.get("api.key")) != null) {
          Manager.apiKey = String.valueOf(value);
       }
@@ -708,20 +731,10 @@ public class Manager {
    }
 
    public static CaiTrang getCaiTrangByItemId(int itemId) {
-      for (CaiTrang caiTrang : CAI_TRANGS) {
-         if (caiTrang.tempId == itemId) {
-            return caiTrang;
-         }
-      }
-      return null;
+      return CAI_TRANGS.get(itemId);
    }
 
    public static MobTemplate getMobTemplateByTemp(int mobTempId) {
-      for (MobTemplate mobTemp : MOB_TEMPLATES) {
-         if (mobTemp.id == mobTempId) {
-            return mobTemp;
-         }
-      }
-      return null;
+      return MOB_TEMPLATES.get(mobTempId);
    }
 }

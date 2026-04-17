@@ -3,12 +3,6 @@ package nro.server;
 import nro.services.Service;
 import nro.utils.Log;
 
-/**
- *
- * @author Tuỳ Chỉnh Bởi Văn Tuấn 0337766460
- * @copyright 💖 GirlkuN 💖
- *
- */
 public class Maintenance extends Thread {
 
    public static boolean isRuning = false;
@@ -16,10 +10,6 @@ public class Maintenance extends Thread {
    private static Maintenance i;
 
    private int seconds;
-
-   private Maintenance() {
-
-   }
 
    public static Maintenance gI() {
       if (i == null) {

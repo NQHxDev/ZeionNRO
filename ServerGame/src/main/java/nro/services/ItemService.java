@@ -604,13 +604,21 @@ public class ItemService {
         }
         return item;
     }
+    private final java.util.Map<Integer, List<ItemOption>> cacheOptions = new java.util.HashMap<>();
+
     public List<ItemOption> getListOptionItemShop(short id) {
+        if (cacheOptions.containsKey((int) id)) {
+            return cacheOptions.get((int) id);
+        }
         List<ItemOption> list = new ArrayList<>();
         Manager.SHOPS.forEach(shop -> shop.tabShops.forEach(tabShop -> tabShop.itemShops.forEach(itemShop -> {
-            if (itemShop.temp.id == id && list.size() == 0) {
+            if (itemShop.temp.id == id && list.isEmpty()) {
                 list.addAll(itemShop.options);
             }
         })));
+        if (!list.isEmpty()) {
+            cacheOptions.put((int) id, list);
+        }
         return list;
     }
     

@@ -9,17 +9,18 @@ import nro.utils.Log;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.List;
+import java.util.Map;
 
 public class ItemTemplateDAO {
 
-   public static void load(Connection con, List<ItemTemplate> itemTemplates, List<ItemOptionTemplate> optionTemplates) {
+   public static void load(Connection con, Map<Integer, ItemTemplate> itemTemplates,
+         Map<Integer, ItemOptionTemplate> optionTemplates) {
       loadItemTemplates(con, itemTemplates);
       loadItemOptionTemplates(con, optionTemplates);
       initializeSpecialItems();
    }
 
-   private static void loadItemTemplates(Connection con, List<ItemTemplate> templates) {
+   private static void loadItemTemplates(Connection con, Map<Integer, ItemTemplate> templates) {
       String query = "SELECT * FROM item_template";
       try (PreparedStatement ps = con.prepareStatement(query);
             ResultSet rs = ps.executeQuery()) {
@@ -35,7 +36,7 @@ public class ItemTemplateDAO {
             itemTemp.part = rs.getShort("part");
             itemTemp.isUpToUp = rs.getBoolean("is_up_to_up");
             itemTemp.strRequire = rs.getInt("power_require");
-            templates.add(itemTemp);
+            templates.put((int) itemTemp.id, itemTemp);
          }
          Log.success("Item templates loaded successfully (" + templates.size() + ")");
 
@@ -44,7 +45,7 @@ public class ItemTemplateDAO {
       }
    }
 
-   private static void loadItemOptionTemplates(Connection con, List<ItemOptionTemplate> templates) {
+   private static void loadItemOptionTemplates(Connection con, Map<Integer, ItemOptionTemplate> templates) {
       String query = "SELECT id, name FROM item_option_template";
       try (PreparedStatement ps = con.prepareStatement(query);
             ResultSet rs = ps.executeQuery()) {
@@ -53,7 +54,7 @@ public class ItemTemplateDAO {
             ItemOptionTemplate optionTemp = new ItemOptionTemplate();
             optionTemp.id = rs.getInt("id");
             optionTemp.name = rs.getString("name");
-            templates.add(optionTemp);
+            templates.put(optionTemp.id, optionTemp);
          }
          Log.success("Item option templates loaded successfully (" + templates.size() + ")");
 

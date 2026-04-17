@@ -10,40 +10,28 @@ import nro.server.Client;
 import nro.services.func.ChangeMapService;
 import nro.utils.Log;
 
-public class BossFollowerService implements Runnable {
+public class BossFollowerService {
 
    private static final Set<String> BOSS_THEO_DOI = Set.of("Broly", "Android13", "Cooler");
 
-   // mapId các boss xuất hiện
-   // private static final int[] MAP_BOSS_IDS = { 45, 46, 47 };
+   public void update() {
+      try {
+         List<Player> bots = Client.gI().getPlayers().stream()
+               .filter(p -> p.isBot && !p.isDie())
+               .collect(Collectors.toList());
 
-   public static void start() {
-      new Thread(new BossFollowerService(), "BossFollowerService").start();
-   }
-
-   @Override
-   public void run() {
-      while (true) {
-         try {
-            List<Player> bots = Client.gI().getPlayers().stream()
-                  .filter(p -> p.isBot && !p.isDie())
-                  .collect(Collectors.toList());
-
-            for (Player bot : bots) {
-               for (Boss boss : BossManager.gI().getBosses()) {
-                  if (BOSS_THEO_DOI.contains(boss.name)) {
-                     if (bot.zone.map.mapId != boss.zone.map.mapId) {
-                        ChangeMapService.gI().changeMap(bot, boss.zone.map.mapId, -1, 200, 100);
-                        Service.getInstance().sendThongBao(bot, "Tìm thấy boss " + boss.name + ", đang di chuyển...");
-                     }
+         for (Player bot : bots) {
+            for (Boss boss : BossManager.gI().getBosses()) {
+               if (BOSS_THEO_DOI.contains(boss.name)) {
+                  if (bot.zone.map.mapId != boss.zone.map.mapId) {
+                     ChangeMapService.gI().changeMap(bot, boss.zone.map.mapId, -1, 200, 100);
+                     Service.getInstance().sendThongBao(bot, "Tìm thấy boss " + boss.name + ", đang di chuyển...");
                   }
                }
             }
-
-            Thread.sleep(60_000); // kiểm tra mỗi phút
-         } catch (Exception e) {
-            Log.error("Lỗi focut boss bot player");
          }
+      } catch (Exception e) {
+         Log.error("Lỗi focut boss bot player");
       }
    }
 }

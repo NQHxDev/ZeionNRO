@@ -9,7 +9,9 @@ import model.User;
 import model.UserManager;
 
 public class Controller {
+
    private Session session;
+
    private Lock lock = new ReentrantLock();
 
    public Controller(Session session) {
@@ -41,7 +43,6 @@ public class Controller {
          int userID = ms.reader().readInt();
          User user = UserManager.getInstance().find(userID);
          if (user != null) {
-            Log.info("Logout user: " + user.getUsername());
             UserManager.getInstance().remove(user);
          }
       } catch (IOException ex) {

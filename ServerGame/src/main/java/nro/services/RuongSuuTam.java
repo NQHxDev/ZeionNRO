@@ -319,4 +319,33 @@ public class RuongSuuTam {
       Send_RuongSuuTamTemplate(pl);
    }
 
+   public void upgradeRuong(Player player) {
+      Item thoiVang = InventoryService.gI().findItemBagByTemp(player, (short) RuongSuuTam.ID_TEMP);
+      List<Item> listItem = new ArrayList<>();
+      if (player.typeMoRuong == 0) {
+         listItem = player.ruongSuuTam.RuongCaiTrang;
+      } else if (player.typeMoRuong == 1) {
+         listItem = player.ruongSuuTam.RuongPhuKien;
+      } else if (player.typeMoRuong == 2) {
+         listItem = player.ruongSuuTam.RuongPet;
+      } else if (player.typeMoRuong == 3) {
+         listItem = player.ruongSuuTam.RuongLinhThu;
+      } else if (player.typeMoRuong == 4) {
+         listItem = player.ruongSuuTam.RuongThuCuoi;
+      }
+      if (thoiVang != null && thoiVang.quantity >= RuongSuuTam.QUATITY) {
+         if (listItem.size() < RuongSuuTam.MAX_SIZE) {
+            InventoryService.gI().subQuantityItemsBag(player, thoiVang, RuongSuuTam.QUATITY);
+            Item item = ItemService.gI().createNewItem((short) -1);
+            listItem.add(item);
+            Service.getInstance().sendThongBao(player, "Mở rộng thành công!");
+            RuongSuuTam.gI().SendAllRuong(player);
+         } else {
+            Service.getInstance().sendThongBao(player, "Đã đạt giới hạn tối đa");
+         }
+      } else {
+         Service.getInstance().sendThongBao(player, "Không đủ Thỏi vàng");
+      }
+   }
+
 }

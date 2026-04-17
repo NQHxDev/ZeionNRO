@@ -7,8 +7,10 @@ import java.net.ServerSocket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import util.Log;
+import util.LoginScheduler;
 
 public class Server {
+
    private static final Server instance = new Server();
    private ServerSocket listen;
    private Config config = new Config("server.ini");
@@ -26,22 +28,21 @@ public class Server {
       Log.banner();
       Log.info("Hệ điều hành: " + System.getProperty("os.name"));
       Log.info("Phiên bản Java: " + System.getProperty("java.version"));
-      block3: {
-         this.activeCommandLine();
-         DbManager.getInstance().start();
-         this.running = true;
-         try {
-            this.listen = new ServerSocket(this.config.getListen());
-            Log.success("Server đang lắng nghe tại cổng: " + this.config.getListen());
-            int i = 0;
-            while (this.running) {
-               Session session = new Session(this.listen.accept(), i++);
-               Log.info("Client connected! IP: " + session.sc.getInetAddress().getHostAddress() + " | Session Name: "
-                     + session.sessionName);
-            }
-         } catch (IOException ex) {
-            if (!this.running)
-               break block3;
+
+      this.activeCommandLine();
+      DbManager.getInstance().start();
+      this.running = true;
+      try {
+         this.listen = new ServerSocket(this.config.getListen());
+         Log.success("Server đang lắng nghe tại cổng: " + this.config.getListen());
+         int i = 0;
+         while (this.running) {
+            Session session = new Session(this.listen.accept(), i++);
+            Log.info("Client connected! IP: " + session.sc.getInetAddress().getHostAddress() + " | Session Name: "
+                  + session.sessionName);
+         }
+      } catch (IOException ex) {
+         if (this.running) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
          }
       }
@@ -49,7 +50,7 @@ public class Server {
 
    public void shutdown(int seconds) {
       if (seconds > 0) {
-         Log.warning("Hệ thống sẽ bảo trì sau " + seconds + " giây...");
+         Log.warning("Hệ thống sẽ bảo trì sau " + seconds + " giây ...");
          try {
             while (seconds > 0) {
                Log.info("Bảo trì trong: " + seconds + "s");
@@ -57,10 +58,10 @@ public class Server {
                seconds--;
             }
          } catch (InterruptedException e) {
-            Log.error("Lỗi khi đang đếm ngược bảo trì.");
+            Log.error("Lỗi khi đang đếm ngược bảo trì ...");
          }
       }
-      Log.warning("Đang đóng các kết nối và dừng Server...");
+      Log.warning("Đang đóng các kết nối và dừng Server ...");
       this.running = false;
       try {
          if (this.listen != null) {
@@ -73,7 +74,7 @@ public class Server {
    }
 
    private void activeCommandLine() {
-      new Thread(new CommandLine(), "Active line").start();
+      LoginScheduler.SCHED.execute(new CommandLine());
    }
 
    public static void main(String[] args) {

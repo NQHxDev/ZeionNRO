@@ -4,7 +4,7 @@ import nro.manager.PetFollowManager;
 import nro.models.item.Item;
 import nro.models.item.ItemOption;
 import nro.models.map.war.BlackBallWar;
-import nro.models.npc.specialnpc.MagicTree;
+import nro.models.npc.special.MagicTree;
 import nro.models.player.Pet;
 import nro.models.player.PetFollow;
 import nro.models.player.Player;

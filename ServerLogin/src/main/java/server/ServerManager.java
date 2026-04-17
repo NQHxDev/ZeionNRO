@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ServerManager {
+
    private final List<Session> sessions = new CopyOnWriteArrayList<>();
 
    public void add(Session session) {

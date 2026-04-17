@@ -14,13 +14,12 @@ import nro.services.func.PVPServcice;
 import nro.utils.Log;
 import nro.utils.SkillUtil;
 import nro.utils.Util;
+import nro.core.concurrent.GameScheduler;
 import nro.services.func.RadaService;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import nro.models.boss.BossFactory;
 import nro.models.player.SkillSpecial;
@@ -1092,16 +1091,15 @@ public class SkillService {
                }
                // hút quái
                for (Mob mobMap : player.zone.mobs) {
-                  if (player.skillSpecial.dir == -1 && !mobMap.isDie() && Util.getDistance(player, mobMap) <= 500) {
-                     player.skillSpecial.mobsTaget.add(mobMap);
-
-                  } else if (player.skillSpecial.dir == 1 && !mobMap.isDie()
-                        && Util.getDistance(player, mobMap) <= 500) {
-                     player.skillSpecial.mobsTaget.add(mobMap);
-
-                  }
-                  if (mobMap == null) {
+                  if (mobMap == null || mobMap.isDie()) {
                      continue;
+                  }
+                  int deltaX = mobMap.location.x - player.location.x;
+                  int direction = player.skillSpecial.dir;
+                  boolean isInFront = (deltaX * direction > 0);
+
+                  if (isInFront && Util.getDistance(player, mobMap) <= 500) {
+                     player.skillSpecial.mobsTaget.add(mobMap);
                   }
                }
 
@@ -1119,23 +1117,23 @@ public class SkillService {
 
                // biến quái - bình
                for (Mob mobMap : player.zone.mobs) {
-                  if (player.skillSpecial.dir == -1 && !mobMap.isDie() && Util.getDistance(player, mobMap) <= 500) {
-                     player.skillSpecial.mobsTaget.add(mobMap);
-
-                  } else if (player.skillSpecial.dir == 1 && !mobMap.isDie()
-                        && Util.getDistance(player, mobMap) <= 500) {
-                     player.skillSpecial.mobsTaget.add(mobMap);
-
-                  }
-                  if (mobMap == null) {
+                  if (mobMap == null || mobMap.isDie()) {
                      continue;
+                  }
+                  int deltaX = mobMap.location.x - player.location.x;
+                  int direction = player.skillSpecial.dir;
+                  boolean isInFront = (deltaX * direction > 0);
+
+                  if (isInFront && Util.getDistance(player, mobMap) <= 500) {
+                     player.skillSpecial.mobsTaget.add(mobMap);
                   }
                   EffectSkillService.gI().sendMobToBinh(player, mobMap, timeBinh);// biến mob thành bình
                   this.playerAttackMob(player, mobMap, false, true); // trừ dame
                }
 
                // biến người - bình
-               ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+               // ScheduledExecutorService executorService =
+               // Executors.newSingleThreadScheduledExecutor();
 
                for (Player playerMap : player.zone.getPlayers()) {
                   if (player.skillSpecial.dir == -1 && !playerMap.isDie() && Util.getDistance(player, playerMap) <= 500
@@ -1176,9 +1174,9 @@ public class SkillService {
                      double dameHit = playerMap.nPoint.hpMax * ptdame;
                      for (int i = 0; i < 10; i++) {
                         final int index = i;
-                        executorService.schedule(() -> {
+                        GameScheduler.SCHED.schedule(() -> {
                            playerMap.injured(playerMap, dameHit, false, false);
-                           PlayerService.gI().sendInfoHpMpMoney(playerMap); // gửi in4 hp cho player bị nhốt
+                           PlayerService.gI().sendInfoHpMpMoney(playerMap);
                            this.playerAttackPlayer(player, playerMap, true);
                            if (index == 0) {
                               this.playerAttackPlayer(player, playerMap, true);
@@ -1187,10 +1185,6 @@ public class SkillService {
                      }
                   }
                }
-
-               // Sau khi hoàn thành tất cả các tác vụ, hủy bỏ ScheduledExecutorService
-               executorService.shutdown();
-
             }
          } else {
             if (player.skillSpecial.stepSkillSpecial == 0
@@ -1221,47 +1215,33 @@ public class SkillService {
             } else if (player.skillSpecial.stepSkillSpecial == 1
                   && !Util.canDoWithTime(player.skillSpecial.lastTimeSkillSpecial, SkillSpecial.TIME_END_24_25)) {
                for (Player playerMap : player.zone.getHumanoids()) {
-                  if (player.skillSpecial.dir == -1 && !playerMap.isDie()
-                        && playerMap.location.x <= player.location.x - 15
-                        && Math.abs(
-                              playerMap.location.x - player.skillSpecial._xPlayer) <= player.skillSpecial._xObjTaget
-                        && Math.abs(
-                              playerMap.location.y - player.skillSpecial._yPlayer) <= player.skillSpecial._yObjTaget
-                        && this.canAttackPlayer(player, playerMap)) {
-                     this.playerAttackPlayer(player, playerMap, false);
-                     PlayerService.gI().sendInfoHpMpMoney(playerMap);
-                  }
-                  if (player.skillSpecial.dir == 1 && !playerMap.isDie()
-                        && playerMap.location.x >= player.location.x + 15
-                        && Math.abs(
-                              playerMap.location.x - player.skillSpecial._xPlayer) <= player.skillSpecial._xObjTaget
-                        && Math.abs(
-                              playerMap.location.y - player.skillSpecial._yPlayer) <= player.skillSpecial._yObjTaget
-                        && this.canAttackPlayer(player, playerMap)) {
-                     this.playerAttackPlayer(player, playerMap, false);
-                     PlayerService.gI().sendInfoHpMpMoney(playerMap);
-                  }
-                  if (playerMap == null) {
+                  if (playerMap == null || playerMap.isDie()) {
                      continue;
+                  }
+                  int deltaX = playerMap.location.x - player.location.x;
+                  int direction = player.skillSpecial.dir;
+                  boolean isInFront = (deltaX * direction > 0); // Mathematically strictly in front
+
+                  if (isInFront
+                        && Math.abs(deltaX) <= player.skillSpecial._xObjTaget
+                        && Math.abs(playerMap.location.y - player.location.y) <= player.skillSpecial._yObjTaget
+                        && this.canAttackPlayer(player, playerMap)) {
+                     this.playerAttackPlayer(player, playerMap, false);
+                     PlayerService.gI().sendInfoHpMpMoney(playerMap);
                   }
                }
                for (Mob mobMap : player.zone.mobs) {
-                  if (player.skillSpecial.dir == -1 && !mobMap.isDie()
-                        && mobMap.location.x <= player.skillSpecial._xPlayer - 15
-                        && Math.abs(mobMap.location.x - player.skillSpecial._xPlayer) <= player.skillSpecial._xObjTaget
-                        && Math.abs(
-                              mobMap.location.y - player.skillSpecial._yPlayer) <= player.skillSpecial._yObjTaget) {
-                     this.playerAttackMob(player, mobMap, false, false);
-                  }
-                  if (player.skillSpecial.dir == 1 && !mobMap.isDie()
-                        && mobMap.location.x >= player.skillSpecial._xPlayer + 15
-                        && Math.abs(mobMap.location.x - player.skillSpecial._xPlayer) <= player.skillSpecial._xObjTaget
-                        && Math.abs(
-                              mobMap.location.y - player.skillSpecial._yPlayer) <= player.skillSpecial._yObjTaget) {
-                     this.playerAttackMob(player, mobMap, false, false);
-                  }
-                  if (mobMap == null) {
+                  if (mobMap == null || mobMap.isDie()) {
                      continue;
+                  }
+                  int deltaX = mobMap.location.x - player.location.x;
+                  int direction = player.skillSpecial.dir;
+                  boolean isInFront = (deltaX * direction > 0);
+
+                  if (isInFront
+                        && Math.abs(deltaX) <= player.skillSpecial._xObjTaget
+                        && Math.abs(mobMap.location.y - player.location.y) <= player.skillSpecial._yObjTaget) {
+                     this.playerAttackMob(player, mobMap, false, false);
                   }
                }
             } else if (player.skillSpecial.stepSkillSpecial == 1) {

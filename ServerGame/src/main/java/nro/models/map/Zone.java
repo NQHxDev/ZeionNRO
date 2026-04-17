@@ -158,27 +158,33 @@ public class Zone {
    }
 
    private void updatePlayer() {
-      for (int i = this.notBosses.size() - 1; i >= 0; i--) {
+      for (int i = 0; i < this.notBosses.size(); i++) {
          Player pl = this.notBosses.get(i);
-         if (!pl.isPet && !pl.isMiniPet) {
-            this.notBosses.get(i).update();
+         if (pl != null && !pl.isPet && !pl.isMiniPet) {
+            pl.update();
          }
       }
    }
 
    private void updateReferee() {
-      referee.update();
+      if (referee != null) {
+         referee.update();
+      }
    }
 
    private void updateTestDame() {
-      testDame.update();
+      if (testDame != null) {
+         testDame.update();
+      }
    }
 
    private void updateItem() {
+      List<ItemMap> copy = new ArrayList<>();
       synchronized (items) {
-         for (ItemMap item : items) {
-            item.update();
-         }
+         copy.addAll(items);
+      }
+      for (ItemMap item : copy) {
+         item.update();
       }
    }
 
@@ -857,6 +863,7 @@ public class Zone {
             msg.writer().writeBoolean(wp.isOffline);
             msg.writer().writeUTF(wp.name);
          }
+
          // mob
          List<Mob> mobs = this.mobs;
          msg.writer().writeByte(mobs.size());

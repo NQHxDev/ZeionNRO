@@ -1,17 +1,16 @@
 package nro.services;
 
+import lombok.Setter;
 import lombok.Getter;
-import nro.models.player.Player;
+import lombok.NoArgsConstructor;
 
-/**
- *
- * @author Hoàng Việt - 0857853150
- *
- */
-public class KhamNgocPlayer extends Player {
-    @Getter
-    public int idNro;
-    @Getter
-    public int levelNro;
+@Getter
+@Setter
+@NoArgsConstructor
+public class KhamNgocPlayer {
+
+   public int id;
+
+   public int level;
 
 }

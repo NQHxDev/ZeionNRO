@@ -28,9 +28,7 @@ import nro.models.item.ItemTimeSieuCap;
 import nro.models.player.Friend;
 import nro.models.player.Fusion;
 import nro.models.player.Player;
-import nro.services.KhamNgocPlayer;
 import nro.services.PhongThiNghiem;
-import nro.services.PhongThiNghiem_Player;
 import nro.services.RuongSuuTam;
 
 public class PlayerDAO {
@@ -386,25 +384,11 @@ public class PlayerDAO {
    }
 
    private static String saveKhamNgoc(Player player) {
-      JsonArray dataKhamNgoc = new JsonArray();
-      for (KhamNgocPlayer pla : player.khamNgoc) {
-         JsonObject jobjk = new JsonObject();
-         jobjk.addProperty("id", pla.getIdNro());
-         jobjk.addProperty("level", pla.getLevelNro());
-         dataKhamNgoc.add(jobjk);
-      }
-      return gson.toJson(dataKhamNgoc);
+      return gson.toJson(player.khamNgoc);
    }
 
    private static String savePhongThiNghiem(Player player) {
-      JsonArray dataPhongThiNghiem = new JsonArray();
-      for (PhongThiNghiem_Player pla : player.phongThiNghiem) {
-         JsonObject jobjk = new JsonObject();
-         jobjk.addProperty("id", pla.getIdBinh());
-         jobjk.addProperty("time", pla.getTimeCheTao());
-         dataPhongThiNghiem.add(jobjk);
-      }
-      return gson.toJson(dataPhongThiNghiem);
+      return gson.toJson(player.phongThiNghiem);
    }
 
    private static String createDefaultInventory() {

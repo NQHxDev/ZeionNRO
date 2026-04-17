@@ -113,12 +113,12 @@ public class DataGame {
       try {
          msg = Service.getInstance().messageNotMap((byte) 6);
          msg.writer().writeByte(vsMap);
-         msg.writer().writeByte(Manager.MAP_TEMPLATES.length);
-         for (MapTemplate temp : Manager.MAP_TEMPLATES) {
+         msg.writer().writeByte(Manager.MAP_TEMPLATES.size());
+         for (MapTemplate temp : Manager.MAP_TEMPLATES.values()) {
             msg.writer().writeUTF(temp.name);
          }
          msg.writer().writeByte(Manager.NPC_TEMPLATES.size());
-         for (NpcTemplate temp : Manager.NPC_TEMPLATES) {
+         for (NpcTemplate temp : Manager.NPC_TEMPLATES.values()) {
             msg.writer().writeUTF(temp.name);
             msg.writer().writeShort(temp.head);
             msg.writer().writeShort(temp.body);
@@ -126,7 +126,7 @@ public class DataGame {
             msg.writer().writeByte(0);
          }
          msg.writer().writeByte(Manager.MOB_TEMPLATES.size());
-         for (MobTemplate temp : Manager.MOB_TEMPLATES) {
+         for (MobTemplate temp : Manager.MOB_TEMPLATES.values()) {
             msg.writer().writeByte(temp.type);
             msg.writer().writeUTF(temp.name);
             msg.writer().writeDouble(temp.hp);
@@ -281,7 +281,7 @@ public class DataGame {
    public static void sendHeadAvatar(Message msg) {
       try {
          msg.writer().writeShort(Manager.HEAD_AVATARS.size());
-         for (HeadAvatar ha : Manager.HEAD_AVATARS) {
+         for (HeadAvatar ha : Manager.HEAD_AVATARS.values()) {
             msg.writer().writeShort(ha.headId);
             msg.writer().writeShort(ha.avatarId);
          }

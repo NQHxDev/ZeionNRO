@@ -6,11 +6,11 @@ import nro.utils.Log;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.List;
+import java.util.Map;
 
 public class MobTemplateDAO {
 
-   public static void load(Connection con, List<MobTemplate> mobTemplates) {
+   public static void load(Connection con, Map<Integer, MobTemplate> mobTemplates) {
       String query = "SELECT * FROM mob_template";
       try (PreparedStatement ps = con.prepareStatement(query);
             ResultSet rs = ps.executeQuery()) {
@@ -26,7 +26,7 @@ public class MobTemplateDAO {
             mobTemp.dartType = rs.getByte("dart_type");
             mobTemp.percentDame = rs.getByte("percent_dame");
             mobTemp.percentTiemNang = rs.getByte("percent_tiem_nang");
-            mobTemplates.add(mobTemp);
+            mobTemplates.put(mobTemp.id, mobTemp);
          }
          Log.success("Mob templates loaded successfully (" + mobTemplates.size() + ")");
 

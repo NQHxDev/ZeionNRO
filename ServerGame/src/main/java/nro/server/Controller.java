@@ -316,7 +316,7 @@ public class Controller {
                }
                break;
             case 29:
-               if (player != null) {
+               if (player != null && player.zone != null && player.zone.map != null) {
                   if (player.zone.map.mapId == ConstTranhNgocNamek.MAP_ID) {
                      return;
                   }
@@ -324,7 +324,7 @@ public class Controller {
                }
                break;
             case 21:
-               if (player != null) {
+               if (player != null && player.zone != null && player.zone.map != null) {
                   if (player.zone.map.mapId == ConstTranhNgocNamek.MAP_ID) {
                      Service.getInstance().sendPopUpMultiLine(player, 0, 7184, "Không thể thực hiện");
                      return;
@@ -403,6 +403,13 @@ public class Controller {
                      toY = _msg.reader().readShort();
                   } catch (Exception e) {
                   }
+                  if (player.skillSpecial.isStartSkillSpecial) {
+                     if (toX > player.location.x) {
+                        player.skillSpecial.dir = 1;
+                     } else if (toX < player.location.x) {
+                        player.skillSpecial.dir = -1;
+                     }
+                  }
                   PlayerService.gI().playerMove(player, toX, toY);
                }
                break;
@@ -468,7 +475,7 @@ public class Controller {
                break;
             case -33:
             case -23:
-               if (player != null) {
+               if (player != null && player.zone != null) {
                   player.zone.changeMapWaypoint(player);
                   Service.getInstance().hideWaitDialog(player);
                }
@@ -548,7 +555,7 @@ public class Controller {
                }
                break;
             case -39:
-               if (player != null) {
+               if (player != null && player.zone != null && player.zone.map != null) {
                   // finishLoadMap
                   ChangeMapService.gI().finishLoadMap(player);
                   if (player.zone.map.mapId == (21 + player.gender)) {
@@ -966,8 +973,10 @@ public class Controller {
 
       // -50 thông tin bảng thông báo
       // -24 join map - map info
-      player.zone.load_Me_To_Another(player);
-      player.zone.mapInfo(player);
+      if (player.zone != null) {
+         player.zone.load_Me_To_Another(player);
+         player.zone.mapInfo(player);
+      }
 
       // -70 thông báo bigmessage
       // check activation set
@@ -1005,7 +1014,8 @@ public class Controller {
                      + "Nhiệm vụ đầu tiên của bạn là di chuyển\n"
                      + "Bạn hãy di chuyển nhân vật theo mũi tên chỉ hướng");
       }
-      if (player.istrain && MapService.gI().isMapTrainOff(player, player.zone.map.mapId)) {
+      if (player.istrain && player.zone != null && player.zone.map != null
+            && MapService.gI().isMapTrainOff(player, player.zone.map.mapId)) {
          Service.getInstance().sendThongBao(player, "Thời gian offline của bạn là " + player.timeoff + " phút");
          player.congExpOff();
          player.timeoff = 0;

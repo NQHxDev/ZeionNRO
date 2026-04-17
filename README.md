@@ -127,5 +127,6 @@ cd ../ServerGame && make run
 > Ensure ports `14445` (Game) and `8080` (API) are open in your server firewall (`ufw` or `iptables`).
 
 <div align="center">
-  <sub>Developed with ❤️ by <b>Zeion</b>. Professional Grade Game Server Infrastructure.</sub>
+  <sub>Developed with ❤️ by <b>Zeion</b> - Professional Grade Game Server Infrastructure</sub>
+  <sub><i>Remade from <b>Hashirama</b> source</i></sub>
 </div>

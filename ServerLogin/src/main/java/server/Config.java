@@ -10,6 +10,7 @@ import java.util.Properties;
 import util.Log;
 
 public class Config {
+
    private short listen;
    private String driver;
    private String username;

@@ -1,11 +1,13 @@
 package nro.services;
 
 import nro.consts.ConstPlayer;
+import nro.core.concurrent.GameScheduler;
 import nro.models.player.Pet;
 import nro.models.player.Player;
 
 import nro.utils.SkillUtil;
 import nro.utils.Util;
+import java.util.concurrent.TimeUnit;
 
 public class PetService {
 
@@ -19,93 +21,117 @@ public class PetService {
    }
 
    public void createNormalPet(Player player, int gender, byte... limitPower) {
-      new Thread(() -> {
+      GameScheduler.SCHED.submit(() -> {
          try {
             createNewPet(player, false, false, false, false, false, false, false, false, (byte) gender);
             if (limitPower != null && limitPower.length == 1) {
                player.pet.nPoint.limitPower = limitPower[0];
             }
-            Thread.sleep(1000);
-            Service.getInstance().chatJustForMe(player, player.pet, "Xin hÃ£y thu nháº­n lÃ m Ä‘á»‡ tá»­");
+            GameScheduler.SCHED.schedule(() -> {
+               try {
+                  Service.getInstance().chatJustForMe(player, player.pet, "Xin hãy thu nhận làm đệ tử");
+               } catch (Exception e) {
+               }
+            }, 1, TimeUnit.SECONDS);
          } catch (Exception e) {
          }
-      }).start();
+      });
    }
 
    public void createNormalPet(Player player, byte... limitPower) {
-      new Thread(() -> {
+      GameScheduler.SCHED.submit(() -> {
          try {
             createNewPet(player, false, false, false, false, false, false, false, false);
             if (limitPower != null && limitPower.length == 1) {
                player.pet.nPoint.limitPower = limitPower[0];
             }
-            Thread.sleep(1000);
-            Service.getInstance().chatJustForMe(player, player.pet, "Xin hÃ£y thu nháº­n lÃ m Ä‘á»‡ tá»­");
+            GameScheduler.SCHED.schedule(() -> {
+               try {
+                  Service.getInstance().chatJustForMe(player, player.pet, "Xin hãy thu nhận làm đệ tử");
+               } catch (Exception e) {
+               }
+            }, 1, TimeUnit.SECONDS);
          } catch (Exception e) {
          }
-      }).start();
+      });
    }
 
    public void createMabuPet(Player player, byte... limitPower) {
-      new Thread(() -> {
+      GameScheduler.SCHED.submit(() -> {
          try {
             createNewPet(player, true, false, false, false, false, false, false, false);
             if (limitPower != null && limitPower.length == 1) {
                player.pet.nPoint.limitPower = limitPower[0];
             }
-            Thread.sleep(1000);
-            Service.getInstance().chatJustForMe(player, player.pet, "Oa oa oa...");
+            GameScheduler.SCHED.schedule(() -> {
+               try {
+                  Service.getInstance().chatJustForMe(player, player.pet, "Oa oa oa...");
+               } catch (Exception e) {
+               }
+            }, 1, TimeUnit.SECONDS);
          } catch (Exception e) {
          }
-      }).start();
+      });
    }
 
    public void createMabuPet(Player player, int gender, byte... limitPower) {
-      new Thread(() -> {
+      GameScheduler.SCHED.submit(() -> {
          try {
             createNewPet(player, true, false, false, false, false, false, false, false, (byte) gender);
             if (limitPower != null && limitPower.length == 1) {
                player.pet.nPoint.limitPower = limitPower[0];
             }
-            Thread.sleep(1000);
-            Service.getInstance().chatJustForMe(player, player.pet, "Oa oa oa...");
+            GameScheduler.SCHED.schedule(() -> {
+               try {
+                  Service.getInstance().chatJustForMe(player, player.pet, "Oa oa oa...");
+               } catch (Exception e) {
+               }
+            }, 1, TimeUnit.SECONDS);
          } catch (Exception e) {
          }
-      }).start();
+      });
    }
 
    public void createBerusPet(Player player, byte... limitPower) {
-      new Thread(() -> {
+      GameScheduler.SCHED.submit(() -> {
          try {
             createNewPet(player, false, true, false, false, false, false, false, false);
             if (limitPower != null && limitPower.length == 1) {
                player.pet.nPoint.limitPower = limitPower[0];
             }
-            Thread.sleep(1000);
-            Service.getInstance().chatJustForMe(player, player.pet,
-                  "Tháº§n há»§y diá»‡t hiá»‡n thÃ¢n táº¥t cáº£ quá»³ xuá»‘ng...");
+            GameScheduler.SCHED.schedule(() -> {
+               try {
+                  Service.getInstance().chatJustForMe(player, player.pet,
+                        "Thần hủy diệt hiện thân tất cả quỳ xuống...");
+               } catch (Exception e) {
+               }
+            }, 1, TimeUnit.SECONDS);
          } catch (Exception e) {
          }
-      }).start();
+      });
    }
 
    public void createBerusPet(Player player, int gender, byte... limitPower) {
-      new Thread(() -> {
+      GameScheduler.SCHED.submit(() -> {
          try {
             createNewPet(player, false, true, false, false, false, false, false, false, (byte) gender);
             if (limitPower != null && limitPower.length == 1) {
                player.pet.nPoint.limitPower = limitPower[0];
             }
-            Thread.sleep(1000);
-            Service.getInstance().chatJustForMe(player, player.pet,
-                  "Tháº§n há»§y diá»‡t hiá»‡n thÃ¢n táº¥t cáº£ quá»³ xuá»‘ng...");
+            GameScheduler.SCHED.schedule(() -> {
+               try {
+                  Service.getInstance().chatJustForMe(player, player.pet,
+                        "Thần hủy diệt hiện thân tất cả quỳ xuống...");
+               } catch (Exception e) {
+               }
+            }, 1, TimeUnit.SECONDS);
          } catch (Exception e) {
          }
-      }).start();
+      });
    }
 
    public void createPicPet(Player player, byte... limitPower) {
-      new Thread(() -> {
+      GameScheduler.SCHED.submit(() -> {
          try {
             createNewPet(player, false, false, true, false, false, false, false, false);
             if (limitPower != null && limitPower.length == 1) {
@@ -116,11 +142,11 @@ public class PetService {
                   "Tháº§n cá»§a má»�i Tháº§n, Ta lÃ  Zeno tá»¥i mÃ y quá»³ xuá»‘ng...");
          } catch (Exception e) {
          }
-      }).start();
+      });
    }
 
    public void createPicPet(Player player, int gender, byte... limitPower) {
-      new Thread(() -> {
+      GameScheduler.SCHED.submit(() -> {
          try {
             createNewPet(player, false, false, true, false, false, false, false, false, (byte) gender);
             if (limitPower != null && limitPower.length == 1) {
@@ -131,39 +157,47 @@ public class PetService {
                   "Tháº§n cá»§a má»�i Tháº§n, Ta lÃ  Zeno tá»¥i mÃ y quá»³ xuá»‘ng...");
          } catch (Exception e) {
          }
-      }).start();
-   } ///// Ä�Ã¢y nÃ¨
+      });
+   }
 
    public void createKaidoPet(Player player, byte... limitPower) {
-      new Thread(() -> {
+      GameScheduler.SCHED.submit(() -> {
          try {
             createNewPet(player, false, false, false, true, false, false, false, false);
             if (limitPower != null && limitPower.length == 1) {
                player.pet.nPoint.limitPower = limitPower[0];
             }
-            Thread.sleep(1000);
-            Service.getInstance().chatJustForMe(player, player.pet, "Láº¡i Ä‘Ã¢y Ä‘á»ƒ tao gÃµ mÃ y má»™t cÃ¡i");
+            GameScheduler.SCHED.schedule(() -> {
+               try {
+                  Service.getInstance().chatJustForMe(player, player.pet, "Lại đây để tao gõ mày một cái");
+               } catch (Exception e) {
+               }
+            }, 1, TimeUnit.SECONDS);
          } catch (Exception e) {
          }
-      }).start();
+      });
    }
 
    public void createKaidoPet(Player player, int gender, byte... limitPower) {
-      new Thread(() -> {
+      GameScheduler.SCHED.submit(() -> {
          try {
             createNewPet(player, false, false, false, true, false, false, false, false, (byte) gender);
             if (limitPower != null && limitPower.length == 1) {
                player.pet.nPoint.limitPower = limitPower[0];
             }
-            Thread.sleep(1000);
-            Service.getInstance().chatJustForMe(player, player.pet, "Láº¡i Ä‘Ã¢y Ä‘á»ƒ tao gÃµ mÃ y má»™t cÃ¡i");
+            GameScheduler.SCHED.schedule(() -> {
+               try {
+                  Service.getInstance().chatJustForMe(player, player.pet, "Lại đây để tao gõ mày một cái");
+               } catch (Exception e) {
+               }
+            }, 1, TimeUnit.SECONDS);
          } catch (Exception e) {
          }
-      }).start();
-   }/// Ná»¯a nÃ¨
+      });
+   }/// Nữa nè
 
    public void createItachiPet(Player player, byte... limitPower) {
-      new Thread(() -> {
+      GameScheduler.SCHED.submit(() -> {
          try {
             createNewPet(player, false, false, false, false, true, false, false, false);
             if (limitPower != null && limitPower.length == 1) {
@@ -173,11 +207,11 @@ public class PetService {
             Service.getInstance().chatJustForMe(player, player.pet, "NhÃ¬n gÃ¬, chÃ©m cháº¿t cá»¥ mÃ y giá»�");
          } catch (Exception e) {
          }
-      }).start();
+      });
    }
 
    public void createItachiPet(Player player, int gender, byte... limitPower) {
-      new Thread(() -> {
+      GameScheduler.SCHED.submit(() -> {
          try {
             createNewPet(player, false, false, false, false, true, false, false, false, (byte) gender);
             if (limitPower != null && limitPower.length == 1) {
@@ -187,11 +221,11 @@ public class PetService {
             Service.getInstance().chatJustForMe(player, player.pet, "NhÃ¬n gÃ¬, chÃ©m cháº¿t cá»¥ mÃ y giá»�");
          } catch (Exception e) {
          }
-      }).start();
+      });
    }
 
    public void createAndroidPet(Player player, byte... limitPower) {
-      new Thread(() -> {
+      GameScheduler.SCHED.submit(() -> {
          try {
             createNewPet(player, false, false, false, false, false, true, false, false);
             if (limitPower != null && limitPower.length == 1) {
@@ -201,7 +235,7 @@ public class PetService {
             Service.getInstance().chatJustForMe(player, player.pet, "NhÃ¬n gÃ¬, chÃ©m cháº¿t cá»¥ mÃ y giá»�");
          } catch (Exception e) {
          }
-      }).start();
+      });
    }
 
    public void createAndroidPet(Player player, int gender, byte... limitPower) {
@@ -254,7 +288,7 @@ public class PetService {
                player.pet.nPoint.limitPower = limitPower[0];
             }
             Thread.sleep(1000);
-            Service.getInstance().chatJustForMe(player, player.pet, "BÃ¡i Kiáº¿n Chá»§ NhÃ¢n");
+            Service.getInstance().chatJustForMe(player, player.pet, "Bái Kiến Chủ Nhân");
          } catch (Exception e) {
          }
       }).start();
@@ -268,7 +302,7 @@ public class PetService {
                player.pet.nPoint.limitPower = limitPower[0];
             }
             Thread.sleep(1000);
-            Service.getInstance().chatJustForMe(player, player.pet, "BÃ¡i Kiáº¿n Chá»§ NhÃ¢n");
+            Service.getInstance().chatJustForMe(player, player.pet, "Bái Kiến Chủ Nhân");
          } catch (Exception e) {
          }
       }).start();
@@ -282,7 +316,7 @@ public class PetService {
                player.pet.nPoint.limitPower = limitPower[0];
             }
             Thread.sleep(1000);
-            Service.getInstance().chatJustForMe(player, player.pet, "BÃ¡i Kiáº¿n Chá»§ NhÃ¢n");
+            Service.getInstance().chatJustForMe(player, player.pet, "Bái Kiến Chủ Nhân");
          } catch (Exception e) {
          }
       }).start();
@@ -296,7 +330,7 @@ public class PetService {
                player.pet.nPoint.limitPower = limitPower[0];
             }
             Thread.sleep(1000);
-            Service.getInstance().chatJustForMe(player, player.pet, "BÃ¡i Kiáº¿n Chá»§ NhÃ¢n");
+            Service.getInstance().chatJustForMe(player, player.pet, "Bái Kiến Chủ Nhân");
          } catch (Exception e) {
          }
       }).start();
@@ -310,7 +344,7 @@ public class PetService {
                player.pet.nPoint.limitPower = limitPower[0];
             }
             Thread.sleep(1000);
-            Service.getInstance().chatJustForMe(player, player.pet, "BÃ¡i Kiáº¿n Chá»§ NhÃ¢n");
+            Service.getInstance().chatJustForMe(player, player.pet, "Bái Kiến Chủ Nhân");
          } catch (Exception e) {
          }
       }).start();
@@ -324,7 +358,7 @@ public class PetService {
                player.pet.nPoint.limitPower = limitPower[0];
             }
             Thread.sleep(1000);
-            Service.getInstance().chatJustForMe(player, player.pet, "BÃ¡i Kiáº¿n Chá»§ NhÃ¢n");
+            Service.getInstance().chatJustForMe(player, player.pet, "Bái Kiến Chủ Nhân");
          } catch (Exception e) {
          }
       }).start();
@@ -338,7 +372,7 @@ public class PetService {
                player.pet.nPoint.limitPower = limitPower[0];
             }
             Thread.sleep(1000);
-            Service.getInstance().chatJustForMe(player, player.pet, "BÃ¡i Kiáº¿n Chá»§ NhÃ¢n");
+            Service.getInstance().chatJustForMe(player, player.pet, "Bái Kiến Chủ Nhân");
          } catch (Exception e) {
          }
       }).start();
@@ -352,7 +386,7 @@ public class PetService {
                player.pet.nPoint.limitPower = limitPower[0];
             }
             Thread.sleep(1000);
-            Service.getInstance().chatJustForMe(player, player.pet, "BÃ¡i Kiáº¿n Chá»§ NhÃ¢n");
+            Service.getInstance().chatJustForMe(player, player.pet, "Bái Kiến Chủ Nhân");
          } catch (Exception e) {
          }
       }).start();
@@ -366,7 +400,7 @@ public class PetService {
                player.pet.nPoint.limitPower = limitPower[0];
             }
             Thread.sleep(1000);
-            Service.getInstance().chatJustForMe(player, player.pet, "BÃ¡i Kiáº¿n Chá»§ NhÃ¢n");
+            Service.getInstance().chatJustForMe(player, player.pet, "Bái Kiến Chủ Nhân");
          } catch (Exception e) {
          }
       }).start();
@@ -380,7 +414,7 @@ public class PetService {
                player.pet.nPoint.limitPower = limitPower[0];
             }
             Thread.sleep(1000);
-            Service.getInstance().chatJustForMe(player, player.pet, "BÃ¡i Kiáº¿n Chá»§ NhÃ¢n");
+            Service.getInstance().chatJustForMe(player, player.pet, "Bái Kiến Chủ Nhân");
          } catch (Exception e) {
          }
       }).start();
@@ -394,7 +428,7 @@ public class PetService {
                player.pet.nPoint.limitPower = limitPower[0];
             }
             Thread.sleep(1000);
-            Service.getInstance().chatJustForMe(player, player.pet, "BÃ¡i Kiáº¿n Chá»§ NhÃ¢n");
+            Service.getInstance().chatJustForMe(player, player.pet, "Bái Kiến Chủ Nhân");
          } catch (Exception e) {
          }
       }).start();
@@ -408,7 +442,7 @@ public class PetService {
                player.pet.nPoint.limitPower = limitPower[0];
             }
             Thread.sleep(1000);
-            Service.getInstance().chatJustForMe(player, player.pet, "BÃ¡i Kiáº¿n Chá»§ NhÃ¢n");
+            Service.getInstance().chatJustForMe(player, player.pet, "Bái Kiến Chủ Nhân");
          } catch (Exception e) {
          }
       }).start();
@@ -422,7 +456,7 @@ public class PetService {
                player.pet.nPoint.limitPower = limitPower[0];
             }
             Thread.sleep(1000);
-            Service.getInstance().chatJustForMe(player, player.pet, "BÃ¡i Kiáº¿n Chá»§ NhÃ¢n");
+            Service.getInstance().chatJustForMe(player, player.pet, "Bái Kiến Chủ Nhân");
          } catch (Exception e) {
          }
       }).start();
@@ -436,7 +470,7 @@ public class PetService {
                player.pet.nPoint.limitPower = limitPower[0];
             }
             Thread.sleep(1000);
-            Service.getInstance().chatJustForMe(player, player.pet, "BÃ¡i Kiáº¿n Chá»§ NhÃ¢n");
+            Service.getInstance().chatJustForMe(player, player.pet, "Bái Kiến Chủ Nhân");
          } catch (Exception e) {
          }
       }).start();
@@ -450,7 +484,7 @@ public class PetService {
                player.pet.nPoint.limitPower = limitPower[0];
             }
             Thread.sleep(1000);
-            Service.getInstance().chatJustForMe(player, player.pet, "BÃ¡i Kiáº¿n Chá»§ NhÃ¢n");
+            Service.getInstance().chatJustForMe(player, player.pet, "Bái Kiến Chủ Nhân");
          } catch (Exception e) {
          }
       }).start();
@@ -464,7 +498,7 @@ public class PetService {
                player.pet.nPoint.limitPower = limitPower[0];
             }
             Thread.sleep(1000);
-            Service.getInstance().chatJustForMe(player, player.pet, "BÃ¡i Kiáº¿n Chá»§ NhÃ¢n");
+            Service.getInstance().chatJustForMe(player, player.pet, "Bái Kiến Chủ Nhân");
          } catch (Exception e) {
          }
       }).start();
@@ -478,7 +512,7 @@ public class PetService {
                player.pet.nPoint.limitPower = limitPower[0];
             }
             Thread.sleep(1000);
-            Service.getInstance().chatJustForMe(player, player.pet, "BÃ¡i Kiáº¿n Chá»§ NhÃ¢n");
+            Service.getInstance().chatJustForMe(player, player.pet, "Bái Kiến Chủ Nhân");
          } catch (Exception e) {
          }
       }).start();
@@ -492,7 +526,7 @@ public class PetService {
                player.pet.nPoint.limitPower = limitPower[0];
             }
             Thread.sleep(1000);
-            Service.getInstance().chatJustForMe(player, player.pet, "BÃ¡i Kiáº¿n Chá»§ NhÃ¢n");
+            Service.getInstance().chatJustForMe(player, player.pet, "Bái Kiến Chủ Nhân");
          } catch (Exception e) {
          }
       }).start();
@@ -875,13 +909,13 @@ public class PetService {
    public void changeNamePet(Player player, String name) {
       try {
          if (!InventoryService.gI().existItemBag(player, 400)) {
-            Service.getInstance().sendThongBao(player, "Báº¡n cáº§n tháº» Ä‘áº·t tÃªn Ä‘á»‡ tá»­, mua táº¡i Santa");
+            Service.getInstance().sendThongBao(player, "Bạn cần thẻ đặt tên đệ tử, mua tại Santa");
             return;
          } else if (Util.haveSpecialCharacter(name)) {
-            Service.getInstance().sendThongBao(player, "TÃªn khÃ´ng Ä‘Æ°á»£c chá»©a kÃ½ tá»± Ä‘áº·c biá»‡t");
+            Service.getInstance().sendThongBao(player, "Tên không được chứa ký tự đặc biệt");
             return;
          } else if (name.length() > 10) {
-            Service.getInstance().sendThongBao(player, "TÃªn quÃ¡ dÃ i");
+            Service.getInstance().sendThongBao(player, "Tên quá dài");
             return;
          }
          MapService.gI().exitMap(player.pet);
@@ -891,7 +925,7 @@ public class PetService {
             try {
                Thread.sleep(1000);
                Service.getInstance().chatJustForMe(player, player.pet,
-                     "Cáº£m Æ¡n sÆ° phá»¥ Ä‘Ã£ Ä‘áº·t cho con tÃªn " + name);
+                     "Cảm ơn sư phụ đã đặt cho con tên " + name);
             } catch (Exception e) {
             }
          }).start();
@@ -1097,14 +1131,14 @@ public class PetService {
             : getDataPetBerus() : getDataPetZeno() : getDataPetKaido() : getDataPetItachi() : getDataPetAndroid()
             : getDataPetNgoKo() : getDataPetSoi3Dau() : getDataPetNormal();
       Pet pet = new Pet(player);
-      pet.name = "$" + (isMabu ? "MabÆ°"
+      pet.name = "$" + (isMabu ? "Ma Bư"
             : isBerus ? "Berus"
-                  : isPic ? "Tháº§n Zeno"
-                        : isKaido ? "Háº£i táº·c Kaido"
+                  : isPic ? "Thần Zeno"
+                        : isKaido ? "Hải tặc Kaido"
                               : isItachi ? "Itachi akatsuki"
-                                    : isAndroid ? "TiÃªn háº¯c Ã¡m"
-                                          : isNgoKo ? "Ngá»™ KhÃ´ng"
-                                                : isSoiBaDau ? "SÃ³i Ä�á»‹a Ngá»¥c" : "Ä�á»‡ tá»­");
+                                    : isAndroid ? "Tiên hắc ám"
+                                          : isNgoKo ? "Ngộ Không"
+                                                : isSoiBaDau ? "Sói Địa Ngục" : "Đệ tử");
       pet.gender = (gender != null && gender.length != 0) ? gender[0] : (byte) Util.nextInt(0, 2);
       pet.id = -player.id;
       pet.nPoint.power = isMabu || isBerus || isPic || isKaido || isItachi || isAndroid || isNgoKo || isSoiBaDau
@@ -1140,13 +1174,13 @@ public class PetService {
                   : getDataPetNew7()
             : getDataPetNew8() : getDataPetNormal();
       Pet pet = new Pet(player);
-      pet.name = "$" + (isPetNew1 ? "Ä�áº¡i ThÃ¡nh"
-            : isPetNew2 ? "SÆ¡n Tinh"
-                  : isPetNew3 ? "Thuá»· Tinh"
-                        : isPetNew4 ? "Ma BÆ°"
-                              : isPetNew5 ? "ChÆ°a biáº¿t3"
-                                    : isPetNew6 ? "ChÆ°a biáº¿t4"
-                                          : isPetNew7 ? "ChÆ°a biáº¿t5" : isPetNew8 ? "ChÆ°a biáº¿t6" : "Ä�á»‡ tá»­");
+      pet.name = "$" + (isPetNew1 ? "Đại Thánh"
+            : isPetNew2 ? "Sơn Tinh"
+                  : isPetNew3 ? "Thủy Tinh"
+                        : isPetNew4 ? "Ma Bư"
+                              : isPetNew5 ? "Chưa biết3"
+                                    : isPetNew6 ? "Chưa biết4"
+                                          : isPetNew7 ? "Chưa biết5" : isPetNew8 ? "Chưa biết6" : "Đệ tử");
       pet.gender = (gender != null && gender.length != 0) ? gender[0] : (byte) Util.nextInt(0, 2);
       pet.id = -player.id;
       pet.nPoint.power = isPetNew1 || isPetNew2 || isPetNew3 || isPetNew4 || isPetNew5 || isPetNew6 || isPetNew7
@@ -1176,15 +1210,12 @@ public class PetService {
 
    public void createPetIsBot(Player player, byte type) {
       Pet pet = new Pet(player);
-      pet.name = "$" + ((type == 1) ? "MabÆ°"
+      pet.name = "$" + ((type == 1) ? "Ma Bư"
             : (type == 2) ? "Berus"
-                  : (type == 3) ? "Tháº§n Zeno"
+                  : (type == 3) ? "Thần Zeno"
                         : (type == 4)
-                              ? "Háº£i táº·c kaido"
+                              ? "Hải tặc kaido"
                               : (type == 5) ? "Itachi Akatsuki"
-                                    : (type == 6) ? "TiÃªn háº¯c Ã¡m"
-                                          : (type == 7) ? "Ngá»™ KhÃ´ng"
-                                                : (type == 8) ? "SÃ³i Ä�á»‹a Ngá»¥c"
                                                       : (type == 9) ? "Ä�áº¡i ThÃ¡nh" : "Ä�á»‡ tá»­");
       pet.gender = (byte) Util.nextInt(0, 2);
       pet.id = -player.id;

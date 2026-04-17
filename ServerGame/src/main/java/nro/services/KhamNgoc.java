@@ -63,8 +63,8 @@ public class KhamNgoc {
 
          for (int j = 0; j < pl.khamNgoc.size(); j++) {
             KhamNgocPlayer manager = pl.khamNgoc.get(j);
-            msg.writer().writeInt(manager.idNro);
-            msg.writer().writeInt(manager.levelNro);
+            msg.writer().writeInt(manager.id);
+            msg.writer().writeInt(manager.level);
          }
          pl.sendMessage(msg);
          msg.cleanup();
@@ -79,11 +79,33 @@ public class KhamNgoc {
       Send_KhamNgoc_Player(pl);
    }
 
+   public void upgrade(Player player) {
+      int nro = player.nroKhamNgoc;
+      int max_quatity = player.slItem;
+      int idItem = player.idTempNangCap;
+      Item item = InventoryService.gI().findItemBagByTemp(player, (short) idItem);
+      if (item != null && item.quantity >= max_quatity) {
+         InventoryService.gI().subQuantityItemsBag(player, item, max_quatity);
+         player.khamNgoc.get(nro).level++;
+         InventoryService.gI().sendItemBags(player);
+         player.nPoint.calPoint();
+         Service.getInstance().point(player);
+         KhamNgoc.gI().Send_KhamNgoc_Player(player);
+         if (player.khamNgoc.get(nro).level == 0) {
+            Service.getInstance().sendThongBao(player, "|2|Kích hoạt thành công Ngọc rồng " + (nro + 1) + " sao");
+         } else {
+            Service.getInstance().sendThongBao(player, "|2|Nâng thành công Ngọc rồng " + (nro + 1) + " sao lên Cấp " + player.khamNgoc.get(nro).level);
+         }
+      } else {
+         Service.getInstance().sendThongBao(player, "Không đủ nguyên liệu");
+      }
+   }
+
    public void NangCapKhamNgoc(Player pl, byte nro) {
       pl.nroKhamNgoc = nro;
       KhamNgoc khamNgoc = KHAM_NGOC.get(nro);
       KhamNgocPlayer manager = pl.khamNgoc.get(nro);
-      int level = manager.levelNro;
+      int level = manager.level;
       int max_level = khamNgoc.khamNgocTemplates.size();
       if ((level + 1) >= max_level) {
          Service.getInstance().sendThongBao(pl, "Bạn đã đạt cấp tối đa");
@@ -98,7 +120,7 @@ public class KhamNgoc {
          return;
       }
       if (nro > 0) {
-         int levelBefore = pl.khamNgoc.get(nro - 1).levelNro;
+         int levelBefore = pl.khamNgoc.get(nro - 1).level;
          int levelBeforeMax = KHAM_NGOC.get(nro - 1).khamNgocTemplates.size();
          if (levelBefore == -1) {
             Service.getInstance().sendThongBao(pl, "Vui lòng kích hoạt Ngọc rồng " + nro + " sao trước");
