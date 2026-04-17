@@ -403,6 +403,13 @@ public class Controller {
                      toY = _msg.reader().readShort();
                   } catch (Exception e) {
                   }
+                  if (player.skillSpecial.isStartSkillSpecial) {
+                     if (toX > player.location.x) {
+                        player.skillSpecial.dir = 1;
+                     } else if (toX < player.location.x) {
+                        player.skillSpecial.dir = -1;
+                     }
+                  }
                   PlayerService.gI().playerMove(player, toX, toY);
                }
                break;

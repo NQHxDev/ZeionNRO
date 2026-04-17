@@ -197,7 +197,8 @@ public class ServerManager {
                   String line = sc.nextLine();
                   if (line.equals("baotri")) {
                      new Thread(() -> {
-                        Maintenance.gI().start(5);
+                        // Thời gian đếm ngược bảo trì
+                        Maintenance.gI().start(1);
                      }).start();
                   } else if (line.equals("athread")) {
                      ServerNotify.gI().notify("Debug server: " + Thread.activeCount());
