@@ -35,7 +35,6 @@ public class User {
    }
 
    public boolean login() {
-      System.out.println("Login username: " + this.username + " serverID: " + this.serverID);
       PreparedStatement ps = null;
       ResultSet rs = null;
       try {

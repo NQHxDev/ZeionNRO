@@ -41,7 +41,6 @@ public class Controller {
          int userID = ms.reader().readInt();
          User user = UserManager.getInstance().find(userID);
          if (user != null) {
-            Log.info("Logout user: " + user.getUsername());
             UserManager.getInstance().remove(user);
          }
       } catch (IOException ex) {

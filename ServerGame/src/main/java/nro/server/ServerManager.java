@@ -146,7 +146,6 @@ public class ServerManager {
                if (canConnectWithIp(ip)) {
                   Session session = new Session(sc, controller, ip);
                   session.ipAddress = ip;
-                  Log.log("Client kết nối! IP: " + ip);
                } else {
                   sc.close();
                }

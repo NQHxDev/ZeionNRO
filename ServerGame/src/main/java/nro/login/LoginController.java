@@ -116,7 +116,10 @@ public class LoginController {
                   boolean actived = ms.reader().readBoolean();
                   int goldBar = ms.reader().readInt();
                   long lastTimeLogin = ms.reader().readLong();
+
+                  @SuppressWarnings("unused")
                   long lastTimeLogout = ms.reader().readLong();
+
                   String rewards = ms.reader().readUTF();
                   int ruby = ms.reader().readInt();
                   int diemTichNap = ms.reader().readInt();
@@ -127,6 +130,7 @@ public class LoginController {
                      Client.gI().kickSession(se);
                      Client.gI().kickSession(session);
                      Service.getInstance().sendThongBaoOK(session, "Máy chủ tắt hoặc mất sóng");
+
                      return;
                   }
                   session.isAdmin = isAdmin;
@@ -137,16 +141,12 @@ public class LoginController {
                   session.ruby = ruby;
                   session.diemTichNap = diemTichNap;
                   session.server = server;
-                  System.out.println("login userID: " + userID);
                   Resources.getInstance().sendSmallVersion(session);
                   Resources.getInstance().sendBGVersion(session);
                   session.timeWait = 0;
                   session.loginSuccess = true;
                   DataGame.sendVersionGame(session);
-
-                  System.out.println("NQHxDev Session: " + session.userId + " - " + lastTimeLogout);
                } else {
-
                   String text = ms.reader().readUTF();
                   Service.getInstance().sendThongBaoOK(session, text);
                }
