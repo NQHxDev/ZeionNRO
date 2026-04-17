@@ -34,7 +34,7 @@ build:
 	@cp $(JAR_NAME) ./$(FINAL_JAR)
 	@printf " $(GREEN)>>>$(RESET) Updated ./$(FINAL_JAR) successfully!\n"
 
-release:
+release: kill
 	@printf " $(GREEN)>>>$(RESET) Launching ServerGame...\n"
 	@$(JAVA) -Djava.awt.headless=true -jar $(FINAL_JAR)
 
@@ -43,7 +43,7 @@ clean:
 	@$(MVN) clean
 	@rm -f $(FINAL_JAR)
 
-run: kill build release
+run: build release
 
 kill:
 	@printf " $(GREEN)>>>$(RESET) Killing Process ...\n"

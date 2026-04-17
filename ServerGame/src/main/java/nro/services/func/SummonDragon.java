@@ -216,7 +216,7 @@ public class SummonDragon {
    }
 
    public void summonShenron(Player pl) {
-      if (pl.zone.map.mapId == 0 || pl.zone.map.mapId == 7 || pl.zone.map.mapId == 14) {
+      if (pl.zone != null && pl.zone.map != null && (pl.zone.map.mapId == 0 || pl.zone.map.mapId == 7 || pl.zone.map.mapId == 14)) {
          if (checkShenronBall(pl, DRAGON_SHENRON)) {
             if (isShenronAppear) {
                Service.getInstance().sendThongBao(pl, "Không thể thực hiện");
@@ -258,7 +258,7 @@ public class SummonDragon {
    }
 
    public void summonBlackShenron(Player pl) {
-      if (pl.zone.map.mapId == 5) {
+      if (pl.zone != null && pl.zone.map != null && pl.zone.map.mapId == 5) {
          if (checkShenronBall(pl, DRAGON_BLACK_SHENRON)) {
             if (isBlackShenronAppear) {
                Service.getInstance().sendThongBao(pl, "Không thể thực hiện");
@@ -290,7 +290,7 @@ public class SummonDragon {
    }
 
    public void summonIceShenron(Player pl) {
-      if (pl.zone.map.mapId == 5) {
+      if (pl.zone != null && pl.zone.map != null && pl.zone.map.mapId == 5) {
          if (checkShenronBall(pl, DRAGON_ICE_SHENRON)) {
             if (isIcecShenronAppear) {
                Service.getInstance().sendThongBao(pl, "Không thể thực hiện");
@@ -374,7 +374,7 @@ public class SummonDragon {
       try {
          msg = new Message(-83);
          msg.writer().writeByte(appear ? 0 : (byte) 1);
-         if (appear) {
+         if (appear && pl.zone != null && pl.zone.map != null) {
             msg.writer().writeShort(pl.zone.map.mapId);
             msg.writer().writeShort(pl.zone.map.bgId);
             msg.writer().writeByte(pl.zone.zoneId);
@@ -396,7 +396,7 @@ public class SummonDragon {
       try {
          msg = new Message(Cmd.CALL_DRAGON);
          msg.writer().writeByte(appear ? 0 : (byte) 1);
-         if (appear) {
+         if (appear && pl.zone != null && pl.zone.map != null) {
             msg.writer().writeShort(pl.zone.map.mapId);
             msg.writer().writeShort(pl.zone.map.bgId);
             msg.writer().writeByte(pl.zone.zoneId);
@@ -405,7 +405,9 @@ public class SummonDragon {
             msg.writer().writeShort(pl.location.x);
             msg.writer().writeShort(pl.location.y);
             msg.writer().writeByte(DRAGON_PORUNGA);
-            pl.zone.effDragon = eff;
+            if (pl.zone != null) {
+               pl.zone.effDragon = eff;
+            }
             lastTimeShenronWait = System.currentTimeMillis();
          }
          Service.getInstance().sendMessAllPlayer(msg);

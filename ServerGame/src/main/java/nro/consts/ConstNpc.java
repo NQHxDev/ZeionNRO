@@ -436,6 +436,8 @@ public class ConstNpc {
    public static final int DUNG_NHIEU_TV = 1005;
    public static final int MO_DE_TU = 1006;
    public static final int VAO_MAP_NGOAI_VUC = 1007;
+   public static final int RUONG_SUU_TAM = 1010;
+   public static final int KHAM_NGOC = 1011;
    public static final int MO_RONG_RUONG_SUU_TAM = 1012;
    public static final int NANG_CAP_KHAM_NGOC = 1013;
    public static final int MENU_LOAD_DATA = 1014;

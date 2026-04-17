@@ -13,4 +13,9 @@ public class PhongThiNghiem_Player {
    @Setter
    public long time;
 
+   public PhongThiNghiem_Player(int id, long time) {
+      this.id = id;
+      this.time = time;
+   }
+
 }

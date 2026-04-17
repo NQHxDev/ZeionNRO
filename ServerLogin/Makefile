@@ -14,7 +14,7 @@ YELLOW := \033[0;33m
 RED    := \033[0;31m
 RESET  := \033[0m
 
-.PHONY: all build clean run rebuild help update
+.PHONY: all build release clean run rebuild help update
 
 all: help
 
@@ -35,6 +35,10 @@ build:
 	@$(MVN) clean package -DskipTests
 	@printf "$(GREEN) Build Successful! JAR file is in the $(JAR_DIR) directory$(RESET)\n"
 
+release:
+	@printf "$(CYAN) Launching Login Server ...$(RESET)\n"
+	@$(JAVA) -jar $(ROOT_JAR)
+
 update: build
 	@printf "$(YELLOW) Updating JAR file to root directory...$(RESET)\n"
 	@cp $(FAT_JAR) $(ROOT_JAR)
@@ -45,9 +49,7 @@ clean:
 	@$(MVN) clean
 	@printf "$(GREEN) Cleanup complete.$(RESET)\n"
 
-run: update
-	@printf "$(CYAN) Launching Login Server ...$(RESET)\n"
-	@$(JAVA) -jar $(ROOT_JAR)
+run: update release
 
 rebuild: clean update
 

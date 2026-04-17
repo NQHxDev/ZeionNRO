@@ -314,7 +314,12 @@ public class Session {
          player.nPoint.calPoint();
          player.nPoint.setHp(player.nPoint.hp);
          player.nPoint.setMp(player.nPoint.mp);
-         player.zone.addPlayer(player);
+         if (player.zone == null) {
+            player.zone = MapService.gI().getMapCanJoin(player, player.gender + 21);
+         }
+         if (player.zone != null) {
+            player.zone.addPlayer(player);
+         }
          player.loaded = true;
          if (player.pet != null) {
             player.pet.nPoint.calPoint();

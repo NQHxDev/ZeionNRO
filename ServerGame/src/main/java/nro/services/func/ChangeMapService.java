@@ -104,7 +104,8 @@ public class ChangeMapService {
    public void startAutoZoneChange(Player pl) {
       if (pl.autoDoiKhu) {
          GameScheduler.SCHED.scheduleAtFixedRate(() -> {
-            if (pl.autoDoiKhu) { // Kiểm tra lại xem người chơi còn vật phẩm không
+            if (pl.autoDoiKhu && pl.zone != null && pl.zone.map != null) { // Kiểm tra lại xem người chơi còn vật phẩm
+                                                                           // không
                Zone leastPopulatedZone = getLeastPopulatedZone(pl.zone.map);
                if (leastPopulatedZone != null) {
                   changeMap(pl, leastPopulatedZone, -1, -1, pl.location.x, pl.location.y, NON_SPACE_SHIP);
@@ -116,6 +117,9 @@ public class ChangeMapService {
    }
 
    public void changeZone(Player pl, int zoneId) {
+      if (pl.zone == null || pl.zone.map == null) {
+         return;
+      }
       int mapid = pl.zone.map.mapId;
       if (!pl.isAdmin() && (MapService.gI().isMapDoanhTrai(mapid)
             || MapService.gI().isMapMabuWar14H(mapid)
@@ -189,10 +193,10 @@ public class ChangeMapService {
       Zone zoneJoin = null;
       if (zoneId == -1) {
          zoneJoin = MapService.gI().getMapCanJoin(pl, mapId);
-      } else {
-         zoneJoin = MapService.gI().getZoneJoinByMapIdAndZoneId(pl, mapId, zoneId);
       }
-      changeMap(pl, zoneJoin, -1, -1, x, zoneJoin.map.yPhysicInTop(x, 100), NON_SPACE_SHIP);
+      if (zoneJoin != null && zoneJoin.map != null) {
+         changeMap(pl, zoneJoin, -1, -1, x, zoneJoin.map.yPhysicInTop(x, 100), NON_SPACE_SHIP);
+      }
    }
 
    /**

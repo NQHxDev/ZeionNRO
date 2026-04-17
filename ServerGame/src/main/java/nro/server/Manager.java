@@ -5,6 +5,7 @@ import nro.attr.Attribute;
 import nro.attr.AttributeManager;
 import nro.consts.ConstItem;
 import nro.consts.ConstMap;
+import nro.consts.ConstNpc;
 import nro.data.DataGame;
 import nro.jdbc.DBService;
 import nro.jdbc.daos.manager.ServiceDataDAO;
@@ -38,7 +39,8 @@ import nro.models.map.SantaCity;
 import nro.models.mob.MobReward;
 import nro.models.mob.MobTemplate;
 import nro.models.npc.Npc;
-import nro.models.npc.NpcFactory;
+import nro.models.npc.specific.ConMeo;
+import nro.models.npc.specific.RongThieng;
 import nro.models.npc.NpcTemplate;
 import nro.models.player.Referee;
 import nro.models.shop.Shop;
@@ -93,8 +95,8 @@ public class Manager {
    public static int TILE_ROI_A = 1;
    public static int TILE_ROI_B = 1;
    public static int TILE_NCAP = 0;
-   public static int EVENT_SEVER = 6;
    public static byte SUKIEN = 6;
+   public static int EVENT_SEVER = 6;
    public static String DOMAIN = "https://zeion.online/";
    public static String SERVER_NAME = "Ngọc Rồng Zeion";
    public static int EVENT_COUNT_THAN_HUY_DIET = 0;
@@ -250,8 +252,8 @@ public class Manager {
       }
       Log.log("Đang bắt đầu load database...");
       loadDatabase();
-      NpcFactory.createNpcConMeo();
-      NpcFactory.createNpcRongThieng();
+      new ConMeo(-1, -1, -1, -1, ConstNpc.CON_MEO, 29028);
+      new RongThieng(-1, -1, -1, -1, ConstNpc.RONG_THIENG, -1);
       // Event.initEvent(gameConfig.getEvent());
       // if (Event.isEvent()) {
       // Event.getInstance().init();

@@ -211,4 +211,73 @@ public class PhongThiNghiem {
                   + "|7|Tối đa " + MAX_SIZE + " lọ",
             "Đồng ý", "Đóng");
    }
+
+   public void confirmDieuChe(Player pl) {
+      int vitri = pl.vitriBinhDieuChe;
+      int type = pl.typeBinhDieuChe;
+      PhongThiNghiem ptn = PHONG_THI_NGHIEM.get(type);
+      for (int i = 0; i < ptn.items.size(); i++) {
+         Item item = InventoryService.gI().findItemBagByTemp(pl, (short) ptn.items.get(i).tempId);
+         if (item == null || item.quantity < ptn.items.get(i).quantity) {
+            Service.getInstance().sendThongBao(pl, "Không đủ nguyên liệu");
+            return;
+         }
+      }
+      for (int i = 0; i < ptn.items.size(); i++) {
+         Item item = InventoryService.gI().findItemBagByTemp(pl, (short) ptn.items.get(i).tempId);
+         InventoryService.gI().subQuantityItemsBag(pl, item, ptn.items.get(i).quantity);
+      }
+      pl.phongThiNghiem.get(vitri).id = type;
+      pl.phongThiNghiem.get(vitri).time = System.currentTimeMillis() + ptn.thoiGianDieuChe();
+      InventoryService.gI().sendItemBags(pl);
+      Service.getInstance().sendThongBao(pl, "Bắt đầu điều chế " + ptn.name_binh);
+      Send_PhongThiNghiem_Player(pl);
+   }
+
+   public void confirmHuy(Player pl) {
+      int vitri = pl.vitriBinhDieuChe;
+      int type = pl.typeBinhDieuChe;
+      PhongThiNghiem ptn = PHONG_THI_NGHIEM.get(type);
+      for (int i = 0; i < ptn.items.size(); i++) {
+         Item it = ItemService.gI().createNewItem((short) ptn.items.get(i).tempId);
+         it.quantity = ptn.items.get(i).quantity;
+         InventoryService.gI().addItemBag(pl, it, 0);
+      }
+      pl.phongThiNghiem.get(vitri).id = -1;
+      pl.phongThiNghiem.get(vitri).time = 0;
+      InventoryService.gI().sendItemBags(pl);
+      Service.getInstance().sendThongBao(pl, "Hủy thành công");
+      Send_PhongThiNghiem_Player(pl);
+   }
+
+   public void confirmTangToc(Player pl) {
+      int vitri = pl.vitriBinhDieuChe;
+      Item thoiVang = InventoryService.gI().findItemBagByTemp(pl, (short) ID_ITEM_TANG_TOC);
+      if (thoiVang != null && thoiVang.quantity >= SO_LUONG_TANG_TOC) {
+         InventoryService.gI().subQuantityItemsBag(pl, thoiVang, SO_LUONG_TANG_TOC);
+         pl.phongThiNghiem.get(vitri).time -= TIME_TANG_TOC;
+         InventoryService.gI().sendItemBags(pl);
+         Service.getInstance().sendThongBao(pl, "Tăng tốc thành công");
+         Send_PhongThiNghiem_Player(pl);
+      } else {
+         Service.getInstance().sendThongBao(pl, "Không đủ Thỏi vàng");
+      }
+   }
+
+   public void confirmMoRong(Player pl) {
+      Item thoiVang = InventoryService.gI().findItemBagByTemp(pl, (short) ID_ITEM_MO_RONG);
+      if (thoiVang != null && thoiVang.quantity >= SO_LUONG) {
+         if (pl.phongThiNghiem.size() < MAX_SIZE) {
+            InventoryService.gI().subQuantityItemsBag(pl, thoiVang, SO_LUONG);
+            pl.phongThiNghiem.add(new PhongThiNghiem_Player(-1, 0));
+            InventoryService.gI().sendItemBags(pl);
+            Service.getInstance().sendThongBao(pl, "Mở rộng thành công");
+            Send_PhongThiNghiem_Player(pl);
+         } else {
+            Service.getInstance().sendThongBao(pl, "Đã đạt tối đa " + MAX_SIZE + " lọ");
+         }
+      } else {
+         Service.getInstance().sendThongBao(pl, "Không đủ Thỏi vàng");
+      }
+   }
 }

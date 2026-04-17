@@ -79,6 +79,28 @@ public class KhamNgoc {
       Send_KhamNgoc_Player(pl);
    }
 
+   public void upgrade(Player player) {
+      int nro = player.nroKhamNgoc;
+      int max_quatity = player.slItem;
+      int idItem = player.idTempNangCap;
+      Item item = InventoryService.gI().findItemBagByTemp(player, (short) idItem);
+      if (item != null && item.quantity >= max_quatity) {
+         InventoryService.gI().subQuantityItemsBag(player, item, max_quatity);
+         player.khamNgoc.get(nro).level++;
+         InventoryService.gI().sendItemBags(player);
+         player.nPoint.calPoint();
+         Service.getInstance().point(player);
+         KhamNgoc.gI().Send_KhamNgoc_Player(player);
+         if (player.khamNgoc.get(nro).level == 0) {
+            Service.getInstance().sendThongBao(player, "|2|Kích hoạt thành công Ngọc rồng " + (nro + 1) + " sao");
+         } else {
+            Service.getInstance().sendThongBao(player, "|2|Nâng thành công Ngọc rồng " + (nro + 1) + " sao lên Cấp " + player.khamNgoc.get(nro).level);
+         }
+      } else {
+         Service.getInstance().sendThongBao(player, "Không đủ nguyên liệu");
+      }
+   }
+
    public void NangCapKhamNgoc(Player pl, byte nro) {
       pl.nroKhamNgoc = nro;
       KhamNgoc khamNgoc = KHAM_NGOC.get(nro);
