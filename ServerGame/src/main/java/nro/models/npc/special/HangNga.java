@@ -1,4 +1,4 @@
-package nro.models.npc.specific;
+package nro.models.npc.special;
 
 import nro.models.npc.Npc;
 import nro.models.player.Player;

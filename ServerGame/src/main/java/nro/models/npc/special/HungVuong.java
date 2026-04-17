@@ -1,4 +1,4 @@
-package nro.models.npc.specific;
+package nro.models.npc.special;
 
 import nro.models.item.Item;
 import nro.models.npc.Npc;

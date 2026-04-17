@@ -1,4 +1,4 @@
-package nro.models.npc.specific;
+package nro.models.npc.special;
 
 import nro.consts.ConstNpc;
 import nro.consts.ConstTask;
