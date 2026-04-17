@@ -119,7 +119,7 @@ public abstract class AbsResources {
       try {
          backgroundVersion = new byte[4][];
          for (int i = 0; i < 4; i++) {
-            File file = new File(this.folder, "/image/" + (i + 1) + "/bg/");
+            File file = new File(this.folder, "image/" + (i + 1) + "/bg/");
             File[] files = file.listFiles();
             int max = 0;
             for (File f : files) {
@@ -145,7 +145,7 @@ public abstract class AbsResources {
       try {
          smallVersion = new byte[4][];
          for (int i = 0; i < 4; i++) {
-            File file = new File(this.folder, "/image/" + (i + 1) + "/icon/");
+            File file = new File(this.folder, "image/" + (i + 1) + "/icon/");
             File[] files = file.listFiles();
             int max = 0;
             for (File f : files) {
@@ -203,23 +203,23 @@ public abstract class AbsResources {
    }
 
    public byte[] getRawIconData(int zoomLevel, int iconID) {
-      return readAllBytes("/image/" + zoomLevel + "/icon/" + iconID + ".png");
+      return readAllBytes("image/" + zoomLevel + "/icon/" + iconID + ".png");
    }
 
    public byte[] getRawBGData(int zoomLevel, int bg) {
-      return readAllBytes("/image/" + zoomLevel + "/bg/" + bg + ".png");
+      return readAllBytes("image/" + zoomLevel + "/bg/" + bg + ".png");
    }
 
    public byte[] getRawIBNData(int zoomLevel, String filename) {
-      return readAllBytes("/image/" + zoomLevel + "/imgbyname/" + filename + ".png");
+      return readAllBytes("image/" + zoomLevel + "/imgbyname/" + filename + ".png");
    }
 
    public byte[] getRawMobData(int zoomLevel, int id) {
-      return readAllBytes("/image/" + zoomLevel + "/monster/" + id + ".png");
+      return readAllBytes("image/" + zoomLevel + "/monster/" + id + ".png");
    }
 
    public byte[] getRawEffectData(int zoomLevel, int id) {
-      return readAllBytes("/image/" + zoomLevel + "/effect/" + id + ".png");
+      return readAllBytes("image/" + zoomLevel + "/effect/" + id + ".png");
    }
 
    public void putData(String key, byte[] data) {
