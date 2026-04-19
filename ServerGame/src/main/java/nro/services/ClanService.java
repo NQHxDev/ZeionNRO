@@ -13,7 +13,7 @@ import nro.models.item.Item;
 import nro.models.player.Player;
 import nro.server.Client;
 import nro.server.Manager;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.utils.Log;
 import nro.utils.Util;
 
@@ -274,7 +274,7 @@ public class ClanService {
       if (pl != null && player.clan != null) {
          Message msg;
          try {
-            msg = new Message(-57);
+            msg = Message.create(-57);
             msg.writer().writeUTF(player.name + " mời bạn vào bang " + player.clan.name);
             msg.writer().writeInt(player.clan.id);
             msg.writer().writeInt(758435); // code
@@ -580,7 +580,7 @@ public class ClanService {
       Message msg;
       try {
          List<Clan> clans = getClans(name);
-         msg = new Message(-47);
+         msg = Message.create(-47);
          msg.writer().writeByte(clans.size());
          for (Clan clan : clans) {
             msg.writer().writeInt(clan.id);
@@ -607,7 +607,7 @@ public class ClanService {
             clan.reloadClanMember();
             Message msg;
             try {
-               msg = new Message(Cmd.CLAN_MEMBER);
+               msg = Message.create(Cmd.CLAN_MEMBER);
                msg.writer().writeByte(clan.getCurrMembers());
                for (ClanMember cm : clan.getMembers()) {
                   msg.writer().writeInt((int) cm.id);
@@ -648,7 +648,7 @@ public class ClanService {
          Service.getInstance().sendThongBao(player, "Bạn đã giải tán bang thành công");
          ItemTimeService.gI().removeTextDoanhTrai(player);
 
-         msg = new Message(Cmd.CLAN_INFO);
+         msg = Message.create(Cmd.CLAN_INFO);
          msg.writer().writeInt(-1);
       } catch (Exception e) {
          Log.error(ClanService.class, e, "Lỗi send my clan " + player.clan.name + " - " + player.clan.id);
@@ -656,7 +656,7 @@ public class ClanService {
    }
 
    public void sendMyClan(Player player) {
-      Message msg = new Message(Cmd.CLAN_INFO);
+      Message msg = Message.create(Cmd.CLAN_INFO);
       Clan clan = player.clan;
       try {
          if (clan == null) {
@@ -723,7 +723,7 @@ public class ClanService {
    public void sendClanId(Player player) {
       Message msg;
       try {
-         msg = new Message(-61);
+         msg = Message.create(-61);
          msg.writer().writeInt((int) player.id);
          if (player.clan == null) {
             msg.writer().writeInt(-1);

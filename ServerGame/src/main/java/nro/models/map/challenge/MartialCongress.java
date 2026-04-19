@@ -23,19 +23,24 @@ import nro.services.func.ChangeMapService;
 import nro.utils.Util;
 
 public class MartialCongress {
-   @Setter
-   @Getter
-   private Player player;
-   @Setter
-   private Boss boss;
-   @Setter
-   private Player npc;
 
    @Setter
-   private int time;
-   private int round;
+   @Getter
+   public Player player;
+
    @Setter
-   private int timeWait;
+   public Boss boss;
+
+   @Setter
+   public Player npc;
+
+   @Setter
+   public int time;
+
+   public int round;
+
+   @Setter
+   public int timeWait;
 
    public void update() {
       if (time > 0) {
@@ -87,7 +92,7 @@ public class MartialCongress {
       Util.setTimeout(() -> {
          MartialCongressService.gI().sendTypePK(player, boss);
          PlayerService.gI().changeAndSendTypePK(this.player, ConstPlayer.PK_PVP);
-         boss.setStatus((byte) 3);
+         boss.changeStatus((byte) 3);
       }, 10000);
    }
 
@@ -136,9 +141,9 @@ public class MartialCongress {
       // boss.joinMap();
       // }
       PlayerService.gI().setPos(player, 335, 264, 0);
-      setTimeWait(11);
-      setBoss(boss);
-      setTime(185);
+      this.timeWait = 11;
+      this.boss = boss;
+      this.time = 185;
       resetSkill();
    }
 
@@ -160,7 +165,7 @@ public class MartialCongress {
    }
 
    public void leave() {
-      setTime(0);
+      this.time = 0;
       EffectSkillService.gI().removeStun(player);
       Service.getInstance().sendThongBao(player, "Bạn bị xử thua vì rời khỏi võ đài");
       endChallenge();
@@ -174,7 +179,7 @@ public class MartialCongress {
 
    public void endChallenge() {
       if (round > 5 && Event.isEvent() && Event.getInstance() instanceof SummerEvent) {
-         byte[] rwLimit = player.getRewardLimit();
+         byte[] rwLimit = player.rewardLimit;
          if (rwLimit[ConstRewardLimit.QUE_DOT] < 10) {
             rwLimit[ConstRewardLimit.QUE_DOT]++;
             Item item = ItemService.gI().createNewItem((short) ConstItem.QUE_DOT, 1);

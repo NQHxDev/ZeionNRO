@@ -10,6 +10,8 @@ import nro.services.ItemService;
 
 public class Item {
 
+   public short id;
+
    public ItemTemplate template;
 
    public String info;
@@ -27,6 +29,7 @@ public class Item {
    }
 
    public Item(short itemId) {
+      this.id = itemId;
       this.template = ItemService.gI().getTemplate(itemId);
       this.itemOptions = new ArrayList<>();
       this.createTime = System.currentTimeMillis();

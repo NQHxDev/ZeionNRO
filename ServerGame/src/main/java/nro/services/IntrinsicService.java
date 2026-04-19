@@ -4,7 +4,7 @@ import nro.consts.ConstNpc;
 import nro.models.intrinsic.Intrinsic;
 import nro.models.player.Player;
 import nro.server.Manager;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.utils.Util;
 
 import java.util.List;
@@ -51,7 +51,7 @@ public class IntrinsicService {
     public void sendInfoIntrinsic(Player player) {
         Message msg;
         try {
-            msg = new Message(112);
+            msg = Message.create(112);
             msg.writer().writeByte(0);
             msg.writer().writeShort(player.playerIntrinsic.intrinsic.icon);
             msg.writer().writeUTF(player.playerIntrinsic.intrinsic.getName());
@@ -65,7 +65,7 @@ public class IntrinsicService {
         List<Intrinsic> listIntrinsic = getIntrinsics(player.gender);
         Message msg;
         try {
-            msg = new Message(112);
+            msg = Message.create(112);
             msg.writer().writeByte(1);
             msg.writer().writeByte(1); //count tab
             msg.writer().writeUTF("Nội tại");

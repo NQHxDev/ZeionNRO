@@ -1,9 +1,7 @@
 package server;
 
-import io.Message;
+import nro.network.io.Message;
 import io.Session;
-import java.io.IOException;
-import java.io.DataOutputStream;
 
 public class ServerService {
 
@@ -15,17 +13,15 @@ public class ServerService {
 
    public void disconnect(int userID, Session except) {
       try {
-         Message ms = new Message(3);
-         DataOutputStream ds = ms.writer();
-         ds.writeInt(userID);
-         ds.flush();
+         Message ms = Message.create(3);
+         ms.writeInt(userID);
          for (Session session : this.manager.getSessions()) {
             if (session != except) {
                session.sendMessage(ms);
             }
          }
          ms.cleanup();
-      } catch (IOException ex) {
+      } catch (Exception ex) {
          ex.printStackTrace();
       }
    }
@@ -35,4 +31,5 @@ public class ServerService {
          session.sendMessage(ms);
       }
    }
+
 }

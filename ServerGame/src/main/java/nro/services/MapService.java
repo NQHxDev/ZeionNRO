@@ -8,7 +8,7 @@ import nro.models.map.war.BlackBallWar;
 import nro.models.player.NPoint;
 import nro.models.player.Player;
 import nro.server.Manager;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.utils.Log;
 import nro.utils.Util;
 
@@ -211,7 +211,7 @@ public class MapService {
    public void sendPlayerMove(Player player) {
       Message msg;
       try {
-         msg = new Message(-7);
+         msg = Message.create(-7);
          msg.writer().writeInt((int) player.id);
          msg.writer().writeShort(player.location.x);
          msg.writer().writeShort(player.location.y);
@@ -249,7 +249,7 @@ public class MapService {
          if (!player.zone.map.isMapOffline) {
             Message msg;
             try {
-               msg = new Message(-6);
+               msg = Message.create(-6);
                msg.writer().writeInt((int) player.id);
                Service.getInstance().sendMessAnotherNotMeInMap(player, msg);
                msg.cleanup();

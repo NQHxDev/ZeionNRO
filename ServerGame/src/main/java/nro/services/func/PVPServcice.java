@@ -7,7 +7,7 @@ import nro.models.pvp.ChallengePVP;
 import nro.models.pvp.PVP;
 import nro.models.pvp.RevengePVP;
 import nro.server.Manager;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.NpcService;
 import nro.services.PlayerService;
 import nro.services.Service;
@@ -107,7 +107,7 @@ public class PVPServcice implements Runnable {
                      PLAYER_GOLD.put(pl, gold);
                      Message msg = null;
                      try {
-                        msg = new Message(-59);
+                        msg = Message.create(-59);
                         msg.writer().writeByte(3);
                         msg.writer().writeInt((int) pl.id);
                         msg.writer().writeInt(gold);

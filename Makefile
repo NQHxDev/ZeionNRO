@@ -10,6 +10,13 @@ RESET  := \033[0m
 DATA_URL := https://github.com/NQHxDev/ZeionNRO/releases/download/Data/HashiramaData.zip
 DATA_FILE := HashiramaData.zip
 
+ifeq ($(OS),Windows_NT)
+MVN_DETECT := mvn
+else
+MVN_DETECT := $(shell command -v mvn 2>/dev/null || ( [ -f /opt/homebrew/bin/mvn ] && echo "/opt/homebrew/bin/mvn" ) || echo "mvn")
+endif
+MVN ?= $(MVN_DETECT)
+
 .PHONY: all build clean setup help
 
 all: help
@@ -47,16 +54,18 @@ setup:
 	@printf "$(YELLOW)Please update your DB credentials in the config files before running.$(RESET)\n"
 
 build:
+	@printf "$(BLUE)>>>$(RESET) Building ServerCommon...\n"
+	@cd ServerCommon && "$(MVN)" clean install -DskipTests
 	@printf "$(BLUE)>>>$(RESET) Building ServerLogin...\n"
-	@cd ServerLogin && $(MAKE) build
+	@cd ServerLogin && $(MAKE) build MVN="$(MVN)"
 	@printf "$(BLUE)>>>$(RESET) Building ServerGame...\n"
-	@cd ServerGame && $(MAKE) build
+	@cd ServerGame && $(MAKE) build MVN="$(MVN)"
 	@printf "$(GREEN)>>>$(RESET) All modules built successfully!\n"
 
 clean:
 	@printf "$(RED)>>>$(RESET) Cleaning ServerLogin...\n"
-	@cd ServerLogin && $(MAKE) clean
+	@cd ServerLogin && $(MAKE) clean MVN="$(MVN)"
 	@printf "$(RED)>>>$(RESET) Cleaning ServerGame...\n"
-	@cd ServerGame && $(MAKE) clean
+	@cd ServerGame && $(MAKE) clean MVN="$(MVN)"
 	@rm -rf log
 	@printf "$(GREEN)>>>$(RESET) Project cleaned.\n"

@@ -7,10 +7,10 @@ import lombok.Setter;
 @Getter
 public class Notification {
 
-   private int id;
+   public int id;
 
-   private String title;
+   public String title;
 
-   private String content;
+   public String content;
 
 }

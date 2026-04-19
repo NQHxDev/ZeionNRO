@@ -3,7 +3,7 @@ package nro.models.player;
 import nro.models.item.Item;
 import nro.models.item.ItemOption;
 import nro.models.mob.Mob;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.EffSkinService;
 import nro.services.InventoryService;
 import nro.services.ItemService;
@@ -534,7 +534,7 @@ public class EffectSkin {
    public void sendPlayerPrepareBom(Player player, int affterMiliseconds) {
       Message msg;
       try {
-         msg = new Message(-45);
+         msg = Message.create(-45);
          msg.writer().writeByte(7);
          msg.writer().writeInt((int) player.id);
          // msg.writer().writeShort(player.playerSkill.skillSelect.skillId);

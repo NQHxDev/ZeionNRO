@@ -10,7 +10,7 @@ import nro.services.NpcService;
 import nro.services.Service;
 import nro.services.func.CombineServiceNew;
 import nro.services.func.ShopService;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.utils.SkillUtil;
 
 public class Whis extends Npc {

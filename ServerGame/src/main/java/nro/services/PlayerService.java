@@ -8,7 +8,7 @@ import nro.jdbc.daos.PlayerDAO;
 import nro.models.player.PetFollow;
 import nro.models.player.Player;
 import nro.server.Client;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.utils.Log;
 import nro.utils.Util;
 
@@ -41,8 +41,8 @@ public class PlayerService {
          player.goldChallenge = 2000000;
          player.levelWoodChest = 0;
          player.receivedWoodChest = false;
-         player.event.setReceivedLuckyMoney(false);
-         player.setRewardLimit(new byte[player.getRewardLimit().length]);
+         player.event.receivedLuckyMoney = false;
+         player.rewardLimit = new byte[player.rewardLimit.length];
          player.buyLimit = new byte[player.buyLimit.length];
          player.bongtai = 0;
          player.thiensu = 0;
@@ -75,7 +75,7 @@ public class PlayerService {
       if (param > 0) {
          Message msg;
          try {
-            msg = new Message(-3);
+            msg = Message.create(-3);
             msg.writer().writeByte(type);// 0 là cộng sm, 1 cộng tn, 2 là cộng cả 2
             msg.writer().writeDouble(param);// số tn cần cộng
             player.sendMessage(msg);
@@ -175,7 +175,7 @@ public class PlayerService {
    public void sendCurrentStamina(Player player) {
       Message msg;
       try {
-         msg = new Message(-68);
+         msg = Message.create(-68);
          msg.writer().writeShort(player.nPoint.stamina);
          player.sendMessage(msg);
          msg.cleanup();
@@ -187,7 +187,7 @@ public class PlayerService {
    public void sendMaxStamina(Player player) {
       Message msg;
       try {
-         msg = new Message(-69);
+         msg = Message.create(-69);
          msg.writer().writeShort(player.nPoint.maxStamina);
          player.sendMessage(msg);
          msg.cleanup();
@@ -282,7 +282,7 @@ public class PlayerService {
    }
 
    public void setPos(Player player, int x, int y, int effID) {
-      Message msg = new Message(Cmd.SET_POS);
+      Message msg = Message.create(Cmd.SET_POS);
       try {
          DataOutputStream ds = msg.writer();
          ds.writeInt((int) player.id);
@@ -297,26 +297,26 @@ public class PlayerService {
    }
 
    public void sendPetFollow(Player player) {
-      PetFollow pet = player.getPetFollow();
+      PetFollow pet = player.petFollow;
       int type = 1;
       if (pet == null) {
          type = 0;
       }
-      Message msg = new Message(Cmd.STATUS_PET);
+      Message msg = Message.create(Cmd.STATUS_PET);
       DataOutputStream ds = msg.writer();
       try {
          ds.writeInt((int) player.id);
          ds.writeByte(type);
          if (type == 1) {
-            ds.writeShort(pet.getIconID());
+            ds.writeShort(pet.iconID);
             ds.writeByte(1);
-            byte nFrames = pet.getNFrame();
+            byte nFrames = pet.nFrame;
             ds.writeByte(nFrames);
             for (int i = 0; i < nFrames; i++) {
                ds.writeByte(i);
             }
-            ds.writeShort(pet.getWidth());
-            ds.writeShort(pet.getHeight());
+            ds.writeShort(pet.width);
+            ds.writeShort(pet.height);
          }
          ds.flush();
          Service.getInstance().sendMessAllPlayerInMap(player, msg);
@@ -327,26 +327,26 @@ public class PlayerService {
    }
 
    public void sendPetFollow(Player me, Player info) {
-      PetFollow pet = info.getPetFollow();
+      PetFollow pet = info.petFollow;
       int type = 1;
       if (pet == null) {
          type = 0;
       }
-      Message msg = new Message(Cmd.STATUS_PET);
+      Message msg = Message.create(Cmd.STATUS_PET);
       DataOutputStream ds = msg.writer();
       try {
          ds.writeInt((int) info.id);
          ds.writeByte(type);
          if (type == 1) {
-            ds.writeShort(pet.getIconID());
+            ds.writeShort(pet.iconID);
             ds.writeByte(1);
-            byte nFrames = pet.getNFrame();
+            byte nFrames = pet.nFrame;
             ds.writeByte(nFrames);
             for (int i = 0; i < nFrames; i++) {
                ds.writeByte(i);
             }
-            ds.writeShort(pet.getWidth());
-            ds.writeShort(pet.getHeight());
+            ds.writeShort(pet.width);
+            ds.writeShort(pet.height);
          }
          ds.flush();
          me.sendMessage(msg);
@@ -358,10 +358,10 @@ public class PlayerService {
 
    public void removePetFollow(Player player) {
       // Xóa pet khỏi người chơi
-      player.setPetFollow(null);
+      player.petFollow = null;
 
       // Tạo message với Cmd tương tự như khi sendPetFollow (ở đây là 31)
-      Message msg = new Message(31);
+      Message msg = Message.create(31);
       DataOutputStream ds = msg.writer();
       try {
          ds.writeInt((int) player.id);

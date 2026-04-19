@@ -1,7 +1,7 @@
 package nro.services.func;
 
 import nro.models.player.Player;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.Service;
 import nro.utils.Log;
 import nro.utils.Util;
@@ -123,7 +123,7 @@ public class TransactionService implements Runnable {
    private void sendInviteTrade(Player plInvite, Player plReceive) {
       Message msg;
       try {
-         msg = new Message(-86);
+         msg = Message.create(-86);
          msg.writer().writeByte(0);
          msg.writer().writeInt((int) plInvite.id);
          plReceive.sendMessage(msg);

@@ -423,9 +423,9 @@ public class RewardService {
             item.quantity = Util.nextInt(20000, 30000) + (int) (Util.nextInt(20000, 30000) * tileVang);
             break;
       }
-      Attribute at = ServerManager.gI().getAttributeManager().find(ConstAttribute.VANG);
+      Attribute at = ServerManager.gI().attributeManager.find(ConstAttribute.VANG);
       if (at != null && !at.isExpired()) {
-         item.quantity += item.quantity * at.getValue() / 100;
+         item.quantity += item.quantity * at.value / 100;
       }
    }
 

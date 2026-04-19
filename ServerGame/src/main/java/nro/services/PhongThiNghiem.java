@@ -8,7 +8,7 @@ import nro.consts.ConstNpc;
 import nro.models.item.Item;
 
 import nro.models.player.Player;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.utils.Util;
 
 public class PhongThiNghiem {
@@ -53,7 +53,7 @@ public class PhongThiNghiem {
    public void Send_PhongThiNghiem_Template(Player pl) {
       Message msg = null;
       try {
-         msg = new Message(110);
+         msg = Message.create(110);
          msg.writer().writeByte(0);
          msg.writer().writeByte(START);
          msg.writer().writeByte(MAX_SIZE);
@@ -84,7 +84,7 @@ public class PhongThiNghiem {
    public void Send_PhongThiNghiem_Player(Player pl) {
       Message msg = null;
       try {
-         msg = new Message(110);
+         msg = Message.create(110);
          msg.writer().writeByte(1);
          msg.writer().writeByte(pl.phongThiNghiem.size());
 

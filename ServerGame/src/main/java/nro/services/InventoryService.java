@@ -8,7 +8,7 @@ import nro.models.npc.special.MagicTree;
 import nro.models.player.Pet;
 import nro.models.player.PetFollow;
 import nro.models.player.Player;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.utils.Util;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -524,8 +524,8 @@ public class InventoryService {
             Service.getInstance().removeTitle(player);
          }
          if (item.template.type == 72) {
-            PetFollow pet = PetFollowManager.gI().findByID(item.getId());
-            player.setPetFollow(pet);
+            PetFollow pet = PetFollowManager.gI().findByID(item.id);
+            player.petFollow = pet;
             PlayerService.gI().sendPetFollow(player);
          }
          if (item.template.type == 5) {
@@ -563,7 +563,7 @@ public class InventoryService {
             Service.getInstance().loadLaiEff(player);
          }
          if (item.template.type == 72) {
-            player.setPetFollow(null);
+            player.petFollow = null;
             PlayerService.gI().sendPetFollow(player);
          }
          player.inventory.itemsBody.set(index, putItemBag(player, item));
@@ -992,7 +992,7 @@ public class InventoryService {
       arrangeItems(player.inventory.itemsBag);
       Message msg;
       try {
-         msg = new Message(-36);
+         msg = Message.create(-36);
          msg.writer().writeByte(0);
          msg.writer().writeByte(player.inventory.itemsBag.size());
          for (int i = 0; i < player.inventory.itemsBag.size(); i++) {
@@ -1021,7 +1021,7 @@ public class InventoryService {
    public void sendItemBody(Player player) {
       Message msg;
       try {
-         msg = new Message(-37);
+         msg = Message.create(-37);
          msg.writer().writeByte(0);
          msg.writer().writeShort(player.getHead());
          msg.writer().writeByte(player.inventory.itemsBody.size());
@@ -1051,7 +1051,7 @@ public class InventoryService {
    public void sendItemBox(Player player) {
       Message msg;
       try {
-         msg = new Message(-35);
+         msg = Message.create(-35);
          msg.writer().writeByte(0);
          msg.writer().writeByte(player.inventory.itemsBox.size());
          for (Item it : player.inventory.itemsBox) {
@@ -1077,7 +1077,7 @@ public class InventoryService {
    public void openBox(Player player) {
       Message msg;
       try {
-         msg = new Message(-35);
+         msg = Message.create(-35);
          msg.writer().writeByte(1);
          player.sendMessage(msg);
          msg.cleanup();

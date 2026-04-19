@@ -11,6 +11,7 @@ import java.util.Map;
 @Setter
 @Getter
 public class Hit {
+
    private List<Integer> hits;
    private Map<Integer, Integer> targets;
 
@@ -26,4 +27,5 @@ public class Hit {
    public void addHit(int damage) {
       hits.add(damage);
    }
+
 }

@@ -35,7 +35,7 @@ import nro.models.task.SideTaskTemplate;
 import nro.models.task.SubTaskMain;
 import nro.models.task.TaskMain;
 import nro.server.Manager;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.utils.Log;
 import nro.utils.Util;
 
@@ -118,7 +118,7 @@ public class TaskService {
    public void sendTaskMain(Player player) {
       Message msg;
       try {
-         msg = new Message(40);
+         msg = Message.create(40);
          msg.writer().writeShort(player.playerTask.taskMain.id);
          // msg.writer().writeShort(12);
          msg.writer().writeByte(player.playerTask.taskMain.index);
@@ -157,7 +157,7 @@ public class TaskService {
    public void sendUpdateCountSubTask(Player player) {
       Message msg;
       try {
-         msg = new Message(43);
+         msg = Message.create(43);
          msg.writer().writeShort(player.playerTask.taskMain.subTasks.get(player.playerTask.taskMain.index).count);
          player.sendMessage(msg);
          msg.cleanup();
@@ -169,7 +169,7 @@ public class TaskService {
    public void sendNextSubTask(Player player) {
       Message msg;
       try {
-         msg = new Message(41);
+         msg = Message.create(41);
          player.sendMessage(msg);
          msg.cleanup();
       } catch (Exception e) {
@@ -1331,7 +1331,7 @@ public class TaskService {
       qua.quantity = soLuong;
       InventoryService.gI().addItemBag(player, qua, 99999999);
       InventoryService.gI().sendItemBags(player);
-      Service.getInstance().sendThongBaoOK(player, "Phần thưởng từ nv: " + soLuong + " " + qua.getName());
+      Service.getInstance().sendThongBaoOK(player, "Phần thưởng từ nv: " + soLuong + " " + qua.template.name);
    }
 
    // vd: pem đc 1 mộc nhân -> +1 mộc nhân vào nv hiện tại
@@ -3133,18 +3133,18 @@ public class TaskService {
 
    public void sendAchivement(Player player) {
       List<Achivement> achivements = player.playerTask.achivements;
-      Message m = new Message(Cmd.ACHIEVEMENT);
+      Message m = Message.create(Cmd.ACHIEVEMENT);
       DataOutputStream ds = m.writer();
       try {
          ds.writeByte(0);
          ds.writeByte(achivements.size());
          for (Achivement a : achivements) {
-            String detail = String.format(a.getDetail(), a.getCount(), a.getMaxCount());
-            ds.writeUTF(a.getName());
+            String detail = String.format(a.detail, a.getCount(), a.getMaxCount());
+            ds.writeUTF(a.name);
             ds.writeUTF(detail);
-            ds.writeShort(a.getMoney());
-            ds.writeBoolean(a.isFinish());
-            ds.writeBoolean(a.isReceive());
+            ds.writeShort(a.money);
+            ds.writeBoolean(a.isFinish);
+            ds.writeBoolean(a.isReceive);
          }
          ds.flush();
          player.sendMessage(m);
@@ -3156,17 +3156,17 @@ public class TaskService {
 
    public void rewardAchivement(Player player, byte id) {
       Achivement achivement = player.playerTask.achivements.get(id);
-      if (achivement.isFinish()) {
+      if (achivement.isFinish) {
          short idvatpham = ID_THUONG_THANHTUU;
-         int soLuong = achivement.getMoney();
+         int soLuong = achivement.money;
          Item qua = ItemService.gI().createNewItem(idvatpham);
          qua.quantity = soLuong;
          InventoryService.gI().addItemBag(player, qua, 999999);
          InventoryService.gI().sendItemBags(player);
          Service.getInstance().sendMoney(player);
-         achivement.setReceive(true);
+         achivement.isReceive = true;
          sendAchivement(player);
-         Service.getInstance().sendThongBao(player, "Bạn nhận được " + soLuong + " " + qua.getName());
+         Service.getInstance().sendThongBao(player, "Bạn nhận được " + soLuong + " " + qua.template.name);
       }
    }
 
@@ -3174,7 +3174,7 @@ public class TaskService {
       List<Achivement> list = player.playerTask.achivements;
       for (Achivement achivement : list) {
          if (achivement.isDone()) {
-            achivement.setFinish(true);
+            achivement.isFinish = true;
          }
       }
    }

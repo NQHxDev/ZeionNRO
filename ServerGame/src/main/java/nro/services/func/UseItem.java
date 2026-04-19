@@ -27,7 +27,7 @@ import nro.models.player.PetFollow;
 import nro.models.player.Player;
 import nro.models.skill.Skill;
 import nro.server.Manager;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.server.io.Session;
 import nro.services.*;
 import nro.utils.Log;
@@ -132,16 +132,16 @@ public class UseItem {
                         Item item = player.inventory.itemsBag.get(index);
                         if (item.isNotNullItem()) {
                            if (ItemData.IdMiniPet.contains((int) item.template.id)) {
-                              MinipetTemplate temp = MiniPetManager.gI().findByID(item.getId());
+                              MinipetTemplate temp = MiniPetManager.gI().findByID(item.id);
                               if (temp == null) {
-                                 System.err.println("khong tim thay minipet id: " + item.getId());
+                                 System.err.println("khong tim thay minipet id: " + item.id);
                               }
                               MiniPet.callMiniPet(player, item.template.id);
                               InventoryService.gI().itemBagToBody(player, index);
                               return;
                            }
                            if (item.template.type == 22) {
-                              msg = new Message(-43);
+                              msg = Message.create(-43);
                               msg.writer().writeByte(type);
                               msg.writer().writeByte(where);
                               msg.writer().writeByte(index);
@@ -150,7 +150,7 @@ public class UseItem {
                               player.sendMessage(msg);
                               msg.cleanup();
                            } else if (item.template.type == 7) {
-                              msg = new Message(-43);
+                              msg = Message.create(-43);
                               msg.writer().writeByte(type);
                               msg.writer().writeByte(where);
                               msg.writer().writeByte(index);
@@ -161,7 +161,7 @@ public class UseItem {
                                  || item.template.type == 11) {
                               InventoryService.gI().itemBagToBody(player, index);
                            } else if (item.template.id == 401) {
-                              msg = new Message(-43);
+                              msg = Message.create(-43);
                               msg.writer().writeByte(type);
                               msg.writer().writeByte(where);
                               msg.writer().writeByte(index);
@@ -169,8 +169,8 @@ public class UseItem {
                                     .writeUTF("Sau khi đổi đệ sẽ mất toàn bộ trang bị trên người đệ tử nếu chưa tháo");
                               player.sendMessage(msg);
                            } else if (item.getType() == 72) {
-                              PetFollow pet = PetFollowManager.gI().findByID(item.getId());
-                              player.setPetFollow(pet);
+                              PetFollow pet = PetFollowManager.gI().findByID(item.id);
+                              player.petFollow = pet;
                               InventoryService.gI().itemBagToBody(player, index);
                               PlayerService.gI().sendPetFollow(player);
                            } else if (item.getType() == 76) {
@@ -211,7 +211,7 @@ public class UseItem {
                      }
                   }
                   if (item != null && item.isNotNullItem()) {
-                     msg = new Message(-43);
+                     msg = Message.create(-43);
                      msg.writer().writeByte(type);
                      msg.writer().writeByte(where);
                      msg.writer().writeByte(index);
@@ -940,7 +940,7 @@ public class UseItem {
             it.itemOptions.add(new ItemOption(14, Util.nextInt(5, 15)));
             // if (Util.isTrue(90, 100)) {
             // } else {
-            // it.itemOptions.add(new ItemOption(73, 1));
+            // it.itemOptions.add(new ItemOption(73, 1);
             // }
             InventoryService.gI().addItemBag(pl, it, 1);
             Service.getInstance().sendThongBao(pl, "Bạn đã nhận được " + it.template.name);
@@ -1240,10 +1240,6 @@ public class UseItem {
             Service.getInstance().sendThongBao(pl, "Bạn đã nhận được " + it.template.name);
          } else {
             Item it = ItemService.gI().createNewItem((short) ConstItem.PET_XETANK);
-            it.itemOptions.add(new ItemOption(50, Util.nextInt(300, 600)));
-            it.itemOptions.add(new ItemOption(77, Util.nextInt(300, 600)));
-            it.itemOptions.add(new ItemOption(103, Util.nextInt(300, 600)));
-            it.itemOptions.add(new ItemOption(14, Util.nextInt(15, 30)));
             it.itemOptions.add(new ItemOption(94, Util.nextInt(15, 45)));
             it.itemOptions.add(new ItemOption(80, Util.nextInt(10, 25)));
             it.itemOptions.add(new ItemOption(81, Util.nextInt(10, 25)));
@@ -1473,18 +1469,18 @@ public class UseItem {
    // byte index = (byte) Util.nextInt(0, thuong.length - 1);
    // if (Util.isTrue(50, 100)) {
    // Item it = ItemService.gI().createNewItem(thuong[index]);
-   // it.itemOptions.add(new ItemOption(73, 0));
+   // it.itemOptions.add(new ItemOption(73, 0);
    // InventoryService.gI().addItemBag(pl, it, 1);
    // Service.getInstance().sendThongBao(pl, "Bạn đã nhận được " +
    // it.template.name);
    // } else {
    // Item it = ItemService.gI().createNewItem((short) ConstItem.POKEMON);
-   // it.itemOptions.add(new ItemOption(50, Util.nextInt(5, 20)));
-   // it.itemOptions.add(new ItemOption(14, Util.nextInt(5, 10)));
+   // it.itemOptions.add(new ItemOption(50, Util.nextInt(5, 20);
+   // it.itemOptions.add(new ItemOption(14, Util.nextInt(5, 10);
    // if (Util.isTrue(90, 100)) {
-   // it.itemOptions.add(new ItemOption(93, Util.nextInt(2, 5)));
+   // it.itemOptions.add(new ItemOption(93, Util.nextInt(2, 5);
    // } else {
-   // it.itemOptions.add(new ItemOption(73, 1));
+   // it.itemOptions.add(new ItemOption(73, 1);
    // }
    // InventoryService.gI().addItemBag(pl, it, 1);
    // Service.getInstance().sendThongBao(pl, "Bạn đã nhận được " +
@@ -1712,7 +1708,7 @@ public class UseItem {
       StringBuffer sb = new StringBuffer();
       for (NamekBall namekBall : balls) {
          Map m = namekBall.zone.map;
-         sb.append(namekBall.getIndex() + 1).append(" Sao: ").append(m.mapName)
+         sb.append(namekBall.index + 1).append(" Sao: ").append(m.mapName)
                .append(namekBall.getHolderName() == null ? "" : " - " + namekBall.getHolderName()).append("\n");
       }
       final int star = Util.nextInt(0, 6);
@@ -2604,47 +2600,47 @@ public class UseItem {
    // short[] icon = new short[2];
    // icon[0] = item.template.iconID;
    // if (index <= 3 && index >= 0) {
-   // pl.inventory.addGold(Util.nextInt(gold[0][0], gold[0][1]));
+   // pl.inventory.addGold(Util.nextInt(gold[0][0], gold[0][1]);
    // PlayerService.gI().sendInfoHpMpMoney(pl);
    // icon[1] = 930;
    // } else {
 
    // Item it = ItemService.gI().createNewItem(temp[index]);
    // if (temp[index] == 441) {
-   // it.itemOptions.add(new ItemOption(95, 5));
+   // it.itemOptions.add(new ItemOption(95, 5);
    // } else if (temp[index] == 442) {
-   // it.itemOptions.add(new ItemOption(96, 5));
+   // it.itemOptions.add(new ItemOption(96, 5);
    // } else if (temp[index] == 447) {
-   // it.itemOptions.add(new ItemOption(101, 5));
+   // it.itemOptions.add(new ItemOption(101, 5);
    // } else if (temp[index] >= 2009 && temp[index] <= 2010) {
-   // it.itemOptions.add(new ItemOption(30, 0));
+   // it.itemOptions.add(new ItemOption(30, 0);
    // } else if (temp[index] == 865) {
-   // it.itemOptions.add(new ItemOption(30, 0));
+   // it.itemOptions.add(new ItemOption(30, 0);
    // if (Util.isTrue(1, 20)) {
-   // it.itemOptions.add(new ItemOption(93, 365));
+   // it.itemOptions.add(new ItemOption(93, 365);
    // } else {
-   // it.itemOptions.add(new ItemOption(93, Util.nextInt(1, 30)));
+   // it.itemOptions.add(new ItemOption(93, Util.nextInt(1, 30);
    // }
    // } else if (temp[index] >= 938 && temp[index] <= 940) {
-   // it.itemOptions.add(new ItemOption(77, 35));
-   // it.itemOptions.add(new ItemOption(103, 35));
-   // it.itemOptions.add(new ItemOption(50, 35));
+   // it.itemOptions.add(new ItemOption(77, 35);
+   // it.itemOptions.add(new ItemOption(103, 35);
+   // it.itemOptions.add(new ItemOption(50, 35);
    // if (Util.isTrue(1, 50)) {
-   // it.itemOptions.add(new ItemOption(116, 0));
+   // it.itemOptions.add(new ItemOption(116, 0);
    // } else {
-   // it.itemOptions.add(new ItemOption(93, Util.nextInt(1, 30)));
+   // it.itemOptions.add(new ItemOption(93, Util.nextInt(1, 30);
    // }
    // } else if (temp[index] >= 946 && temp[index] <= 948) {
-   // it.itemOptions.add(new ItemOption(77, 35));
-   // it.itemOptions.add(new ItemOption(103, 35));
-   // it.itemOptions.add(new ItemOption(50, 35));
+   // it.itemOptions.add(new ItemOption(77, 35);
+   // it.itemOptions.add(new ItemOption(103, 35);
+   // it.itemOptions.add(new ItemOption(50, 35);
    // if (Util.isTrue(1, 20)) {
-   // it.itemOptions.add(new ItemOption(93, 365));
+   // it.itemOptions.add(new ItemOption(93, 365);
    // } else {
-   // it.itemOptions.add(new ItemOption(93, Util.nextInt(1, 30)));
+   // it.itemOptions.add(new ItemOption(93, Util.nextInt(1, 30);
    // }
    // } else {
-   // it.itemOptions.add(new ItemOption(73, 0));
+   // it.itemOptions.add(new ItemOption(73, 0);
    // }
    // InventoryService.gI().addItemBag(pl, it, 0);
    // icon[1] = it.template.iconID;

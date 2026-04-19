@@ -20,7 +20,7 @@ import nro.server.Client;
 import nro.server.Manager;
 import nro.services.MapService;
 import nro.services.Service;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.utils.Log;
 import nro.utils.Util;
 
@@ -81,7 +81,7 @@ public class Clan {
    public boolean isLeader;
    @Setter
    @Getter
-   private Buff buff;
+   public Buff buff;
    @Getter
    private Zone clanArea;
 
@@ -159,7 +159,7 @@ public class Clan {
    public void sendMessageClan(ClanMessage cmg) {
       Message msg;
       try {
-         msg = new Message(-51);
+         msg = Message.create(-51);
          msg.writer().writeByte(cmg.type);
          msg.writer().writeInt(cmg.id);
          msg.writer().writeInt(cmg.playerId);

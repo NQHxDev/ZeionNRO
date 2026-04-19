@@ -1,0 +1,13 @@
+{
+   "ports": [14445, 14446, 3306],
+   "thresholds": {
+      "14445": 20,
+      "3306": 3
+   },
+   "default_threshold": 10,
+   "burst_threshold": 5,
+   "unblock_after_seconds": 3600,
+   "whitelist": ["127.0.0.1"],
+   "auto_whitelist_cloudflare": true,
+   "log_retention_days": 7
+}

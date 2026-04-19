@@ -14,7 +14,7 @@ public class CaptionManager {
    }
 
    @Getter
-   private List<Caption> captions;
+   public List<Caption> captions;
 
    public CaptionManager() {
       captions = new ArrayList<>();
@@ -30,7 +30,7 @@ public class CaptionManager {
 
    public Caption find(int id) {
       for (Caption caption : captions) {
-         if (caption.getId() == id) {
+         if (caption.id == id) {
             return caption;
          }
       }
@@ -43,7 +43,7 @@ public class CaptionManager {
          int size = captions.size();
          int level = 0;
          for (int i = size - 1; i >= 0; i--) {
-            double p = captions.get(i).getPower();
+            double p = captions.get(i).power;
             if (power >= p) {
                level = i;
                break;

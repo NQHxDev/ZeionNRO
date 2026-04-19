@@ -18,7 +18,7 @@ public class ServerManager {
 
    public Session find(int id) {
       for (Session session : this.sessions) {
-         if (session.id == id) {
+         if (session.getId() == id) {
             return session;
          }
       }

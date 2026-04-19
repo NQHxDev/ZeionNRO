@@ -1,6 +1,8 @@
 package nro.resources;
 
 import com.google.gson.Gson;
+
+import lombok.Getter;
 import nro.resources.entity.EffectData;
 import nro.resources.entity.ImageByName;
 import nro.resources.entity.MobData;
@@ -17,23 +19,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import lombok.Getter;
-import lombok.Setter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-@Getter
-@Setter
 public abstract class AbsResources {
 
-   private File folder;
-   private HashMap<String, byte[]> datas;
-   private int[] dataVersion;
-   private byte[][] smallVersion;
-   private byte[][] backgroundVersion;
-   private HashMap<String, ImageByName> imageByNames;
-   private List<MobData> mobDatas;
-   private List<EffectData> effectDatas;
+   @Getter
+   public File folder;
+
+   public HashMap<String, byte[]> datas;
+
+   @Getter
+   public int[] dataVersion;
+
+   @Getter
+   public byte[][] smallVersion;
+
+   @Getter
+   public byte[][] backgroundVersion;
+
+   public HashMap<String, ImageByName> imageByNames;
+
+   public List<MobData> mobDatas;
+
+   public List<EffectData> effectDatas;
 
    public AbsResources() {
       this.datas = new HashMap<>();
@@ -61,14 +70,16 @@ public abstract class AbsResources {
       File folder = new File(this.folder, "effect_data");
       File[] listFiles = folder.listFiles();
       effectDatas = new ArrayList<>();
-      for (File file : listFiles) {
-         try {
-            String json = Files.readString(file.toPath());
-            if (!json.equals("")) {
-               effectDatas.add(g.fromJson(json, EffectData.class));
+      if (listFiles != null) {
+         for (File file : listFiles) {
+            try {
+               String json = Files.readString(file.toPath());
+               if (!json.equals("")) {
+                  effectDatas.add(g.fromJson(json, EffectData.class));
+               }
+            } catch (IOException ex) {
+               Logger.getLogger(AbsResources.class.getName()).log(Level.SEVERE, null, ex);
             }
-         } catch (IOException ex) {
-            Logger.getLogger(AbsResources.class.getName()).log(Level.SEVERE, null, ex);
          }
       }
    }
@@ -78,17 +89,18 @@ public abstract class AbsResources {
       File folder = new File(this.folder, "monster_data");
       File[] listFiles = folder.listFiles();
       mobDatas = new ArrayList<>();
-      for (File file : listFiles) {
-         try {
-            String json = Files.readString(file.toPath());
-            if (!json.equals("")) {
-               mobDatas.add(g.fromJson(json, MobData.class));
+      if (listFiles != null) {
+         for (File file : listFiles) {
+            try {
+               String json = Files.readString(file.toPath());
+               if (!json.equals("")) {
+                  mobDatas.add(g.fromJson(json, MobData.class));
+               }
+            } catch (IOException ex) {
+               Logger.getLogger(AbsResources.class.getName()).log(Level.SEVERE, null, ex);
             }
-         } catch (IOException ex) {
-            Logger.getLogger(AbsResources.class.getName()).log(Level.SEVERE, null, ex);
          }
       }
-      mobDatas.forEach(m -> m.setData());
    }
 
    public void initIBN() {
@@ -100,10 +112,7 @@ public abstract class AbsResources {
             JSONObject obj = jIBN.getJSONObject(i);
             String filename = obj.getString("filename");
             int nFame = obj.getInt("number_frame");
-            imageByNames.put(filename, ImageByName.builder()
-                  .filename(filename)
-                  .nFame(nFame)
-                  .build());
+            imageByNames.put(filename, new ImageByName(filename, nFame));
          }
       }
    }
@@ -124,23 +133,25 @@ public abstract class AbsResources {
             Path dirPath = Paths.get(this.folder.getAbsolutePath(), "image", (i + 1) + "", "bg");
             File file = dirPath.toFile();
             if (!file.exists()) {
-               Log.error("AbsResources: BG directory missing: " + dirPath.toAbsolutePath());
+               Log.error("AbsResources: BG directory missing: " + dirPath.toAbsolutePath().toString());
                continue;
             }
             File[] files = file.listFiles();
             int max = 0;
-            for (File f : files) {
-               String name = f.getName();
-               int id = Integer.parseInt(FileUtils.cutPng(name));
-               if (id > max) {
-                  max = id;
+            if (files != null) {
+               for (File f : files) {
+                  String name = f.getName();
+                  int id = Integer.parseInt(FileUtils.cutPng(name));
+                  if (id > max) {
+                     max = id;
+                  }
                }
-            }
-            backgroundVersion[i] = new byte[max + 1];
-            for (File f : files) {
-               String name = f.getName();
-               int id = Integer.parseInt(FileUtils.cutPng(name));
-               backgroundVersion[i][id] = (byte) (f.length() % 127);
+               backgroundVersion[i] = new byte[max + 1];
+               for (File f : files) {
+                  String name = f.getName();
+                  int id = Integer.parseInt(FileUtils.cutPng(name));
+                  backgroundVersion[i][id] = (byte) (f.length() % 127);
+               }
             }
          }
       } catch (Exception e) {
@@ -155,25 +166,27 @@ public abstract class AbsResources {
             Path dirPath = Paths.get(this.folder.getAbsolutePath(), "image", (i + 1) + "", "icon");
             File file = dirPath.toFile();
             if (!file.exists()) {
-                Log.error("AbsResources: Icon directory missing: " + dirPath.toAbsolutePath());
-                continue;
+               Log.error("AbsResources: Icon directory missing: " + dirPath.toAbsolutePath().toString());
+               continue;
             }
             File[] files = file.listFiles();
             int max = 0;
-            for (File f : files) {
-               String name = f.getName();
-               name = FileUtils.cutPng(name);
-               int id = Integer.parseInt(name);
-               if (id > max) {
-                  max = id;
+            if (files != null) {
+               for (File f : files) {
+                  String name = f.getName();
+                  name = FileUtils.cutPng(name);
+                  int id = Integer.parseInt(name);
+                  if (id > max) {
+                     max = id;
+                  }
                }
-            }
-            smallVersion[i] = new byte[max + 1];
-            for (File f : files) {
-               String name = f.getName();
-               name = FileUtils.cutPng(name);
-               int id = Integer.parseInt(name);
-               smallVersion[i][id] = (byte) (f.length() % 127);
+               smallVersion[i] = new byte[max + 1];
+               for (File f : files) {
+                  String name = f.getName();
+                  name = FileUtils.cutPng(name);
+                  int id = Integer.parseInt(name);
+                  smallVersion[i][id] = (byte) (f.length() % 127);
+               }
             }
          }
       } catch (Exception ex) {
@@ -189,7 +202,7 @@ public abstract class AbsResources {
       try {
          Path path = Paths.get(this.folder.getAbsolutePath(), segments);
          if (!Files.exists(path)) {
-            Log.error("AbsResources: File NOT FOUND: " + path.toAbsolutePath());
+            Log.error("AbsResources: File NOT FOUND: " + path.toAbsolutePath().toString());
             return new byte[0];
          }
          return Files.readAllBytes(path);
@@ -228,6 +241,26 @@ public abstract class AbsResources {
       return readAllBytes("image", zoomLevel + "", "bg", bg + ".png");
    }
 
+   public byte[] getRawBgData(int zoomLevel, int bg) {
+      return getRawBGData(zoomLevel, bg);
+   }
+
+   public byte[] getRawMapLogoData(int zoomLevel, int id) {
+      return readAllBytes("image", zoomLevel + "", "map_logo", id + ".png");
+   }
+
+   public byte[] getRawSmallImageData(int zoomLevel, int id) {
+      return readAllBytes("image", zoomLevel + "", "small_image", id + ".png");
+   }
+
+   public byte[] getRawSideIconData(int zoomLevel, int id) {
+      return readAllBytes("image", zoomLevel + "", "side_icon", id + ".png");
+   }
+
+   public byte[] getRawItemIconData(int zoomLevel, int id) {
+      return readAllBytes("image", zoomLevel + "", "item_icon", id + ".png");
+   }
+
    public byte[] getRawIBNData(int zoomLevel, String filename) {
       return readAllBytes("image", zoomLevel + "", "imgbyname", filename + ".png");
    }
@@ -238,6 +271,10 @@ public abstract class AbsResources {
 
    public byte[] getRawEffectData(int zoomLevel, int id) {
       return readAllBytes("image", zoomLevel + "", "effect", id + ".png");
+   }
+
+   public byte[] getRawImageData(int zoomLevel, int id) {
+      return readAllBytes("image", zoomLevel + "", "img", id + ".png");
    }
 
    public void putData(String key, byte[] data) {
@@ -254,7 +291,7 @@ public abstract class AbsResources {
 
    public MobData getMobData(int id) {
       for (MobData mob : mobDatas) {
-         if (mob.getId() == id) {
+         if (mob.id == id) {
             return mob;
          }
       }
@@ -263,7 +300,26 @@ public abstract class AbsResources {
 
    public EffectData getEffectData(int id) {
       for (EffectData eff : effectDatas) {
-         if (eff.getId() == id) {
+         if (eff.id == id) {
+            return eff;
+         }
+      }
+      return null;
+   }
+
+   public abstract byte[] getData();
+
+   public abstract byte[] getDataByZoom(int zoomLevel);
+
+   public abstract byte[] getMapData(int zoomLevel, int mapId);
+
+   public int getEffId(int id) {
+      return -1;
+   }
+
+   public EffectData getEffData(int id) {
+      for (EffectData eff : effectDatas) {
+         if (eff.id == id) {
             return eff;
          }
       }

@@ -14,7 +14,7 @@ public class AttributeTemplateManager {
    }
 
    @Getter
-   private final List<AttributeTemplate> list = new ArrayList<>();
+   public final List<AttributeTemplate> list = new ArrayList<>();
 
    public void add(AttributeTemplate at) {
       list.add(at);
@@ -26,10 +26,11 @@ public class AttributeTemplateManager {
 
    public AttributeTemplate find(int id) {
       for (AttributeTemplate at : list) {
-         if (at.getId() == id) {
+         if (at.id == id) {
             return at;
          }
       }
       return null;
    }
+
 }

@@ -4,7 +4,7 @@ MVN := mvn
 APP_NAME := ServerLogin
 VERSION := 1.0-RELEASE
 JAR_DIR := target
-FAT_JAR := $(JAR_DIR)/$(APP_NAME)-$(VERSION)-jar-with-dependencies.jar
+FAT_JAR := $(JAR_DIR)/$(APP_NAME)-$(VERSION).jar
 ROOT_JAR := ./ServerLogin.jar
 
 # Colors

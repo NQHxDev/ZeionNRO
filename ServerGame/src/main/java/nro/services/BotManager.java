@@ -15,7 +15,7 @@ import nro.models.player.Inventory;
 import nro.models.player.Pet;
 import nro.models.skill.Skill;
 import nro.server.Manager;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.server.io.Session;
 
 import nro.services.func.ChangeMapService;
@@ -208,7 +208,7 @@ public class BotManager {
       }
 
       try {
-         Message msg = new Message(125);
+         Message msg = Message.create(125);
          msg.writer().writeByte(fusionType);
          msg.writer().writeInt((int) pl.id);
          Service.getInstance().sendMessAllPlayerInMap(pl, msg);

@@ -15,6 +15,7 @@ import nro.card.CardTemplate;
 import nro.manager.AchiveManager;
 import nro.manager.MiniPetManager;
 import nro.manager.PetFollowManager;
+import nro.models.consignment.ConsignmentShop;
 import nro.models.item.Item;
 import nro.models.item.ItemOption;
 import nro.models.item.MinipetTemplate;
@@ -85,9 +86,9 @@ public class ServiceDataDAO {
          BangTin.BANGTIN_MANAGER.clear();
          while (rs.next()) {
             BangTin bt = new BangTin();
-            bt.setId(rs.getInt("id"));
-            bt.setTieude(rs.getString("tieu_de"));
-            bt.setInfo(rs.getString("info"));
+            bt.id = rs.getInt("id");
+            bt.tieude = rs.getString("tieu_de");
+            bt.info = rs.getString("info");
             BangTin.BANGTIN_MANAGER.add(bt);
          }
          Log.success("Bulletin Board (BangTin) loaded successfully (" + BangTin.BANGTIN_MANAGER.size() + ")");
@@ -124,11 +125,11 @@ public class ServiceDataDAO {
          PhucLoi.PHUCLOI_TEMPLATES.clear();
          while (rs.next()) {
             PhucLoi pl = new PhucLoi();
-            pl.setId(rs.getInt("id"));
-            pl.setTab_id(rs.getInt("tab_id"));
-            pl.setName(rs.getString("name"));
-            pl.setMax_count(rs.getInt("max_count"));
-            pl.setActive(rs.getByte("active"));
+            pl.id = rs.getInt("id");
+            pl.tab_id = rs.getInt("tab_id");
+            pl.name = rs.getString("name");
+            pl.max_count = rs.getInt("max_count");
+            pl.active = rs.getByte("active");
 
             String listItemJson = rs.getString("list_item");
             List<ItemData> itemsData = gson.fromJson(listItemJson, new TypeToken<List<ItemData>>() {
@@ -177,14 +178,14 @@ public class ServiceDataDAO {
                }
             }
 
-            TamBao.gI().getPOOLS().computeIfAbsent(keyId, k -> new ArrayList<>()).add(it);
-            TamBao.gI().getPOOL_TILE().computeIfAbsent(keyId, k -> new ArrayList<>())
+            TamBao.gI().POOLS.computeIfAbsent(keyId, k -> new ArrayList<>()).add(it);
+            TamBao.gI().POOL_TILE.computeIfAbsent(keyId, k -> new ArrayList<>())
                   .add(Math.max(0, Math.min(100, tile)));
-            TamBao.gI().getPOOL_VIP_FLAGS().computeIfAbsent(keyId, k -> new ArrayList<>()).add(0);
+            TamBao.gI().POOL_VIP_FLAGS.computeIfAbsent(keyId, k -> new ArrayList<>()).add(0);
             count++;
          }
-         if (!TamBao.gI().getPOOLS().isEmpty()) {
-            TamBao.gI().setDEFAULT_KEY_ITEM_ID(TamBao.gI().getPOOLS().keySet().iterator().next());
+         if (!TamBao.gI().POOLS.isEmpty()) {
+            TamBao.gI().DEFAULT_KEY_ITEM_ID = TamBao.gI().POOLS.keySet().iterator().next();
          }
          Log.success("TamBao Items loaded successfully (" + count + ")");
       } catch (SQLException e) {
@@ -319,28 +320,27 @@ public class ServiceDataDAO {
    }
 
    private static void loadCardTemplates(Connection con) {
-      CardManager.getInstance().getCardTemplates().clear();
+      CardManager.getInstance().cardTemplates.clear();
       String sql = "SELECT * FROM collection_book";
       try (PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery()) {
          while (rs.next()) {
-            CardTemplate card = CardTemplate.builder()
-                  .id(rs.getShort("id"))
-                  .itemID(rs.getShort("item_id"))
-                  .name(rs.getString("name"))
-                  .info(rs.getString("info"))
-                  .maxAmount(rs.getByte("max_amount"))
-                  .icon(rs.getShort("icon"))
-                  .rank(rs.getByte("rank"))
-                  .type(rs.getByte("type"))
-                  .mobID(rs.getShort("mob_id"))
-                  .head(rs.getShort("head"))
-                  .body(rs.getShort("body"))
-                  .leg(rs.getShort("leg"))
-                  .bag(rs.getShort("bag"))
-                  .aura(rs.getShort("aura"))
-                  .options(new ArrayList<>())
-                  .build();
+            CardTemplate card = new CardTemplate();
+            card.id = rs.getShort("id");
+            card.itemID = rs.getShort("item_id");
+            card.name = rs.getString("name");
+            card.info = rs.getString("info");
+            card.maxAmount = rs.getByte("max_amount");
+            card.icon = rs.getShort("icon");
+            card.rank = rs.getByte("rank");
+            card.type = rs.getByte("type");
+            card.mobID = rs.getShort("mob_id");
+            card.head = rs.getShort("head");
+            card.body = rs.getShort("body");
+            card.leg = rs.getShort("leg");
+            card.bag = rs.getShort("bag");
+            card.aura = rs.getShort("aura");
+            card.options = new ArrayList<>();
 
             String optionsJson = rs.getString("options");
             List<CardOptionData> optionsDatas = gson.fromJson(optionsJson, new TypeToken<List<CardOptionData>>() {
@@ -349,76 +349,73 @@ public class ServiceDataDAO {
                for (CardOptionData d : optionsDatas) {
                   ItemOption io = new ItemOption(d.id, d.param);
                   io.activeCard = (byte) d.active_card;
-                  card.getOptions().add(io);
+                  card.options.add(io);
                }
             }
-            CardManager.getInstance().getCardTemplates().add(card);
+            CardManager.getInstance().cardTemplates.add(card);
          }
          Log.success(
-               "Card Templates loaded successfully (" + CardManager.getInstance().getCardTemplates().size() + ")");
+               "Card Templates loaded successfully (" + CardManager.getInstance().cardTemplates.size() + ")");
       } catch (SQLException e) {
          Log.error(ServiceDataDAO.class, e, "Error loading card templates");
       }
    }
 
    private static void loadPowerLimits(Connection con) {
-      PowerLimitManager.getInstance().getPowers().clear();
+      PowerLimitManager.getInstance().powers.clear();
       String sql = "SELECT * FROM power_limit";
       try (PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery()) {
          while (rs.next()) {
-            PowerLimit pl = PowerLimit.builder()
-                  .id(rs.getShort("id"))
-                  .power(rs.getLong("power"))
-                  .hp(rs.getInt("hp"))
-                  .mp(rs.getInt("mp"))
-                  .damage(rs.getInt("damage"))
-                  .defense(rs.getInt("defense"))
-                  .critical(rs.getInt("critical"))
-                  .build();
-            PowerLimitManager.getInstance().getPowers().add(pl);
+            PowerLimit pl = new PowerLimit();
+            pl.id = rs.getShort("id");
+            pl.power = rs.getLong("power");
+            pl.hp = rs.getInt("hp");
+            pl.mp = rs.getInt("mp");
+            pl.damage = rs.getInt("damage");
+            pl.defense = rs.getInt("defense");
+            pl.critical = rs.getInt("critical");
+            PowerLimitManager.getInstance().powers.add(pl);
          }
-         Log.success("Power Limits loaded successfully (" + PowerLimitManager.getInstance().getPowers().size() + ")");
+         Log.success("Power Limits loaded successfully (" + PowerLimitManager.getInstance().powers.size() + ")");
       } catch (SQLException e) {
          Log.error(ServiceDataDAO.class, e, "Error loading power limits");
       }
    }
 
    private static void loadCaptions(Connection con) {
-      CaptionManager.getInstance().getCaptions().clear();
+      CaptionManager.getInstance().captions.clear();
       String sql = "SELECT * FROM caption";
       try (PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery()) {
          while (rs.next()) {
-            Caption c = Caption.builder()
-                  .id(rs.getShort("id"))
-                  .earth(rs.getString("earth"))
-                  .saiya(rs.getString("saiya"))
-                  .namek(rs.getString("namek"))
-                  .power(rs.getLong("power"))
-                  .build();
-            CaptionManager.getInstance().getCaptions().add(c);
+            Caption c = new Caption();
+            c.id = rs.getShort("id");
+            c.earth = rs.getString("earth");
+            c.saiya = rs.getString("saiya");
+            c.namek = rs.getString("namek");
+            c.power = rs.getLong("power");
+            CaptionManager.getInstance().captions.add(c);
          }
-         Log.success("Captions loaded successfully (" + CaptionManager.getInstance().getCaptions().size() + ")");
+         Log.success("Captions loaded successfully (" + CaptionManager.getInstance().captions.size() + ")");
       } catch (SQLException e) {
          Log.error(ServiceDataDAO.class, e, "Error loading captions");
       }
    }
 
    private static void loadAttributeTemplates(Connection con) {
-      AttributeTemplateManager.getInstance().getList().clear();
+      AttributeTemplateManager.getInstance().list.clear();
       String sql = "SELECT * FROM attribute_template";
       try (PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery()) {
          while (rs.next()) {
-            AttributeTemplate at = AttributeTemplate.builder()
-                  .id(rs.getInt("id"))
-                  .name(rs.getString("name"))
-                  .build();
-            AttributeTemplateManager.getInstance().getList().add(at);
+            AttributeTemplate at = new AttributeTemplate();
+            at.id = rs.getInt("id");
+            at.name = rs.getString("name");
+            AttributeTemplateManager.getInstance().list.add(at);
          }
          Log.success("Attribute Templates loaded successfully ("
-               + AttributeTemplateManager.getInstance().getList().size() + ")");
+               + AttributeTemplateManager.getInstance().list.size() + ")");
       } catch (SQLException e) {
          Log.error(ServiceDataDAO.class, e, "Error loading attribute templates");
       }
@@ -436,24 +433,19 @@ public class ServiceDataDAO {
             int time = rs.getInt("time");
             AttributeTemplate template = AttributeTemplateManager.getInstance().find(templateId);
             if (template != null) {
-               Attribute at = Attribute.builder()
-                     .id(id)
-                     .templateID(templateId)
-                     .value(value)
-                     .time(time)
-                     .build();
+               Attribute at = new Attribute(id, templateId, value, time);
                am.add(at);
             }
          }
-         ServerManager.gI().setAttributeManager(am);
-         Log.success("Attribute Server loaded successfully (" + am.getAttributes().size() + ")");
+         ServerManager.gI().attributeManager = am;
+         Log.success("Attribute Server loaded successfully (" + am.attributes.size() + ")");
       } catch (SQLException e) {
          Log.error(ServiceDataDAO.class, e, "Error loading attribute server");
       }
    }
 
    private static void loadEffectEvents(Connection con) {
-      EffectEventManager.gI().getTemplates().clear();
+      EffectEventManager.gI().templates.clear();
       String sql = "SELECT id, eff_event FROM map_template WHERE eff_event IS NOT NULL AND eff_event != '' AND eff_event != '[]'";
       try (PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery()) {
@@ -464,21 +456,13 @@ public class ServiceDataDAO {
             }.getType());
             if (effs != null) {
                for (EffEventData d : effs) {
-                  EffectEventTemplate ee = EffectEventTemplate.builder()
-                        .mapId(mapId)
-                        .eventId(d.event_id)
-                        .effId(d.eff_id)
-                        .layer(d.layer)
-                        .x(d.x)
-                        .y(d.y)
-                        .loop(d.loop)
-                        .delay(d.delay)
-                        .build();
-                  EffectEventManager.gI().getTemplates().add(ee);
+                  EffectEventTemplate ee = new EffectEventTemplate(mapId, d.event_id, d.eff_id, d.layer, d.x, d.y,
+                        d.loop, d.delay);
+                  EffectEventManager.gI().templates.add(ee);
                }
             }
          }
-         Log.success("Effect Events loaded successfully (" + EffectEventManager.gI().getTemplates().size() + ")");
+         Log.success("Effect Events loaded successfully (" + EffectEventManager.gI().templates.size() + ")");
       } catch (SQLException e) {
          Log.error(ServiceDataDAO.class, e, "Error loading effect events");
       }
@@ -491,9 +475,9 @@ public class ServiceDataDAO {
             ResultSet rs = ps.executeQuery()) {
          while (rs.next()) {
             Notification n = new Notification();
-            n.setId(rs.getInt("id"));
-            n.setTitle(rs.getString("title"));
-            n.setContent(rs.getString("content"));
+            n.id = rs.getInt("id");
+            n.title = rs.getString("title");
+            n.content = rs.getString("content");
             NotiManager.getInstance().getNotifications().add(n);
          }
          Log.success("Notifications loaded successfully (" + NotiManager.getInstance().getNotifications().size() + ")");
@@ -518,7 +502,7 @@ public class ServiceDataDAO {
    }
 
    private static void loadAchievements(Connection con) {
-      AchiveManager.getInstance().getList().clear();
+      AchiveManager.getInstance().list.clear();
       String sql = "SELECT * FROM achivements";
       try (PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery()) {
@@ -529,16 +513,16 @@ public class ServiceDataDAO {
                   rs.getString("detail"),
                   rs.getInt("money"),
                   rs.getInt("max_count"));
-            AchiveManager.getInstance().getList().add(at);
+            AchiveManager.getInstance().list.add(at);
          }
-         Log.success("Achievements loaded successfully (" + AchiveManager.getInstance().getList().size() + ")");
+         Log.success("Achievements loaded successfully (" + AchiveManager.getInstance().list.size() + ")");
       } catch (SQLException e) {
          Log.error(ServiceDataDAO.class, e, "Error loading achievements");
       }
    }
 
    private static void loadMiniPets(Connection con) {
-      MiniPetManager.gI().getList().clear();
+      MiniPetManager.gI().list.clear();
       String sql = "SELECT * FROM mini_pet";
       try (PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery()) {
@@ -548,9 +532,9 @@ public class ServiceDataDAO {
                   rs.getShort("head"),
                   rs.getShort("body"),
                   rs.getShort("leg"));
-            MiniPetManager.gI().getList().add(t);
+            MiniPetManager.gI().list.add(t);
          }
-         Log.success("Mini Pets loaded successfully (" + MiniPetManager.gI().getList().size() + ")");
+         Log.success("Mini Pets loaded successfully (" + MiniPetManager.gI().list.size() + ")");
       } catch (SQLException e) {
          Log.error(ServiceDataDAO.class, e, "Error loading mini pets");
       }
@@ -560,19 +544,19 @@ public class ServiceDataDAO {
       String sql = "SELECT * FROM consignment_shop";
       try (PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery()) {
-         nro.models.consignment.ConsignmentShop shop = nro.models.consignment.ConsignmentShop.getInstance();
-         shop.getList().clear();
+         ConsignmentShop shop = nro.models.consignment.ConsignmentShop.getInstance();
+         shop.list.clear();
          int count = 0;
          while (rs.next()) {
             short itemId = rs.getShort("item_id");
             int quantity = rs.getInt("quantity");
             nro.models.consignment.ConsignmentItem item = ItemService.gI().createNewConsignmentItem(itemId, quantity);
-            item.setConsignorID(rs.getLong("consignor_id"));
-            item.setTab(rs.getByte("tab"));
-            item.setPriceGold(rs.getInt("gold"));
-            item.setPriceGem(rs.getInt("gem"));
-            item.setUpTop(rs.getBoolean("up_top"));
-            item.setSold(rs.getBoolean("sold"));
+            item.consignorID = rs.getLong("consignor_id");
+            item.tab = rs.getByte("tab");
+            item.priceGold = rs.getInt("gold");
+            item.priceGem = rs.getInt("gem");
+            item.upTop = rs.getBoolean("up_top");
+            item.sold = rs.getBoolean("sold");
             item.createTime = rs.getLong("time_consign");
 
             String optionsJson = rs.getString("item_options");
@@ -599,24 +583,23 @@ public class ServiceDataDAO {
                   "INSERT INTO `consignment_shop`(`id`, `consignor_id`, `tab`, `item_id`, `gold`, `gem`, `quantity`, `item_options`, `up_top`, `sold`,`time_consign`) VALUES (? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
          truncateStatement.executeUpdate();
 
-         List<nro.models.consignment.ConsignmentItem> list = nro.models.consignment.ConsignmentShop.getInstance()
-               .getList();
+         List<nro.models.consignment.ConsignmentItem> list = nro.models.consignment.ConsignmentShop.getInstance().list;
          int id = 0;
          for (nro.models.consignment.ConsignmentItem it : list) {
             if (it != null) {
                insertStatement.setInt(1, id++);
-               insertStatement.setLong(2, it.getConsignorID());
-               insertStatement.setInt(3, it.getTab());
+               insertStatement.setLong(2, it.consignorID);
+               insertStatement.setInt(3, it.tab);
                insertStatement.setShort(4, it.template.id);
-               insertStatement.setInt(5, it.getPriceGold());
-               insertStatement.setInt(6, it.getPriceGem());
+               insertStatement.setInt(5, it.priceGold);
+               insertStatement.setInt(6, it.priceGem);
                insertStatement.setInt(7, it.quantity);
 
                // Chuyển sang JSON GSON chuẩn: [{"id":..., "param":...}, ...]
                insertStatement.setString(8, gson.toJson(it.itemOptions));
 
-               insertStatement.setBoolean(9, it.isUpTop());
-               insertStatement.setBoolean(10, it.isSold());
+               insertStatement.setBoolean(9, it.upTop);
+               insertStatement.setBoolean(10, it.sold);
                insertStatement.setLong(11, it.createTime);
                insertStatement.addBatch();
             }
@@ -629,7 +612,7 @@ public class ServiceDataDAO {
    }
 
    private static void loadPetFollows(Connection con) {
-      PetFollowManager.gI().getList().clear();
+      PetFollowManager.gI().list.clear();
       String sql = "SELECT * FROM pet_follow";
       try (PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery()) {
@@ -640,9 +623,9 @@ public class ServiceDataDAO {
                   rs.getInt("width"),
                   rs.getInt("height"),
                   rs.getByte("frame"));
-            PetFollowManager.gI().getList().add(f);
+            PetFollowManager.gI().list.add(f);
          }
-         Log.success("Pet Follows loaded successfully (" + PetFollowManager.gI().getList().size() + ")");
+         Log.success("Pet Follows loaded successfully (" + PetFollowManager.gI().list.size() + ")");
       } catch (SQLException e) {
          Log.error(ServiceDataDAO.class, e, "Error loading pet follows");
       }
@@ -651,7 +634,7 @@ public class ServiceDataDAO {
    /**
     * Robust Parser: Tự động nhận diện và xử lý cả hai định dạng JSON Option (Mảng
     * và Object)
-    * 
+    *
     * @param json Chuỗi JSON từ Database
     * @return Danh sách ItemOption đã parse
     */

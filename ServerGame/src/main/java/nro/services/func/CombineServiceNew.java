@@ -7,7 +7,7 @@ import nro.models.npc.Npc;
 import nro.models.npc.NpcManager;
 import nro.models.player.Player;
 import nro.server.ServerNotify;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.InventoryService;
 import nro.services.ItemService;
 
@@ -132,7 +132,7 @@ public class CombineServiceNew {
       player.combineNew.setTypeCombine(type);
       Message msg;
       try {
-         msg = new Message(-81);
+         msg = Message.create(-81);
          msg.writer().writeByte(OPEN_TAB_COMBINE);
          msg.writer().writeUTF(getTextInfoTabCombine(type));
          msg.writer().writeUTF(getTextTopTabCombine(type));
@@ -2299,7 +2299,7 @@ public class CombineServiceNew {
    private int getItemLevel(Item item) {
       short[] upgradeArr = Manager.doSKHVip[item.template.gender][item.template.type];
       for (int i = 0; i < upgradeArr.length; i++) {
-         if (upgradeArr[i] == item.getId()) {
+         if (upgradeArr[i] == item.id) {
             return i; // Trả về chỉ số xuất hiện, coi đó là "cấp độ"
          }
       }
@@ -2309,7 +2309,7 @@ public class CombineServiceNew {
    private int getItemLevelRada(Item item) {
       short[] upgradeArrRada = Manager.radaSKHVip;
       for (int i1 = 0; i1 < upgradeArrRada.length; i1++) {
-         if (upgradeArrRada[i1] == item.getId()) {
+         if (upgradeArrRada[i1] == item.id) {
             return i1; // Trả về chỉ số xuất hiện, coi đó là "cấp độ"
          }
       }
@@ -2319,7 +2319,7 @@ public class CombineServiceNew {
    private int getItemLevelDaCuongHoa(Item item) {
       short[] upgradeArrRada = Manager.daCuongHoa;
       for (int i1 = 0; i1 < upgradeArrRada.length; i1++) {
-         if (upgradeArrRada[i1] == item.getId()) {
+         if (upgradeArrRada[i1] == item.id) {
             return i1; // Trả về chỉ số xuất hiện, coi đó là "cấp độ"
          }
       }
@@ -2380,7 +2380,7 @@ public class CombineServiceNew {
          short[] arr = Manager.doSKHVip[itemNangCap.template.gender][itemNangCap.template.type];
          int index = -1;
          for (int i = 0; i < arr.length; i++) {
-            if (arr[i] == itemNangCap.getId()) {
+            if (arr[i] == itemNangCap.id) {
                index = i;
                break;
             }
@@ -2479,7 +2479,7 @@ public class CombineServiceNew {
          short[] arr = Manager.radaSKHVip;
          int index = -1;
          for (int i = 0; i < arr.length; i++) {
-            if (arr[i] == itemNangCap.getId()) {
+            if (arr[i] == itemNangCap.id) {
                index = i;
                break;
             }
@@ -4473,7 +4473,7 @@ public class CombineServiceNew {
    public void sendEffectOpenItem(Player player, short icon1, short icon2) {
       Message msg;
       try {
-         msg = new Message(-81);
+         msg = Message.create(-81);
          msg.writer().writeByte(OPEN_ITEM);
          msg.writer().writeShort(icon1);
          msg.writer().writeShort(icon2);
@@ -4491,7 +4491,7 @@ public class CombineServiceNew {
    private void sendEffectSuccessCombine(Player player) {
       Message msg;
       try {
-         msg = new Message(-81);
+         msg = Message.create(-81);
          msg.writer().writeByte(COMBINE_SUCCESS);
          player.sendMessage(msg);
          msg.cleanup();
@@ -4507,7 +4507,7 @@ public class CombineServiceNew {
    private void sendEffectFailCombine(Player player) {
       Message msg;
       try {
-         msg = new Message(-81);
+         msg = Message.create(-81);
          msg.writer().writeByte(COMBINE_FAIL);
          player.sendMessage(msg);
          msg.cleanup();
@@ -4523,7 +4523,7 @@ public class CombineServiceNew {
    private void reOpenItemCombine(Player player) {
       Message msg;
       try {
-         msg = new Message(-81);
+         msg = Message.create(-81);
          msg.writer().writeByte(REOPEN_TAB_COMBINE);
          msg.writer().writeByte(player.combineNew.itemsCombine.size());
          for (Item it : player.combineNew.itemsCombine) {
@@ -4548,7 +4548,7 @@ public class CombineServiceNew {
    private void sendEffectCombineDB(Player player, short icon) {
       Message msg;
       try {
-         msg = new Message(-81);
+         msg = Message.create(-81);
          msg.writer().writeByte(COMBINE_DRAGON_BALL);
          msg.writer().writeShort(icon);
          player.sendMessage(msg);

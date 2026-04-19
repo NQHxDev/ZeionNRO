@@ -117,8 +117,8 @@ public class MapTemplateDAO {
                   EffectMap em = new EffectMap();
                   try {
                      JsonObject dataObject = effectArray.get(j).getAsJsonObject();
-                     em.setKey(dataObject.get("key").getAsString());
-                     em.setValue(dataObject.get("value").getAsString());
+                     em.key = dataObject.get("key").getAsString();
+                     em.value = dataObject.get("value").getAsString();
                      mapTemplate.effectMaps.add(em);
                   } catch (Exception ex) {
                      // If it's not a JsonObject, it might be a malformed string or other format
@@ -126,8 +126,8 @@ public class MapTemplateDAO {
                }
                if (Manager.EVENT_SEVER == 3) {
                   EffectMap em = new EffectMap();
-                  em.setKey("beff");
-                  em.setValue("11");
+                  em.key = "beff";
+                  em.value = "11";
                   mapTemplate.effectMaps.add(em);
                }
                mapTemplates.put(mapTemplate.id, mapTemplate);

@@ -13,10 +13,11 @@ public class PetFollowManager extends AbsManager<PetFollow> {
    @Override
    public PetFollow findByID(int id) {
       for (PetFollow pet : list) {
-         if (pet.getId() == id) {
+         if (pet.id == id) {
             return pet;
          }
       }
       return null;
    }
+
 }

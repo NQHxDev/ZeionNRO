@@ -93,7 +93,7 @@ public class CommandLine implements Runnable {
 
    private void handleMaintenance(String line) {
       String[] parts = line.split(" ");
-      int seconds = 3; // Mặc định 3 giây
+      int seconds = 1;
       if (parts.length >= 2) {
          try {
             seconds = Integer.parseInt(parts[1]);

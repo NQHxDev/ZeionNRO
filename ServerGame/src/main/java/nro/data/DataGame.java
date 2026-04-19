@@ -12,7 +12,8 @@ import nro.power.Caption;
 import nro.power.CaptionManager;
 import nro.resources.Resources;
 import nro.server.Manager;
-import nro.server.io.Message;
+import nro.server.ServerManager;
+import nro.network.io.Message;
 import nro.server.io.Session;
 import nro.services.Service;
 import nro.utils.FileIO;
@@ -57,7 +58,7 @@ public class DataGame {
          MAP_MOUNT_NUM.put(data[0], num);
       }
       Log.log("DataGame: [INFO] Đang khởi tạo Resources...");
-      Resources.getInstance().init();
+      Resources.gI().init();
       Log.log("DataGame: [INFO] Khởi tạo static block hoàn tất.");
    }
 
@@ -71,13 +72,15 @@ public class DataGame {
          msg.writer().writeByte(vsItem);
          msg.writer().writeByte(0);
          List<Caption> captions = CaptionManager.getInstance().getCaptions();
-         msg.writer().writeByte(captions.size());
-         for (Caption caption : captions) {
-            msg.writer().writeDouble(caption.getPower());
+         msg.writer().writeByte(captions != null ? captions.size() : 0);
+         if (captions != null) {
+            for (Caption caption : captions) {
+               msg.writer().writeLong((long) caption.getPower());
+            }
          }
          session.sendMessage(msg);
-         msg.cleanup();
       } catch (Exception e) {
+         Log.error(DataGame.class, e);
       }
    }
 
@@ -86,24 +89,24 @@ public class DataGame {
       byte[] part = FileIO.readFile("data/part/part");
       Message msg;
       try {
-         msg = new Message(-87);
+         msg = Message.create(-87);
          msg.writer().writeByte(vsData);
-         msg.writer().writeInt(dart.length);
-         msg.writer().write(dart);
-         msg.writer().writeInt(arrow.length);
-         msg.writer().write(arrow);
-         msg.writer().writeInt(effect.length);
-         msg.writer().write(effect);
-         msg.writer().writeInt(image.length);
-         msg.writer().write(image);
-         msg.writer().writeInt(part.length);
-         msg.writer().write(part);
-         msg.writer().writeInt(skill.length);
-         msg.writer().write(skill);
+         msg.writer().writeInt(dart != null ? dart.length : 0);
+         if (dart != null) msg.writer().write(dart);
+         msg.writer().writeInt(arrow != null ? arrow.length : 0);
+         if (arrow != null) msg.writer().write(arrow);
+         msg.writer().writeInt(effect != null ? effect.length : 0);
+         if (effect != null) msg.writer().write(effect);
+         msg.writer().writeInt(image != null ? image.length : 0);
+         if (image != null) msg.writer().write(image);
+         msg.writer().writeInt(part != null ? part.length : 0);
+         if (part != null) msg.writer().write(part);
+         msg.writer().writeInt(skill != null ? skill.length : 0);
+         if (skill != null) msg.writer().write(skill);
 
          session.doSendMessage(msg);
-         msg.cleanup();
       } catch (Exception e) {
+         e.printStackTrace();
       }
    }
 
@@ -135,7 +138,6 @@ public class DataGame {
             msg.writer().writeByte(temp.dartType);
          }
          session.sendMessage(msg);
-         msg.cleanup();
       } catch (Exception e) {
          Log.error(DataGame.class, e);
       }
@@ -145,7 +147,7 @@ public class DataGame {
    public static void updateSkill(Session session) {
       Message msg;
       try {
-         msg = new Message(-28);
+         msg = Message.create(-28);
          // msg.writer().write(FileIO.readFile("data/1632811838545_-28_7_r"));
 
          msg.writer().writeByte(7);
@@ -222,7 +224,6 @@ public class DataGame {
             }
          }
          session.doSendMessage(msg);
-         msg.cleanup();
       } catch (Exception e) {
          Log.error(DataGame.class, e);
       }
@@ -231,11 +232,10 @@ public class DataGame {
    public static void sendDataImageVersion(Session session) {
       Message msg;
       try {
-         msg = new Message(-111);
+         msg = Message.create(-111);
          msg.writer()
                .write(FileIO.readFile("resources/data/nro/data_img_version/x" + session.zoomLevel + "/img_version"));
          session.doSendMessage(msg);
-         msg.cleanup();
       } catch (Exception e) {
          Log.error(DataGame.class, e);
       }
@@ -245,10 +245,9 @@ public class DataGame {
       Message msg;
       try {
          byte[] item_bg = FileIO.readFile("resources/bg_data");
-         msg = new Message(Cmd.ITEM_BACKGROUND);
+         msg = Message.create(Cmd.ITEM_BACKGROUND);
          msg.writer().write(item_bg);
          session.sendMessage(msg);
-         msg.cleanup();
       } catch (Exception e) {
       }
    }
@@ -256,10 +255,9 @@ public class DataGame {
    public static void sendTileSetInfo(Session session) {
       Message msg;
       try {
-         msg = new Message(-82);
+         msg = Message.create(-82);
          msg.writer().write(FileIO.readFile("resources/data/nro/map/tile_set_info"));
          session.sendMessage(msg);
-         msg.cleanup();
       } catch (Exception e) {
       }
    }
@@ -271,7 +269,6 @@ public class DataGame {
          msg = Service.getInstance().messageNotMap(Cmd.REQUEST_MAPTEMPLATE);
          msg.writer().write(FileIO.readFile("resources/map/" + id));
          session.sendMessage(msg);
-         msg.cleanup();
       } catch (Exception e) {
          Log.error(DataGame.class, e);
       }
@@ -292,13 +289,13 @@ public class DataGame {
    public static void sendLinkIP(Session session) {
       Message msg;
       try {
-         msg = new Message(-29);
+         msg = Message.create(-29);
          msg.writer().writeByte(2);
-         msg.writer().writeUTF(LINK_IP_PORT + ",0,0");
+         msg.writer().writeUTF(ServerManager.NAME + ":" + Manager.DOMAIN + ":" + ServerManager.PORT + ":0,0,0");
          msg.writer().writeByte(1);
          session.sendMessage(msg);
-         msg.cleanup();
       } catch (Exception e) {
       }
    }
+
 }

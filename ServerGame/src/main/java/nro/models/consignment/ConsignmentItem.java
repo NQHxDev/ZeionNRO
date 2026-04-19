@@ -10,12 +10,12 @@ import lombok.Setter;
 @Setter
 @Getter
 public class ConsignmentItem extends Item {
-    private int consignID;
-    private long consignorID;
-    private int priceGold;
-    private int priceGem;
-    private byte tab;
-    private boolean sold;
-    private boolean upTop;
+    public int consignID;
+    public long consignorID;
+    public int priceGold;
+    public int priceGem;
+    public byte tab;
+    public boolean sold;
+    public boolean upTop;
     private long timeConsign;
 }

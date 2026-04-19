@@ -11,20 +11,20 @@ import nro.jdbc.daos.PlayerDAO;
 
 import lombok.Getter;
 import lombok.Setter;
-import nro.server.io.Message;
+import nro.network.io.Message;
 
 @Getter
 @Setter
 public class PhucLoi {
 
-   private int id;
-   private String name;
-   private int max_count;
+   public int id;
+   public String name;
+   public int max_count;
    private int count;
-   private byte active;
+   public byte active;
    private static final byte START = 1;
 
-   private int tab_id;
+   public int tab_id;
    public static final List<PhucLoiManager> PHUCLOI_MANAGER = new ArrayList<>();
    public final List<Item> PHUCLOI_LIST_ITEM = new ArrayList<>();
    public static final List<PhucLoi> PHUCLOI_TEMPLATES = new ArrayList<>();
@@ -42,7 +42,7 @@ public class PhucLoi {
       Check_active(pl);
       Message msg = null;
       try {
-         msg = new Message(103);
+         msg = Message.create(103);
          msg.writer().writeByte(START);
          msg.writer().writeByte(PHUCLOI_MANAGER.size());
 

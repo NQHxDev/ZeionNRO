@@ -1,27 +1,25 @@
 package io;
 
+import nro.network.IController;
+import nro.network.ISession;
+import nro.network.io.Message;
 import util.Log;
 
-import java.io.IOException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import model.User;
 import model.UserManager;
 
-public class Controller {
+public class Controller implements IController {
 
-   private Session session;
+   private final Lock lock = new ReentrantLock();
 
-   private Lock lock = new ReentrantLock();
-
-   public Controller(Session session) {
-      this.session = session;
-   }
-
-   public void process(Message ms) {
-      switch (ms.command) {
+   @Override
+   public void onMessage(ISession session, Message ms) {
+      Session s = (Session) session;
+      switch (ms.getCommand()) {
          case 1: {
-            this.login(ms);
+            this.login(s, ms);
             break;
          }
          case 2: {
@@ -29,39 +27,48 @@ public class Controller {
             break;
          }
          case 5: {
-            this.session.setServer(ms);
+            s.setServer(ms);
             break;
          }
          default: {
-            Log.info("cmd: " + ms.command);
+            Log.info("Unknown cmd: " + ms.getCommand());
          }
       }
+   }
+
+   @Override
+   public void onConnectionReady(ISession session) {
+      Log.info("Client connection ready! IP: " + session.getIPString());
+   }
+
+   @Override
+   public void onDisconnected(ISession session) {
+      Session s = (Session) session;
+      UserManager.getInstance().removeAllUserWithServerID(s.getServerID());
+      Log.info("Client disconnected: " + s.sessionName);
    }
 
    public void logout(Message ms) {
       try {
-         int userID = ms.reader().readInt();
+         int userID = ms.readInt();
          User user = UserManager.getInstance().find(userID);
          if (user != null) {
             UserManager.getInstance().remove(user);
          }
-      } catch (IOException ex) {
+      } catch (Exception ex) {
          ex.printStackTrace();
       }
    }
 
-   /*
-    * WARNING - Removed try catching itself - possible behaviour change.
-    */
-   public void login(Message ms) {
+   public void login(Session session, Message ms) {
       try {
-         byte serverID = ms.reader().readByte();
-         int clientID = ms.reader().readInt();
-         String username = ms.reader().readUTF();
-         String password = ms.reader().readUTF();
+         byte serverID = ms.readByte();
+         int clientID = ms.readInt();
+         String username = ms.readUTF();
+         String password = ms.readUTF();
          this.lock.lock();
          try {
-            User user = new User(username, password, serverID, clientID, this.session);
+            User user = new User(username, password, serverID, clientID, session);
             boolean result = user.login();
             if (result) {
                UserManager.getInstance().add(user);
@@ -69,14 +76,9 @@ public class Controller {
          } finally {
             this.lock.unlock();
          }
-      } catch (IOException ex) {
+      } catch (Exception ex) {
          ex.printStackTrace();
       }
    }
 
-   public void onDisconnected() {
-      UserManager.getInstance().removeAllUserWithServerID(this.session.getServerID());
-
-      Log.info("Client disconnected: " + this.session.sessionName);
-   }
 }

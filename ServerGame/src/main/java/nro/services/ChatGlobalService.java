@@ -5,7 +5,7 @@ import nro.consts.Cmd;
 import nro.models.player.Player;
 import nro.server.Client;
 import nro.server.Manager;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.utils.Log;
 import nro.utils.TimeUtil;
 import nro.utils.Util;
@@ -141,7 +141,7 @@ public class ChatGlobalService implements Runnable {
       for (Player pl : list) {
          if (pl != null) {
             try {
-               Message ms = new Message(Cmd.CHAT_THEGIOI_SERVER);
+               Message ms = Message.create(Cmd.CHAT_THEGIOI_SERVER);
                ms.writer().writeUTF(chat.playerName);
                ms.writer().writeUTF("|5|" + chat.text);
                ms.writer().writeInt((int) chat.playerId);

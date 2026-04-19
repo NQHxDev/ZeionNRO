@@ -4,12 +4,10 @@ import lombok.NoArgsConstructor;
 
 import java.time.ZoneId;
 import java.time.Duration;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import lombok.AllArgsConstructor;
 import java.util.concurrent.TimeUnit;
 
 import nro.utils.Log;
@@ -17,9 +15,14 @@ import nro.services.Service;
 import nro.services.ClanService;
 import nro.core.concurrent.GameScheduler;
 
-@AllArgsConstructor
 @NoArgsConstructor
 public class AutoMaintenance {
+
+   public AutoMaintenance(int hours, int minutes, int seconds) {
+      this.hours = hours;
+      this.minutes = minutes;
+      this.seconds = seconds;
+   }
 
    private int hours, minutes, seconds;
 
@@ -69,8 +72,7 @@ public class AutoMaintenance {
          } catch (Exception e) {
             e.printStackTrace();
          }
-         ServerManager.listenSocket.close();
-      } catch (IOException ex) {
+      } catch (Exception ex) {
          Logger.getLogger(AutoMaintenance.class.getName()).log(Level.SEVERE, null, ex);
          System.exit(1);
       } finally {

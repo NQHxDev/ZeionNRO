@@ -63,7 +63,7 @@ public class ThanMeoKarin extends Npc {
                                  int level = Byte.parseByte(
                                        String.valueOf(PLAYERID_OBJECT.get(player.id)));
                                  SnakeRoad road = new SnakeRoad(level);
-                                 ServerManager.gI().getDungeonManager().addDungeon(road);
+                                 ServerManager.gI().dungeonManager.addDungeon(road);
                                  road.join(player);
                                  player.clan.snakeRoad = road;
                               } else {

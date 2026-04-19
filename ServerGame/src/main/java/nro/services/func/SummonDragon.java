@@ -7,7 +7,7 @@ import nro.models.item.Item;
 import nro.models.item.ItemOption;
 import nro.models.map.Zone;
 import nro.models.player.Player;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.InventoryService;
 import nro.services.ItemService;
 import nro.services.ItemTimeService;
@@ -372,7 +372,7 @@ public class SummonDragon {
    private void activeShenron(Player pl, boolean appear) {
       Message msg;
       try {
-         msg = new Message(-83);
+         msg = Message.create(-83);
          msg.writer().writeByte(appear ? 0 : (byte) 1);
          if (appear && pl.zone != null && pl.zone.map != null) {
             msg.writer().writeShort(pl.zone.map.mapId);
@@ -394,7 +394,7 @@ public class SummonDragon {
    public void activeDragonNew(Player pl, boolean appear, byte eff) {
       Message msg;
       try {
-         msg = new Message(Cmd.CALL_DRAGON);
+         msg = Message.create(Cmd.CALL_DRAGON);
          msg.writer().writeByte(appear ? 0 : (byte) 1);
          if (appear && pl.zone != null && pl.zone.map != null) {
             msg.writer().writeShort(pl.zone.map.mapId);
@@ -472,7 +472,7 @@ public class SummonDragon {
    private void sendNotifyShenronAppear(int Dragon) {
       Message msg;
       try {
-         msg = new Message(-25);
+         msg = Message.create(-25);
          switch (Dragon) {
             case DRAGON_SHENRON:
                msg.writer().writeUTF(playerSummonShenron.name + " vừa gọi rồng thần tại "
@@ -843,7 +843,7 @@ public class SummonDragon {
    public void activeNight(Player pl) {
       Message msg;
       try {
-         msg = new Message(-83);
+         msg = Message.create(-83);
          msg.writer().writeByte(0);
 
          msg.writer().writeShort(180);
@@ -863,7 +863,7 @@ public class SummonDragon {
    public void activeDay(Player pl) {
       Message msg;
       try {
-         msg = new Message(-83);
+         msg = Message.create(-83);
          msg.writer().writeByte(1);
 
          msg.writer().writeShort(180);

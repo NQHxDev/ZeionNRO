@@ -8,16 +8,16 @@ public class CollectionBook {
 
    @Getter
    @Setter
-   private List<Card> cards;
+   public List<Card> cards;
 
    public void init() {
       List<CardTemplate> cardTemplates = CardManager.getInstance().getCardTemplates();
       if (cards.size() < cardTemplates.size()) {
          for (CardTemplate cardT : cardTemplates) {
-            Card card = find(cardT.getId());
+            Card card = find(cardT.id);
             if (card == null) {
                Card cardNew = new Card();
-               cardNew.setId(cardT.getId());
+               cardNew.setId(cardT.id);
                cards.add(cardNew);
             }
          }
@@ -37,7 +37,7 @@ public class CollectionBook {
 
    public Card find(int id) {
       for (Card card : cards) {
-         if (card.getId() == id) {
+         if (card.id == id) {
             return card;
          }
       }
@@ -64,4 +64,5 @@ public class CollectionBook {
 
       return null;
    }
+
 }

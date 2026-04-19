@@ -15,7 +15,7 @@ import nro.models.npc.NpcManager;
 import nro.models.player.Pet;
 import nro.models.player.Player;
 import nro.power.CaptionManager;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.*;
 import nro.services.func.ChangeMapService;
 import nro.utils.FileIO;
@@ -67,7 +67,7 @@ public class Zone {
    private final List<ItemMap> items;
    @Setter
    @Getter
-   private Player referee;
+   public Player referee;
    private Player testDame;
 
    public long lastTimeDropBlackBall;
@@ -600,7 +600,7 @@ public class Zone {
                      int itemType = item.template.type;
                      Message msg;
                      try {
-                        msg = new Message(-20);
+                        msg = Message.create(-20);
                         msg.writer().writeShort(itemMapId);
                         switch (itemType) {
                            case 9:
@@ -758,7 +758,7 @@ public class Zone {
    private void infoPlayer(Player plReceive, Player plInfo) {
       Message msg;
       try {
-         msg = new Message(-5);
+         msg = Message.create(-5);
          msg.writer().writeInt((int) plInfo.id);
          if (plInfo.clan != null) {
             msg.writer().writeInt(plInfo.clan.id);
@@ -823,7 +823,7 @@ public class Zone {
       // }
       try {
          if (plInfo.isDie()) {
-            msg = new Message(-8);
+            msg = Message.create(-8);
             msg.writer().writeInt((int) plInfo.id);
             msg.writer().writeByte(0);
             msg.writer().writeShort(plInfo.location.x);
@@ -839,7 +839,7 @@ public class Zone {
    public void mapInfo(Player pl) {
       Message msg;
       try {
-         msg = new Message(-24);
+         msg = Message.create(-24);
          msg.writer().writeByte(this.map.mapId);
          msg.writer().writeByte(this.map.planetId);
          msg.writer().writeByte(this.map.tileId);

@@ -40,4 +40,5 @@ public abstract class Event {
    public abstract void dropItem(Player player, Mob mob, List<ItemMap> list, int x, int yEnd);
 
    public abstract boolean useItem(Player player, Item item);
+
 }

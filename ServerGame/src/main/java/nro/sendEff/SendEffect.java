@@ -3,7 +3,7 @@ package nro.sendEff;
 import java.io.IOException;
 import nro.models.player.Player;
 
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.Service;
 import nro.utils.Util;
 
@@ -21,7 +21,7 @@ public class SendEffect {
    public void sendChanThienTu(Player player, int id) {
       Message me;
       try {
-         me = new Message(-128);
+         me = Message.create(-128);
          me.writer().writeByte(0);
          me.writer().writeInt((int) player.id);
 
@@ -74,7 +74,7 @@ public class SendEffect {
    public void sendChanThienTuAll(Player player, Player p2, int id) {
       Message me;
       try {
-         me = new Message(-128);
+         me = Message.create(-128);
          me.writer().writeByte(0);
          me.writer().writeInt((int) player.id);
          if (id == 1216) {
@@ -248,7 +248,7 @@ public class SendEffect {
    }
 
    private Message createMessage2(Player player, Player p2, int danhHieuCode, int ycongdanhhieu) throws IOException {
-      Message me = new Message(-128);
+      Message me = Message.create(-128);
       me.writer().writeByte(0);
       me.writer().writeInt((int) player.id);
       me.writer().writeShort(danhHieuCode);
@@ -266,7 +266,7 @@ public class SendEffect {
    }
 
    private Message createMessage(Player player, int danhHieuCode, int ycongdanhhieu) throws IOException {
-      Message me = new Message(-128);
+      Message me = Message.create(-128);
       me.writer().writeByte(0);
       me.writer().writeInt((int) player.id);
       me.writer().writeShort(danhHieuCode);
@@ -286,7 +286,7 @@ public class SendEffect {
    public void removeTitle(Player player) {
       Message me;
       try {
-         me = new Message(-128);
+         me = Message.create(-128);
          me.writer().writeByte(2);
          me.writer().writeInt((int) player.id);
          player.getSession().sendMessage(me);

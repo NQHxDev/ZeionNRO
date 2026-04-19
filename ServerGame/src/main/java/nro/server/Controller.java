@@ -15,7 +15,9 @@ import nro.models.npc.NpcManager;
 import nro.models.player.Player;
 import nro.models.skill.PlayerSkill;
 import nro.resources.Resources;
-import nro.server.io.Message;
+import nro.network.IController;
+import nro.network.ISession;
+import nro.network.io.Message;
 import nro.server.io.Session;
 import nro.services.*;
 import nro.services.func.*;
@@ -37,7 +39,7 @@ import nro.models.item.Item;
 
 import nro.notification.NotiManager;
 
-public class Controller {
+public class Controller implements IController {
 
    private static Controller instance;
 
@@ -45,7 +47,17 @@ public class Controller {
       if (instance == null) {
          instance = new Controller();
       }
+
       return instance;
+   }
+
+   @Override
+   public void onConnectionReady(ISession session) {
+   }
+
+   @Override
+   public void onDisconnected(ISession session) {
+      Client.gI().remove((Session) session);
    }
 
    public static List<Integer> list_effect = Arrays.asList(79, 80, 81, 82, 83, 84, 85,
@@ -68,8 +80,10 @@ public class Controller {
    // return data;
    // }
 
-   public void onMessage(Session _session, Message _msg) {
+   @Override
+   public void onMessage(ISession session, Message _msg) {
       try {
+         Session _session = (Session) session;
          Player player = _session.player;
          byte cmd = _msg.command;
          if (Manager.debug) {
@@ -414,8 +428,7 @@ public class Controller {
                }
                break;
             case Cmd.GET_IMAGE_SOURCE:
-               // System.out.println("-74");
-               Resources.getInstance().downloadResources(_session, _msg);
+               Resources.gI().downloadResources(_session, _msg);
                break;
             case -81:
                if (player != null) {
@@ -424,30 +437,35 @@ public class Controller {
                   for (int i = 0; i < indexItem.length; i++) {
                      indexItem[i] = _msg.reader().readByte();
                   }
-                  // CombineService.gI().showInfoCombine(player, indexItem);
+
                   CombineServiceNew.gI().showInfoCombine(player, indexItem);
                }
                break;
+
             case -87:
                DataGame.updateData(_session);
                break;
+
             case Cmd.FINISH_UPDATE:
                _session.finishUpdate();
                break;
+
             case Cmd.REQUEST_ICON:
                int id = _msg.reader().readInt();
-               Resources.getInstance().downloadIconData(_session, id);
+               Resources.gI().requestIcon(_session, id);
                break;
+
             case Cmd.GET_IMG_BY_NAME:
-               Resources.getInstance().downloadIBN(_session, _msg.reader().readUTF());
+               Resources.gI().requestImgByName(_session, _msg.reader().readUTF());
                break;
+
             case -66:
                int effId = _msg.reader().readShort();
                int idT = effId;
                if (list_effect.contains(idT)) {
-                  Resources.effData(_session, effId, idT);
+                  Resources.gI().requestEffData(_session, idT);
                } else {
-                  Resources.getInstance().loadEffectData(_session, effId);
+                  Resources.gI().requestEffData(_session, effId);
                }
                break;
 
@@ -465,7 +483,7 @@ public class Controller {
                break;
             case Cmd.BACKGROUND_TEMPLATE:
                int bgId = _msg.reader().readShort();
-               Resources.getInstance().downloadBGTemplate(_session, bgId);
+               Resources.gI().requestBg(_session, bgId);
                break;
             case 22:
                if (player != null) {
@@ -556,13 +574,11 @@ public class Controller {
                break;
             case -39:
                if (player != null && player.zone != null && player.zone.map != null) {
-                  // finishLoadMap
                   ChangeMapService.gI().finishLoadMap(player);
                   if (player.zone.map.mapId == (21 + player.gender)) {
                      if (player.mabuEgg != null) {
                         player.mabuEgg.sendMabuEgg();
                      }
-                     // Logger.log(Logger.PURPLE, "done load map nhà!\n");
                   }
                   EffectMapService.gI().sendEffEvent(player);
                }
@@ -573,9 +589,9 @@ public class Controller {
                      || modId == 98
                      || modId == 99 || modId == 100 || modId == 101 || modId == 102 || modId == 103 || modId == 104
                      || modId == 105 || modId == 106) {
-                  Resources.getInstance().requestMobTemplate(_session, modId);
+                  Resources.gI().requestMobTemplate(_session, modId);
                } else {
-                  Resources.getInstance().loadMoData(_session, modId);
+                  Resources.gI().requestMobTemplate(_session, modId);
                }
                break;
             case 44:
@@ -615,7 +631,7 @@ public class Controller {
                }
                break;
             case -27:
-               _session.sendSessionKey();
+               // _session.sendSessionKey();
                break;
             case -111:
                System.out.println("send image version");
@@ -721,7 +737,7 @@ public class Controller {
    // private static void sendPreloginCase5(Session session, boolean ok, String
    // note) {
    // try {
-   // Message rep = new Message((byte) -29);
+   // Message rep = Message.create((byte) -29);
    // rep.writer().writeByte(5); // sub-code 5 (client đang đọc ở case 5)
    // rep.writer().writeBoolean(ok); // kết quả
    // rep.writer().writeUTF(note == null ? "" : note); // ghi chú/ thông báo
@@ -813,23 +829,27 @@ public class Controller {
                      Service.getInstance().sendFlagBag(player);
 
                      // -113 skill shortcut
-                     player.playerSkill.sendSkillShortCut();
+                     if (player.playerSkill != null) {
+                        player.playerSkill.sendSkillShortCut();
+                     }
                      // item time
                      ItemTimeService.gI().sendAllItemTime(player);
 
                      // send current task
                      TaskService.gI().sendInfoCurrentTask(player);
+                  } else {
+                     _session.finishUpdate();
                   }
                   break;
                default:
                   break;
-
             }
          } catch (IOException e) {
             Log.error(Controller.class,
                   e);
          }
       }
+
    }
 
    public void messageSubCommand(Session _session, Message _msg) {

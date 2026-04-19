@@ -6,7 +6,7 @@ import nro.models.item.Item;
 import nro.models.item.ItemOption;
 import nro.models.player.Inventory;
 import nro.models.player.Player;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.InventoryService;
 import nro.services.ItemService;
 import nro.services.NpcService;
@@ -15,7 +15,11 @@ import nro.services.Service;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ConsignmentShop {
 
@@ -38,7 +42,7 @@ public class ConsignmentShop {
    }
 
    @Getter
-   private List<ConsignmentItem> list = new ArrayList<>();
+   public List<ConsignmentItem> list = new ArrayList<>();
 
    private Map<Long, ConsignmentItem> mapItemsExpired = new HashMap<>();
 
@@ -104,17 +108,17 @@ public class ConsignmentShop {
                   return;
                }
                ConsignmentItem consignmentItem = findItemConsign(player.id, itemID);
-               if (consignmentItem.isUpTop()) {
+               if (consignmentItem.upTop) {
                   Service.getInstance().sendThongBao(player, "Vật phẩm này đã up top rồi");
                   return;
                }
-               if (consignmentItem == null || consignmentItem.isSold()) {
+               if (consignmentItem == null || consignmentItem.sold) {
                   Service.getInstance().sendThongBao(player, "Vật phẩm không tồn tại hoặc đã được bán");
                   return;
                }
                player.inventory.subRuby(50);
                Service.getInstance().sendMoney(player);
-               consignmentItem.setUpTop(true);
+               consignmentItem.upTop = (true);
                Service.getInstance().sendThongBao(player,
                      "Vật phẩm " + consignmentItem.template.name + " của bạn đã up top thành công");
                show(player);
@@ -128,7 +132,7 @@ public class ConsignmentShop {
          Service.getInstance().sendThongBao(player, "không tìm thấy vật phẩm");
          return;
       }
-      if (item.isSold()) {
+      if (item.sold) {
          Service.getInstance().sendThongBao(player, "Vật phẩm đã được bán");
          return;
       }
@@ -146,7 +150,7 @@ public class ConsignmentShop {
    }
 
    public void addExpiredItem(ConsignmentItem item) {
-      mapItemsExpired.put(item.getConsignorID(), item);
+      mapItemsExpired.put(item.consignorID, item);
    }
 
    public void removeItem(ConsignmentItem item) {
@@ -175,13 +179,13 @@ public class ConsignmentShop {
       }
       ConsignmentItem consignmentItem = ItemService.gI().convertToConsignmentItem(item);
       if (monneyType == 0) {
-         consignmentItem.setPriceGold(money);
+         consignmentItem.priceGold = (money);
       } else {
-         consignmentItem.setPriceGem(money);
+         consignmentItem.priceGem = (money);
       }
       consignmentItem.createTime = System.currentTimeMillis();
-      consignmentItem.setConsignorID(player.id);
-      consignmentItem.setTab(getTabByType(consignmentItem.template.type));
+      consignmentItem.consignorID = (player.id);
+      consignmentItem.tab = (getTabByType(consignmentItem.template.type));
       consignmentItem.quantity = quantity;
       addItem(consignmentItem);
       InventoryService.gI().subQuantityItemsBag(player, item, quantity);
@@ -193,7 +197,7 @@ public class ConsignmentShop {
 
    public ConsignmentItem findItemConsign(long consignerID, short itemID) {
       for (ConsignmentItem consignmentItem : list) {
-         if (consignmentItem.getConsignorID() == consignerID && consignmentItem.template.id == itemID) {
+         if (consignmentItem.consignorID == consignerID && consignmentItem.template.id == itemID) {
             return consignmentItem;
          }
       }
@@ -206,7 +210,7 @@ public class ConsignmentShop {
       List<ConsignmentItem> listSort2 = new ArrayList<>();
 
       for (ConsignmentItem item : list) {
-         if (item != null && item.getTab() == tab && !item.isSold()) {
+         if (item != null && item.tab == tab && !item.sold) {
             items.add(item);
          }
       }
@@ -234,18 +238,18 @@ public class ConsignmentShop {
 
    private List<ConsignmentItem> getItemCanConsign(Player player) {
       List<ConsignmentItem> items = new ArrayList<>();
-      list.stream().filter((it) -> (it != null && it.getConsignorID() == player.id)).forEachOrdered((it) -> {
+      list.stream().filter((it) -> (it != null && it.consignorID == player.id)).forEachOrdered((it) -> {
          items.add(it);
       });
       player.inventory.itemsBag.stream()
             .filter((item) -> (item.isNotNullItem() && canConsign(item.template.type) && item.canConsign()))
             .forEachOrdered((it) -> {
                ConsignmentItem consignmentItem = ItemService.gI().convertToConsignmentItem(it);
-               consignmentItem.setConsignorID(-1);
-               consignmentItem.setTab((byte) 4);
-               consignmentItem.setPriceGem(-1);
-               consignmentItem.setPriceGold(-1);
-               consignmentItem.setSold(false);
+               consignmentItem.consignorID = (-1);
+               consignmentItem.tab = ((byte) 4);
+               consignmentItem.priceGem = (-1);
+               consignmentItem.priceGold = (-1);
+               consignmentItem.sold = (false);
                items.add(consignmentItem);
             });
       return items;
@@ -273,7 +277,7 @@ public class ConsignmentShop {
    public void buy(Player player, short itemID, byte monneyType, int money) {
       for (ConsignmentItem item : list) {
          if (item.template.id == itemID) {
-            if (item.isSold()) {
+            if (item.sold) {
                NpcService.gI().createTutorial(player, -1, "Vật phẩm đã được bán");
                return;
             }
@@ -295,7 +299,7 @@ public class ConsignmentShop {
             InventoryService.gI().sendItemBags(player);
             Service.getInstance().sendMoney(player);
             Service.getInstance().sendThongBao(player, "Mua vật phẩm thành công");
-            item.setSold(true);
+            item.sold = (true);
             show(player);
             return;
          }
@@ -304,11 +308,11 @@ public class ConsignmentShop {
 
    public void getMoney(Player player, short itemID) {
       for (ConsignmentItem item : list) {
-         if (item.template.id == itemID && item.getConsignorID() == player.id && item.isSold()) {
-            if (item.getPriceGold() > 0) {
-               player.inventory.gold += item.getPriceGold() - (item.getPriceGold() * 10 / 100);
-            } else if (item.getPriceGem() > 0) {
-               player.inventory.ruby += item.getPriceGem() - (item.getPriceGem() * 10 / 100);
+         if (item.template.id == itemID && item.consignorID == player.id && item.sold) {
+            if (item.priceGold > 0) {
+               player.inventory.gold += item.priceGold - (item.priceGold * 10 / 100);
+            } else if (item.priceGem > 0) {
+               player.inventory.ruby += item.priceGem - (item.priceGem * 10 / 100);
             }
             removeItem(item);
             Service.getInstance().sendMoney(player);
@@ -320,7 +324,7 @@ public class ConsignmentShop {
    }
 
    public void nextPage(Player player, byte tab, int page) {
-      Message msg = new Message(-100);
+      Message msg = Message.create(-100);
       try {
          int maxPage = (byte) (list.size() / 20 > 0 ? list.size() / 20 : 1);
          DataOutputStream ds = msg.writer();
@@ -331,8 +335,8 @@ public class ConsignmentShop {
          for (ConsignmentItem item : list) {
             ds.writeShort(item.template.id);
             ds.writeShort(item.template.id);
-            ds.writeInt(item.getPriceGold());
-            ds.writeInt(item.getPriceGem());
+            ds.writeInt(item.priceGold);
+            ds.writeInt(item.priceGem);
 
             ds.writeByte(0);
 
@@ -341,7 +345,7 @@ public class ConsignmentShop {
             } else {
                ds.writeByte(item.quantity);
             }
-            ds.writeByte(item.getConsignorID() == player.id ? 0 : 1); // isMe
+            ds.writeByte(item.consignorID == player.id ? 0 : 1); // isMe
             ds.writeByte(item.itemOptions.size());
             for (ItemOption option : item.itemOptions) {
                ds.writeByte(option.optionTemplate.id);
@@ -360,7 +364,7 @@ public class ConsignmentShop {
    }
 
    public void show(Player player) {
-      Message msg = new Message(-44);
+      Message msg = Message.create(-44);
       try {
          int tabLength = tabName.length;
          int maxPage = (byte) (list.size() / 20 > 0 ? list.size() / 20 : 1);
@@ -375,8 +379,8 @@ public class ConsignmentShop {
             for (ConsignmentItem item : lists) {
                ds.writeShort(item.template.id);
                ds.writeShort(item.template.id);
-               ds.writeInt(item.getPriceGold());
-               ds.writeInt(item.getPriceGem());
+               ds.writeInt(item.priceGold);
+               ds.writeInt(item.priceGem);
 
                ds.writeByte(0);
 
@@ -385,7 +389,7 @@ public class ConsignmentShop {
                } else {
                   ds.writeByte(item.quantity);
                }
-               ds.writeByte(item.getConsignorID() == player.id ? 0 : 1); // isMe
+               ds.writeByte(item.consignorID == player.id ? 0 : 1); // isMe
                ds.writeByte(item.itemOptions.size());
                for (ItemOption option : item.itemOptions) {
                   ds.writeByte(option.optionTemplate.id);
@@ -412,11 +416,11 @@ public class ConsignmentShop {
       for (ConsignmentItem item : items) {
          ds.writeShort(item.template.id);
          ds.writeShort(item.template.id);
-         ds.writeInt(item.getPriceGold());
-         ds.writeInt(item.getPriceGem());
-         if (item.getConsignorID() == -1) {
+         ds.writeInt(item.priceGold);
+         ds.writeInt(item.priceGem);
+         if (item.consignorID == -1) {
             ds.writeByte(0);
-         } else if (item.isSold()) {
+         } else if (item.sold) {
             ds.writeByte(2);
          } else {
             ds.writeByte(1);
@@ -426,7 +430,7 @@ public class ConsignmentShop {
          } else {
             ds.writeByte(item.quantity);
          }
-         ds.writeByte(item.getConsignorID() == player.id ? 0 : 1); // isMe
+         ds.writeByte(item.consignorID == player.id ? 0 : 1); // isMe
          ds.writeByte(item.itemOptions.size());
          for (ItemOption option : item.itemOptions) {
             ds.writeByte(option.optionTemplate.id);

@@ -13,7 +13,7 @@ public class CardManager {
    }
 
    @Getter
-   private final List<CardTemplate> cardTemplates = new ArrayList<>();
+   public final List<CardTemplate> cardTemplates = new ArrayList<>();
 
    public void add(CardTemplate cardTemplate) {
       cardTemplates.add(cardTemplate);
@@ -25,10 +25,11 @@ public class CardManager {
 
    public CardTemplate find(int id) {
       for (CardTemplate card : cardTemplates) {
-         if (card.getId() == id) {
+         if (card.id == id) {
             return card;
          }
       }
       return null;
    }
+
 }
