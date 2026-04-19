@@ -1,4 +1,4 @@
-# 📦 ServerCommon: Core Networking & Framework Layer
+# ServerCommon: Core Networking & Framework Layer
 
 `ServerCommon` là module hạt nhân của hạ tầng ZeionNRO, cung cấp các thành phần cơ bản về mạng, xử lý gói tin và tiện ích dùng chung cho toàn bộ hệ thống.
 
