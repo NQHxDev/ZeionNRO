@@ -41,7 +41,6 @@ public class MobService {
          msg.writer().writeBoolean(crit); // chí mạng
          msg.writer().writeInt(-1);
          Service.getInstance().sendMessAllPlayerInMap(mob.zone, msg);
-         msg.cleanup();
       } catch (Exception e) {
          Log.error(MobService.class, e);
       }
@@ -56,7 +55,6 @@ public class MobService {
          msg.writer().writeBoolean(plKill.nPoint.isCrit); // crit
          List<ItemMap> items = mobReward(mob, plKill, msg);
          Service.getInstance().sendMessAllPlayerInMap(mob.zone, msg);
-         msg.cleanup();
          hutItem(plKill, items);
       } catch (Exception e) {
          // Logger.logException(MobService.class, e);
@@ -121,7 +119,6 @@ public class MobService {
             msg.writer().writeByte(mob.id);
             msg.writer().writeDouble(dame); // dame
             player.sendMessage(msg);
-            msg.cleanup();
          } catch (Exception e) {
             Log.error(MobService.class, e);
          }
@@ -136,7 +133,6 @@ public class MobService {
          msg.writer().writeInt((int) player.id);
          msg.writer().writeDouble(player.nPoint.hp);
          Service.getInstance().sendMessAnotherNotMeInMap(player, msg);
-         msg.cleanup();
       } catch (Exception e) {
          Log.error(MobService.class, e);
       }
@@ -155,7 +151,6 @@ public class MobService {
             msg.writer().writeByte(0); // level mob
             msg.writer().writeDouble(mob.point.hp);
             Service.getInstance().sendMessAllPlayerInMap(mob.zone, msg);
-            msg.cleanup();
          } catch (Exception e) {
             Log.error(MobService.class, e);
          }

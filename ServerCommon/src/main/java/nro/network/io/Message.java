@@ -42,7 +42,7 @@ public class Message {
 
    public Message(byte command) {
       this.command = command;
-      this.buffer = PooledByteBufAllocator.DEFAULT.buffer();
+      this.buffer = Unpooled.buffer();
    }
 
    public Message(byte command, ByteBuf data) {
@@ -186,9 +186,6 @@ public class Message {
    }
 
    public byte[] getData() {
-      if (buffer.hasArray()) {
-         return buffer.array();
-      }
       byte[] bytes = new byte[buffer.readableBytes()];
       buffer.getBytes(buffer.readerIndex(), bytes);
       return bytes;

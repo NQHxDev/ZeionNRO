@@ -42,7 +42,6 @@ public class LoginController {
             updateTimeLogout(m);
             break;
          default:
-            System.out.println("cmd: " + m.command);
             break;
       }
    }

@@ -13,7 +13,10 @@ ServerGame/data/
 ServerGame/Eff/
 ServerGame/mob/
 
+.gemini/
+
 log/
+*.log
 ServerGame/build_output.txt
 antiddos-rs/logs/
 

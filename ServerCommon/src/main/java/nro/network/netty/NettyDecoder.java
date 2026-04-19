@@ -21,8 +21,6 @@ public class NettyDecoder extends ByteToMessageDecoder {
       int traceLen = Math.min(in.readableBytes(), 10);
       byte[] trace = new byte[traceLen];
       in.getBytes(in.readerIndex(), trace);
-      System.out.println(String.format("[TRACE] Session %d | IP: %s | Hex: %s", 
-         session.getId(), session.getIPString(), NettySession.bytesToHex(trace)));
 
       // Use a local copy of curR to simulate decryption
       int localCurR = session.getCurR();
@@ -72,10 +70,6 @@ public class NettyDecoder extends ByteToMessageDecoder {
       } else {
          System.arraycopy(rawData, 0, decryptedData, 0, size);
       }
-
-      // Minimal LOGGING
-      System.out.println(String.format("[RECV] Session %d | Cmd: %d | Size: %d",
-         session.getId(), cmd, size));
 
       // COMMIT the session state
       session.setCurR(localCurR);

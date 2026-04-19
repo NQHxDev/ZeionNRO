@@ -64,15 +64,6 @@ public class NettyEncoder extends MessageToByteEncoder<Message> {
             out.writeBytes(rawData);
          }
       }
-
-      // Minimal Logging for performance
-      if (size > 1024) {
-         System.out.println(String.format("[SEND] Session %d | Cmd: %d | Size: %d (Large Packet)", session.getId(), cmd, size));
-      } else {
-         System.out.println(String.format("[SEND] Session %d | Cmd: %d | Size: %d", session.getId(), cmd, size));
-      }
-
-      msg.cleanup();
    }
 
 }

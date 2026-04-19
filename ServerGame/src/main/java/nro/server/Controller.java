@@ -824,20 +824,22 @@ public class Controller implements IController {
                      Service.getInstance().player(player);
                      Service.getInstance().Send_Caitrang(player);
                      // player.zone.load_Another_To_Me(player);
+
+                     // -64 my flag bag
+                     Service.getInstance().sendFlagBag(player);
+
+                     // -113 skill shortcut
+                     if (player.playerSkill != null) {
+                        player.playerSkill.sendSkillShortCut();
+                     }
+                     // item time
+                     ItemTimeService.gI().sendAllItemTime(player);
+
+                     // send current task
+                     TaskService.gI().sendInfoCurrentTask(player);
                   } else {
                      _session.finishUpdate();
                   }
-
-                  // -64 my flag bag
-                  Service.getInstance().sendFlagBag(player);
-
-                  // -113 skill shortcut
-                  player.playerSkill.sendSkillShortCut();
-                  // item time
-                  ItemTimeService.gI().sendAllItemTime(player);
-
-                  // send current task
-                  TaskService.gI().sendInfoCurrentTask(player);
                   break;
                default:
                   break;
