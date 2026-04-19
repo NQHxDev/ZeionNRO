@@ -19,4 +19,5 @@ public class EffectEventManager {
    public void add(EffectEventTemplate ee) {
       templates.add(ee);
    }
+
 }

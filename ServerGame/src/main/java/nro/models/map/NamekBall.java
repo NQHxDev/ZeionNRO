@@ -5,45 +5,42 @@ import lombok.Setter;
 import nro.services.ItemMapService;
 import nro.services.Service;
 
-/**
- * @author Tuỳ Chỉnh Bởi Văn Tuấn 0337766460
- */
-
 @Getter
 @Setter
 public class NamekBall extends ItemMap {
 
-    public boolean isHolding;
-    public boolean isCleaning;
-    public boolean isStone;
-    public long cleaningTime;
-    public int index;
-    public String holderName;
-    public NamekBall(Zone zone, int tempId, int quantity, int x, int y, long playerId) {
-        super(zone, tempId, quantity, x, y, playerId);
-        holderName = "";
-    }
+   public boolean isHolding;
+   public boolean isCleaning;
+   public boolean isStone;
+   public long cleaningTime;
+   public int index;
+   public String holderName;
 
-    @Override
-    public void update() {
-        if (isCleaning && cleaningTime > 0) {
-            cleaningTime--;
-        }
-    }
+   public NamekBall(Zone zone, int tempId, int quantity, int x, int y, long playerId) {
+      super(zone, tempId, quantity, x, y, playerId);
+      holderName = "";
+   }
 
-    public void setZone(Zone newZone) {
-        this.zone.removeItemMap(this);
-        this.zone = newZone;
-        this.zone.addItem(this);
-    }
+   @Override
+   public void update() {
+      if (isCleaning && cleaningTime > 0) {
+         cleaningTime--;
+      }
+   }
 
-    @Override
-    public void reAppearItem() {
-        if (isHolding) {
-            ItemMapService.gI().sendItemMapDisappear(this);
-        } else {
-            Service.getInstance().dropItemMap(this.zone, this);
-        }
-    }
+   public void setZone(Zone newZone) {
+      this.zone.removeItemMap(this);
+      this.zone = newZone;
+      this.zone.addItem(this);
+   }
+
+   @Override
+   public void reAppearItem() {
+      if (isHolding) {
+         ItemMapService.gI().sendItemMapDisappear(this);
+      } else {
+         Service.getInstance().dropItemMap(this.zone, this);
+      }
+   }
 
 }

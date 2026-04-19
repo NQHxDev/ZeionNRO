@@ -1,29 +1,22 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package nro.models;
 
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- *
- * @author Kitak
- */
 @Getter
 @Setter
 public class PartImage {
 
-    public short icon;
+   public short icon;
 
-    public byte dx;
+   public byte dx;
 
-    public byte dy;
+   public byte dy;
 
-    public PartImage(short icon, byte dx, byte dy) {
-        this.icon = icon;
-        this.dx = dx;
-        this.dy = dy;
-    }
+   public PartImage(short icon, byte dx, byte dy) {
+      this.icon = icon;
+      this.dx = dx;
+      this.dy = dy;
+   }
+
 }

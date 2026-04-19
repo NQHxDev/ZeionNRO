@@ -29,7 +29,6 @@ public class LoginService {
          ds.writeUTF(password);
          ds.flush();
          sendMessage(ms);
-         ms.cleanup();
       } catch (IOException ex) {
          ex.printStackTrace();
       }
@@ -42,7 +41,6 @@ public class LoginService {
          ds.writeInt(userID);
          ds.flush();
          sendMessage(ms);
-         ms.cleanup();
       } catch (IOException ex) {
          ex.printStackTrace();
       }
@@ -66,7 +64,6 @@ public class LoginService {
             }
             ds.flush();
             sendMessage(ms);
-            ms.cleanup();
          }
 
       } catch (IOException ex) {

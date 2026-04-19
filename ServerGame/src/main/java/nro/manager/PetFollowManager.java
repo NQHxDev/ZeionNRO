@@ -19,4 +19,5 @@ public class PetFollowManager extends AbsManager<PetFollow> {
       }
       return null;
    }
+
 }

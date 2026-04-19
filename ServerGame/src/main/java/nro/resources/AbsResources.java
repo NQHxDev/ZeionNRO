@@ -24,6 +24,7 @@ import org.json.JSONObject;
 
 public abstract class AbsResources {
 
+   @Getter
    public File folder;
 
    public HashMap<String, byte[]> datas;
@@ -47,8 +48,7 @@ public abstract class AbsResources {
       this.datas = new HashMap<>();
    }
 
-   public void init(File folder) {
-      this.folder = folder;
+   public void init() {
       long st = System.currentTimeMillis();
       Log.log("AbsResources: Bắt đầu khởi tạo DataVersion...");
       initDataVersion();

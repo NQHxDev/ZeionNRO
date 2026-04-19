@@ -428,7 +428,7 @@ public class Controller implements IController {
                }
                break;
             case Cmd.GET_IMAGE_SOURCE:
-               Resources.gI().downloadResources(_session);
+               Resources.gI().downloadResources(_session, _msg);
                break;
             case -81:
                if (player != null) {
@@ -824,28 +824,30 @@ public class Controller implements IController {
                      Service.getInstance().player(player);
                      Service.getInstance().Send_Caitrang(player);
                      // player.zone.load_Another_To_Me(player);
-
-                     // -64 my flag bag
-                     Service.getInstance().sendFlagBag(player);
-
-                     // -113 skill shortcut
-                     player.playerSkill.sendSkillShortCut();
-                     // item time
-                     ItemTimeService.gI().sendAllItemTime(player);
-
-                     // send current task
-                     TaskService.gI().sendInfoCurrentTask(player);
+                  } else {
+                     _session.finishUpdate();
                   }
+
+                  // -64 my flag bag
+                  Service.getInstance().sendFlagBag(player);
+
+                  // -113 skill shortcut
+                  player.playerSkill.sendSkillShortCut();
+                  // item time
+                  ItemTimeService.gI().sendAllItemTime(player);
+
+                  // send current task
+                  TaskService.gI().sendInfoCurrentTask(player);
                   break;
                default:
                   break;
-
             }
          } catch (IOException e) {
             Log.error(Controller.class,
                   e);
          }
       }
+
    }
 
    public void messageSubCommand(Session _session, Message _msg) {

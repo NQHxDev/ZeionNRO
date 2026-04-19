@@ -9,9 +9,6 @@ import nro.utils.Log;
 import nro.utils.Util;
 import nro.services.PlayerService;
 
-/**
- * @author Hoàng Việt - 0857853150
- */
 public class MiniPet extends Player {
 
    public static final byte FOLLOW = 0;

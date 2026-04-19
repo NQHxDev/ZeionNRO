@@ -63,4 +63,5 @@ public class CardTemplate {
       this.aura = aura;
       this.options = options;
    }
+
 }

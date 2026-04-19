@@ -24,7 +24,6 @@ import nro.core.concurrent.GameScheduler;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.awt.GraphicsEnvironment;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -32,9 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 public class ServerManager {
 
@@ -91,29 +87,13 @@ public class ServerManager {
    public void run() {
       isRunning = true;
 
-      if (!GraphicsEnvironment.isHeadless()) {
-         try {
-            JFrame frame = new JFrame("Ngọc rồng Free 2025");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            ImageIcon icon = new ImageIcon("");
-            frame.setIconImage(icon.getImage());
-            JPanel panel = new panel();
-            frame.add(panel);
-            frame.pack();
-            frame.setVisible(true);
-         } catch (Exception e) {
-            Log.log("Không thể khởi tạo giao diện (Headless).");
-         }
-      } else {
-         Log.log("Môi trường Headless: Đã tắt giao diện cửa sổ.");
-      }
-
       activeCommandLine();
       activeGame();
       activeLogin();
       autoTask();
       (new AutoMaintenance(23, 58, 59)).start();
       activeNettyServer();
+
    }
 
    private void activeNettyServer() {
@@ -122,6 +102,7 @@ public class ServerManager {
          byte[] key = { 0 };
          CommonHandler handler = new CommonHandler(controller);
          nettyServer = new NettyServer(PORT, key, handler);
+         nettyServer.setPublicConfig(Manager.DOMAIN, PORT);
 
          // Cấu hình Session Factory để tạo nro.server.io.Session
          nettyServer.setSessionFactory((channel, id) -> {

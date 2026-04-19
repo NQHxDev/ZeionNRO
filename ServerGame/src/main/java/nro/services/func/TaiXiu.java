@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package nro.services.func;
 
 import java.util.ArrayList;
@@ -13,10 +8,6 @@ import nro.services.InventoryService;
 import nro.services.Service;
 import nro.utils.Util;
 
-/**
- *
- * @author DEV Ăn Trộm
- */
 public class TaiXiu implements Runnable {
    public int goldTai;
    public int goldXiu;

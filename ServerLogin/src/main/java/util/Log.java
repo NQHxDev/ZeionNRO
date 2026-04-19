@@ -28,11 +28,16 @@ public class Log {
    }
 
    public static void banner() {
-      System.out.println(MAGENTA + "  ____  ____  __  __   __ _ " + RESET);
-      System.out.println(MAGENTA + " (_  _)(  __)(  )/  \\ (  ( \\" + RESET);
-      System.out.println(MAGENTA + "   )(   ) _)  )((  O )/    /" + RESET);
-      System.out.println(MAGENTA + "  (__) (____)(__)\\__/ \\_)__)" + RESET);
-      System.out.println(CYAN + "  >>> ZEION LOGIN SERVER <<<");
-      System.out.println(WHITE + "----------------------------------------" + RESET);
+      System.out.println("----------------------------------------");
+      System.out.println("   /$$$$$$$$           /$$                    ");
+      System.out.println("  |_____ $$           |__/                    ");
+      System.out.println("       /$$/   /$$$$$$  /$$  /$$$$$$  /$$$$$$$ ");
+      System.out.println("      /$$/   /$$__  $$| $$ /$$__  $$| $$__  $$");
+      System.out.println("     /$$/   | $$$$$$$$| $$| $$  \\ $$| $$  \\ $$");
+      System.out.println("    /$$/    | $$_____/| $$| $$  | $$| $$  | $$");
+      System.out.println("   /$$$$$$$$|  $$$$$$$| $$|  $$$$$$/| $$  | $$");
+      System.out.println("  |________/ \\_______/|__/ \\______/ |__/  |__/");
+      System.out.println("         >>> ZEION NRO SERVER LOGIN <<<           ");
+      System.out.println("----------------------------------------");
    }
 }

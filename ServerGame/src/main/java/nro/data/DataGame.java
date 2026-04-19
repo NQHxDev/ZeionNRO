@@ -12,6 +12,7 @@ import nro.power.Caption;
 import nro.power.CaptionManager;
 import nro.resources.Resources;
 import nro.server.Manager;
+import nro.server.ServerManager;
 import nro.network.io.Message;
 import nro.server.io.Session;
 import nro.services.Service;
@@ -71,9 +72,11 @@ public class DataGame {
          msg.writer().writeByte(vsItem);
          msg.writer().writeByte(0);
          List<Caption> captions = CaptionManager.getInstance().getCaptions();
-         msg.writer().writeByte(captions.size());
-         for (Caption caption : captions) {
-            msg.writer().writeDouble(caption.getPower());
+         msg.writer().writeByte(captions != null ? captions.size() : 0);
+         if (captions != null) {
+            for (Caption caption : captions) {
+               msg.writer().writeLong((long) caption.getPower());
+            }
          }
          session.sendMessage(msg);
          msg.cleanup();
@@ -88,22 +91,23 @@ public class DataGame {
       try {
          msg = Message.create(-87);
          msg.writer().writeByte(vsData);
-         msg.writer().writeInt(dart.length);
-         msg.writer().write(dart);
-         msg.writer().writeInt(arrow.length);
-         msg.writer().write(arrow);
-         msg.writer().writeInt(effect.length);
-         msg.writer().write(effect);
-         msg.writer().writeInt(image.length);
-         msg.writer().write(image);
-         msg.writer().writeInt(part.length);
-         msg.writer().write(part);
-         msg.writer().writeInt(skill.length);
-         msg.writer().write(skill);
+         msg.writer().writeInt(dart != null ? dart.length : 0);
+         if (dart != null) msg.writer().write(dart);
+         msg.writer().writeInt(arrow != null ? arrow.length : 0);
+         if (arrow != null) msg.writer().write(arrow);
+         msg.writer().writeInt(effect != null ? effect.length : 0);
+         if (effect != null) msg.writer().write(effect);
+         msg.writer().writeInt(image != null ? image.length : 0);
+         if (image != null) msg.writer().write(image);
+         msg.writer().writeInt(part != null ? part.length : 0);
+         if (part != null) msg.writer().write(part);
+         msg.writer().writeInt(skill != null ? skill.length : 0);
+         if (skill != null) msg.writer().write(skill);
 
          session.doSendMessage(msg);
          msg.cleanup();
       } catch (Exception e) {
+         e.printStackTrace();
       }
    }
 
@@ -294,11 +298,12 @@ public class DataGame {
       try {
          msg = Message.create(-29);
          msg.writer().writeByte(2);
-         msg.writer().writeUTF(LINK_IP_PORT + ",0,0");
+         msg.writer().writeUTF(ServerManager.NAME + ":" + Manager.DOMAIN + ":" + ServerManager.PORT + ":0,0,0");
          msg.writer().writeByte(1);
          session.sendMessage(msg);
          msg.cleanup();
       } catch (Exception e) {
       }
    }
+
 }

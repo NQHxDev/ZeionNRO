@@ -20,6 +20,8 @@ public class Config {
    private short port;
    private short testmode;
    private int secondWaitLogin;
+   private String gameHost;
+   private int gamePort;
 
    public Config(String path) {
       try (FileInputStream input = new FileInputStream(new File(path))) {
@@ -37,6 +39,8 @@ public class Config {
          this.secondWaitLogin = props.containsKey("wait.login")
                ? (int) Short.parseShort(props.getProperty("wait.login"))
                : 5;
+         this.gameHost = props.getProperty("game.host", "127.0.0.1");
+         this.gamePort = Integer.parseInt(props.getProperty("game.port", "14445"));
       } catch (IOException ex) {
          Log.error("Lỗi khi tải cấu hình: " + ex.getMessage());
       }
@@ -57,6 +61,8 @@ public class Config {
          this.secondWaitLogin = props.containsKey("wait.login")
                ? (int) Short.parseShort(props.getProperty("wait.login"))
                : 5;
+         this.gameHost = props.getProperty("game.host", "127.0.0.1");
+         this.gamePort = Integer.parseInt(props.getProperty("game.port", "14445"));
          Log.success("Cấu hình đã được tải lại thành công!");
       } catch (IOException ex) {
          Log.error("Lỗi khi tải lại cấu hình: " + ex.getMessage());
@@ -137,5 +143,13 @@ public class Config {
 
    public void setSecondWaitLogin(int secondWaitLogin) {
       this.secondWaitLogin = secondWaitLogin;
+   }
+
+   public String getGameHost() {
+      return gameHost;
+   }
+
+   public int getGamePort() {
+      return gamePort;
    }
 }

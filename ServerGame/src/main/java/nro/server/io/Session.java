@@ -3,7 +3,6 @@ package nro.server.io;
 import io.netty.channel.Channel;
 import nro.network.netty.NettySession;
 import nro.network.io.Message;
-import nro.data.DataGame;
 import nro.jdbc.daos.GodGK;
 import nro.models.item.Item;
 import nro.models.item.ItemOption;
@@ -142,7 +141,10 @@ public class Session extends NettySession {
       try {
          if (!isSetClientType) {
             this.typeClient = (msg.reader().readByte());
-            this.zoomLevel = msg.reader().readByte();
+            byte zoom = msg.reader().readByte();
+            if (zoom < 1) zoom = 1;
+            if (zoom > 4) zoom = 4;
+            this.zoomLevel = zoom;
             msg.reader().readBoolean();
             msg.reader().readInt();
             msg.reader().readInt();
@@ -159,7 +161,7 @@ public class Session extends NettySession {
       } finally {
          msg.cleanup();
       }
-      DataGame.sendLinkIP(this);
+      // DataGame.sendLinkIP(this);
    }
 
    public boolean isVersionAbove(int version) {

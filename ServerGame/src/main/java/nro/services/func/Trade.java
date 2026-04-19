@@ -24,10 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import nro.data.ItemData;
 
-/**
- * @author Tuỳ Chỉnh Bởi Văn Tuấn 0337766460
- * @copyright 💖 GirlkuN 💖
- */
 public class Trade {
 
    private static final int TIME_TRADE = 180000;

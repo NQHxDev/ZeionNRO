@@ -6,6 +6,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class PlayerEvent {
+
    public boolean isUseQuanHoa;
    public boolean isUseBonTam;
    public int diemTichLuy;

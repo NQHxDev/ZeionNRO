@@ -1,30 +1,25 @@
 package nro.models.map;
 
-/**
- *
- * @author Tuỳ Chỉnh Bởi Văn Tuấn 0337766460
- * @copyright 💖 GirlkuN 💖
- *
- */
 public class WayPoint {
 
-    public short minX;
+   public short minX;
 
-    public short minY;
+   public short minY;
 
-    public short maxX;
+   public short maxX;
 
-    public short maxY;
+   public short maxY;
 
-    public boolean isEnter;
+   public boolean isEnter;
 
-    public boolean isOffline;
+   public boolean isOffline;
 
-    public String name;
+   public String name;
 
-    public int goMap;
+   public int goMap;
 
-    public short goX;
+   public short goX;
 
-    public short goY;
+   public short goY;
+
 }

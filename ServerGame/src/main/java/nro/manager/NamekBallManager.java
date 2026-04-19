@@ -71,4 +71,5 @@ public class NamekBallManager extends AbsManager<NamekBall> {
    public int getIndex(int id) {
       return id - 353;
    }
+
 }

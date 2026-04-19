@@ -16,3 +16,6 @@ ServerGame/mob/
 log/
 ServerGame/build_output.txt
 antiddos-rs/logs/
+
+sourceServerGame/
+sourceServerLogin/

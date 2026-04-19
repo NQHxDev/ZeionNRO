@@ -36,4 +36,5 @@ public class AchiveManager implements IManager<AchivementTemplate> {
    public void remove(AchivementTemplate achivementTemplate) {
 
    }
+
 }

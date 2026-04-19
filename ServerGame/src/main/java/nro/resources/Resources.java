@@ -8,12 +8,22 @@ import nro.resources.entity.MobData;
 import nro.server.io.Session;
 import nro.utils.Log;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Resources {
+
+   private int getZoomIndex(Session session, int max) {
+      int zoomIndex = session.zoomLevel - 1;
+      if (zoomIndex < 0) {
+         zoomIndex = 0;
+      }
+      if (zoomIndex >= max) {
+         zoomIndex = max - 1;
+      }
+      return zoomIndex;
+   }
 
    private final Map<Integer, AbsResources> resources;
 
@@ -30,18 +40,13 @@ public class Resources {
    private Resources() {
       resources = new HashMap<>();
       resources.put(1, new RNormal());
-      resources.put(2, new RSpecial());
+      // resources.put(2, new RSpecial());
    }
 
    public void init() {
       Log.log("Loading resources...");
-      File file = new File("data/resources/res1");
-      if (file.exists()) {
-         resources.get(1).init(file);
-      }
-      file = new File("data/resources/res2");
-      if (file.exists()) {
-         resources.get(2).init(file);
+      for (AbsResources res : resources.values()) {
+         res.init();
       }
       Log.success("Loading resources successfully!");
    }
@@ -87,7 +92,7 @@ public class Resources {
             Message mss = new Message(Cmd.GET_IMAGE_SOURCE);
             DataOutputStream ds = mss.writer();
             ds.writeByte(0);
-            ds.writeInt(version[session.zoomLevel - 1]);
+            ds.writeInt(version[getZoomIndex(session, version.length)]);
             ds.flush();
             session.sendMessage(mss);
             mss.cleanup();
@@ -97,17 +102,74 @@ public class Resources {
       }
    }
 
-   public void downloadResources(Session session) {
+   public void downloadResources(Session session, Message ms) {
+      try {
+         byte type = ms.reader().readByte();
+         if (type == 1) {
+            AbsResources res = find(session.typeClient);
+            if (res != null) {
+               java.io.File root = new java.io.File(res.getFolder(), "data/" + session.zoomLevel);
+               java.util.ArrayList<java.io.File> datas = new java.util.ArrayList<>();
+               nro.utils.FileUtils.addPath(datas, root);
+               sendNumberOfFiles(session, (short) datas.size());
+               for (java.io.File file : datas) {
+                  fileTransfer(session, root, file);
+               }
+               fileTransferCompleted(session);
+            }
+         }
+      } catch (Exception ex) {
+         ex.printStackTrace();
+      }
+   }
+
+   public void sendNumberOfFiles(Session session, short size) {
       Message msg;
       try {
-         msg = Message.create(Cmd.DOWNLOAD_RESOURCES);
-         byte[] data = find(session.typeClient).getData();
-         msg.writer().writeInt(data.length);
-         msg.writer().write(data);
+         msg = new Message(Cmd.GET_IMAGE_SOURCE);
+         msg.writer().writeByte(1);
+         msg.writer().writeShort(size);
          session.sendMessage(msg);
          msg.cleanup();
       } catch (Exception e) {
-         e.printStackTrace();
+      }
+   }
+
+   public void fileTransferCompleted(Session session) {
+      AbsResources res = find(session.typeClient);
+      if (res != null) {
+         int[] version = res.getDataVersion();
+         Message msg;
+         try {
+            msg = new Message(Cmd.GET_IMAGE_SOURCE);
+            msg.writer().writeByte(3);
+            msg.writer().writeInt(version[getZoomIndex(session, version.length)]);
+            session.sendMessage(msg);
+            msg.cleanup();
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
+      }
+   }
+
+   public void fileTransfer(Session session, java.io.File root, java.io.File file) {
+      try {
+         String strPath = file.getPath();
+         strPath = strPath.replace(root.getPath(), "");
+         strPath = nro.utils.FileUtils.cutPng(strPath);
+         strPath = strPath.replace("\\", "/");
+         Message mss = new Message(Cmd.GET_IMAGE_SOURCE);
+         DataOutputStream ds = mss.writer();
+         ds.writeByte(2);
+         ds.writeUTF(strPath);
+         byte[] ab = java.nio.file.Files.readAllBytes(file.toPath());
+         ds.writeInt(ab.length);
+         ds.write(ab);
+         ds.flush();
+         session.sendMessage(mss);
+         mss.cleanup();
+      } catch (IOException ex) {
+         ex.printStackTrace();
       }
    }
 
@@ -156,6 +218,8 @@ public class Resources {
       try {
          msg = Message.create(Cmd.GET_ICON);
          byte[] data = find(session.typeClient).getRawIconData(session.zoomLevel, id);
+         msg.writer().writeInt(id);
+         msg.writer().writeInt(data.length);
          msg.writer().write(data);
          session.sendMessage(msg);
          msg.cleanup();
@@ -169,12 +233,16 @@ public class Resources {
          AbsResources res = find(session.typeClient);
          if (res != null) {
             byte[][] smallVersion = res.getSmallVersion();
-            byte[] data = smallVersion[session.zoomLevel - 1];
-            Message ms = new Message(Cmd.SMALLIMAGE_VERSION);
-            ms.writer().writeShort(data.length);
-            ms.writer().write(data);
-            session.sendMessage(ms);
-            ms.cleanup();
+            if (smallVersion != null) {
+               byte[] data = smallVersion[getZoomIndex(session, smallVersion.length)];
+               if (data != null) {
+                  Message ms = new Message(Cmd.SMALLIMAGE_VERSION);
+                  ms.writer().writeShort(data.length);
+                  ms.writer().write(data);
+                  session.sendMessage(ms);
+                  ms.cleanup();
+               }
+            }
          }
       } catch (IOException e) {
          e.printStackTrace();
@@ -186,12 +254,16 @@ public class Resources {
          AbsResources res = find(session.typeClient);
          if (res != null) {
             byte[][] backgroundVersion = res.getBackgroundVersion();
-            byte[] data = backgroundVersion[session.zoomLevel - 1];
-            Message ms = new Message(Cmd.BGITEM_VERSION);
-            ms.writer().writeShort(data.length);
-            ms.writer().write(data);
-            session.sendMessage(ms);
-            ms.cleanup();
+            if (backgroundVersion != null) {
+               byte[] data = backgroundVersion[getZoomIndex(session, backgroundVersion.length)];
+               if (data != null) {
+                  Message ms = new Message(Cmd.BGITEM_VERSION);
+                  ms.writer().writeShort(data.length);
+                  ms.writer().write(data);
+                  session.sendMessage(ms);
+                  ms.cleanup();
+               }
+            }
          }
       } catch (IOException e) {
          e.printStackTrace();
@@ -203,6 +275,8 @@ public class Resources {
       try {
          msg = Message.create(Cmd.GET_BG);
          byte[] data = find(session.typeClient).getRawBgData(session.zoomLevel, id);
+         msg.writer().writeShort((short) id);
+         msg.writer().writeInt(data.length);
          msg.writer().write(data);
          session.sendMessage(msg);
          msg.cleanup();

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package nro.models.map.dungeon;
 
 import nro.consts.Cmd;
@@ -18,110 +13,106 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- *
- * @author Tuỳ Chỉnh Bởi Văn Tuấn 0337766460
- */
 @Getter
 @Setter
 public abstract class Dungeon {
 
-    public static final int SNAKE_ROAD = 2;
+   public static final int SNAKE_ROAD = 2;
 
-    public final List<ZDungeon> zones = new ArrayList<>();
-    public int id;
-    public int type;
-    public int level;
-    public String name;
-    public long createdAt;
-    public int countDown;
-    public String title;
-    public boolean closed;
-    public boolean finish;
+   public final List<ZDungeon> zones = new ArrayList<>();
+   public int id;
+   public int type;
+   public int level;
+   public String name;
+   public long createdAt;
+   public int countDown;
+   public String title;
+   public boolean closed;
+   public boolean finish;
 
-    public Dungeon(int level) {
-        createdAt = System.currentTimeMillis();
-        this.level = level;
-        init();
-    }
+   public Dungeon(int level) {
+      createdAt = System.currentTimeMillis();
+      this.level = level;
+      init();
+   }
 
-    public abstract void init();
+   public abstract void init();
 
-    public void addZone(ZDungeon zone) {
-        synchronized (zones) {
-            zones.add(zone);
-        }
-    }
+   public void addZone(ZDungeon zone) {
+      synchronized (zones) {
+         zones.add(zone);
+      }
+   }
 
-    public void removeZone(ZDungeon zone) {
-        synchronized (zones) {
-            zones.remove(zone);
-        }
-    }
+   public void removeZone(ZDungeon zone) {
+      synchronized (zones) {
+         zones.remove(zone);
+      }
+   }
 
-    public ZDungeon find(int mapID) {
-        synchronized (zones) {
-            for (ZDungeon zone : zones) {
-                if (zone.map.mapId == mapID) {
-                    return zone;
-                }
+   public ZDungeon find(int mapID) {
+      synchronized (zones) {
+         for (ZDungeon zone : zones) {
+            if (zone.map.mapId == mapID) {
+               return zone;
             }
-        }
-        return null;
-    }
+         }
+      }
+      return null;
+   }
 
-    public void update() {
-        if (countDown > 0) {
-            countDown--;
-            if (countDown == 0) {
-                close();
-            }
-        }
-    }
+   public void update() {
+      if (countDown > 0) {
+         countDown--;
+         if (countDown == 0) {
+            close();
+         }
+      }
+   }
 
-    public abstract void finish();
+   public abstract void finish();
 
-    public abstract void join(Player player);
+   public abstract void join(Player player);
 
-    public void setTime(int countDown) {
-        this.countDown = countDown;
-        synchronized (zones) {
+   public void setTime(int countDown) {
+      this.countDown = countDown;
+      synchronized (zones) {
+         zones.forEach((z) -> {
+            z.setTextTime();
+         });
+      }
+   }
+
+   public void close() {
+      if (!closed) {
+         closed = true;
+         synchronized (zones) {
             zones.forEach((z) -> {
-                z.setTextTime();
+               z.close();
             });
-        }
-    }
+            zones.clear();
+         }
+      }
+   }
 
-    public void close() {
-        if (!closed) {
-            closed = true;
-            synchronized (zones) {
-                zones.forEach((z) -> {
-                    z.close();
-                });
-                zones.clear();
-            }
-        }
-    }
+   public void sendNotification(String text) {
+      try {
+         Message ms = Message.create(Cmd.SERVER_MESSAGE);
+         DataOutputStream ds = ms.writer();
+         ds.writeUTF(text);
+         ds.flush();
+         sendMessage(ms);
+         ms.cleanup();
+      } catch (IOException ex) {
+         Log.error(Dungeon.class, ex);
+      }
+   }
 
-    public void sendNotification(String text) {
-        try {
-            Message ms = Message.create(Cmd.SERVER_MESSAGE);
-            DataOutputStream ds = ms.writer();
-            ds.writeUTF(text);
-            ds.flush();
-            sendMessage(ms);
-            ms.cleanup();
-        } catch (IOException ex) {
-            Log.error(Dungeon.class, ex);
-        }
-    }
-
-    public void sendMessage(Message ms) {
-        synchronized (zones) {
-            zones.forEach((zone) -> {
-                Service.getInstance().sendMessAllPlayerInMap(zone, ms);
-            });
-        }
-    }
+   public void sendMessage(Message ms) {
+      synchronized (zones) {
+         zones.forEach((zone) -> {
+            Service.getInstance().sendMessAllPlayerInMap(zone, ms);
+         });
+      }
+   }
 }

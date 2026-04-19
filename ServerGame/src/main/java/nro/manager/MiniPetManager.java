@@ -37,4 +37,5 @@ public class MiniPetManager implements IManager<MinipetTemplate> {
       }
       return null;
    }
+
 }

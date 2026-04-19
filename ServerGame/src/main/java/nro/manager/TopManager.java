@@ -69,8 +69,20 @@ public class TopManager {
    }
 
    // Descriptive aliases for future-proofing
-   public void loadTopPower() { load(); }
-   public void loadTopPet() { load1(); }
-   public void loadTopTask() { load2(); }
-   public void loadTopDonate() { load3(); }
+   public void loadTopPower() {
+      load();
+   }
+
+   public void loadTopPet() {
+      load1();
+   }
+
+   public void loadTopTask() {
+      load2();
+   }
+
+   public void loadTopDonate() {
+      load3();
+   }
+
 }

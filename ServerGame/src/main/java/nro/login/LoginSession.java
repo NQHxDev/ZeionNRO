@@ -12,9 +12,12 @@ public class LoginSession {
 
    @Getter
    public boolean connected;
+
    private LoginController controller;
+
    @Getter
    public LoginService service;
+
    public boolean isStopSend = false;
    private DataOutputStream dos;
    public DataInputStream dis;
@@ -27,7 +30,7 @@ public class LoginSession {
    public int recvByteCount;
    boolean getKeyComplete;
    public byte[] key = null;
-   private byte curR, curW;
+   private int curR, curW;
    long timeConnected;
    public String strRecvByteCount = "";
    public boolean isCancel;
@@ -122,57 +125,57 @@ public class LoginSession {
    }
 
    private synchronized void doSendMessage(Message m) throws IOException {
-      byte[] data = m.getData();
       try {
-         if (getKeyComplete) {
-            byte b = (writeKey(m.command));
-            dos.writeByte(b);
-         } else {
-            dos.writeByte(m.command);
-         }
-         // System.out.println("cmd send ---> "+m.command);
-         if (data != null) {
-            int size = data.length;
-            if (m.command == -31) {
-               dos.writeShort(size);
-            } else if (getKeyComplete) {
-               int byte1 = writeKey((byte) (size >> 8));
-               dos.writeByte(byte1);
-               int byte2 = writeKey((byte) (size & 0xFF));
-               dos.writeByte(byte2);
-            } else {
-               dos.writeShort(size);
-            }
+         byte[] data = m.getData();
+         try {
             if (getKeyComplete) {
-               for (int i = 0; i < data.length; i++) {
-                  data[i] = writeKey(data[i]);
-               }
+               byte b = (writeKey(m.command));
+               dos.writeByte(b);
+            } else {
+               dos.writeByte(m.command);
             }
-            dos.write(data);
-            sendByteCount += (5 + data.length);
-         } else {
-            dos.writeShort(0);
-            sendByteCount += 5;
+            // System.out.println("cmd send ---> "+m.command);
+            if (data != null) {
+               int size = data.length;
+               if (m.command == -31) {
+                  dos.writeShort(size);
+               } else if (getKeyComplete) {
+                  int byte1 = writeKey((byte) (size >> 8));
+                  dos.writeByte(byte1);
+                  int byte2 = writeKey((byte) (size & 0xFF));
+                  dos.writeByte(byte2);
+               } else {
+                  dos.writeShort(size);
+               }
+               if (getKeyComplete) {
+                  for (int i = 0; i < data.length; i++) {
+                     data[i] = writeKey(data[i]);
+                  }
+               }
+               dos.write(data);
+               sendByteCount += (5 + data.length);
+            } else {
+               dos.writeShort(0);
+               sendByteCount += 5;
+            }
+            dos.flush();
+         } catch (IOException e) {
+            e.printStackTrace();
          }
-         dos.flush();
-      } catch (IOException e) {
-         e.printStackTrace();
+      } finally {
+         m.cleanup();
       }
    }
 
-   private byte readKey(byte b) {
-      byte i = (byte) ((key[curR++] & 0xff) ^ (b & 0xff));
-      if (curR >= key.length) {
-         curR %= key.length;
-      }
+   public byte readKey(byte b) {
+      byte i = (byte) ((key[curR % key.length] & 0xFF) ^ (b & 0xFF));
+      curR = (curR + 1) % key.length;
       return i;
    }
 
-   private byte writeKey(byte b) {
-      byte i = (byte) ((key[curW++] & 0xff) ^ (b & 0xff));
-      if (curW >= key.length) {
-         curW %= key.length;
-      }
+   public byte writeKey(byte b) {
+      byte i = (byte) ((key[curW % key.length] & 0xFF) ^ (b & 0xFF));
+      curW = (curW + 1) % key.length;
       return i;
    }
 
@@ -335,4 +338,5 @@ public class LoginSession {
          e.printStackTrace();
       }
    }
+
 }

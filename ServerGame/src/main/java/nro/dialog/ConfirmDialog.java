@@ -9,52 +9,49 @@ import nro.utils.Log;
 
 import java.io.DataOutputStream;
 
-/**
- * @author Tuỳ Chỉnh Bởi Văn Tuấn 0337766460
- */
-
 @NoArgsConstructor
 public class ConfirmDialog {
 
-    protected String content;
-    private Runnable run;
-    private Runnable cancel;
+   protected String content;
+   private Runnable run;
+   private Runnable cancel;
 
-    public ConfirmDialog(String content, Runnable run) {
-        this.run = run;
-        this.content = content;
-    }
+   public ConfirmDialog(String content, Runnable run) {
+      this.run = run;
+      this.content = content;
+   }
 
-    public ConfirmDialog(String content, Runnable run, Runnable cancel) {
-        this.content = content;
-        this.run = run;
-        this.cancel = cancel;
-    }
+   public ConfirmDialog(String content, Runnable run, Runnable cancel) {
+      this.content = content;
+      this.run = run;
+      this.cancel = cancel;
+   }
 
-    public void show(Player player) {
-        player.iDMark.setIndexMenu(ConstNpc.CONFIRM_DIALOG);
-        player.confirmDialog = this;
-        Message msg = Message.create(32);
-        DataOutputStream ds = msg.writer();
-        try {
-            ds.writeShort(ConstNpc.CON_MEO);
-            ds.writeUTF(content);
-            ds.writeByte(2);
-            ds.writeUTF("Đồng ý");
-            ds.writeUTF("Từ chối");
-            ds.flush();
-            player.sendMessage(msg);
-            msg.cleanup();
-        } catch (Exception e) {
-            Log.error(NpcService.class, e);
-        }
-    }
+   public void show(Player player) {
+      player.iDMark.setIndexMenu(ConstNpc.CONFIRM_DIALOG);
+      player.confirmDialog = this;
+      Message msg = Message.create(32);
+      DataOutputStream ds = msg.writer();
+      try {
+         ds.writeShort(ConstNpc.CON_MEO);
+         ds.writeUTF(content);
+         ds.writeByte(2);
+         ds.writeUTF("Đồng ý");
+         ds.writeUTF("Từ chối");
+         ds.flush();
+         player.sendMessage(msg);
+         msg.cleanup();
+      } catch (Exception e) {
+         Log.error(NpcService.class, e);
+      }
+   }
 
-    public void run() {
-        run.run();
-    }
+   public void run() {
+      run.run();
+   }
 
-    public void cancel() {
-        cancel.run();
-    }
+   public void cancel() {
+      cancel.run();
+   }
+
 }

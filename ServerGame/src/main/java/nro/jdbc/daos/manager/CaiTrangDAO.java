@@ -30,4 +30,5 @@ public class CaiTrangDAO {
          Log.error("Error loading cai_trang table: " + e.getMessage());
       }
    }
+
 }

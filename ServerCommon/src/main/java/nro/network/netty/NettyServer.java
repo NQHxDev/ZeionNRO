@@ -31,6 +31,9 @@ public class NettyServer {
    private EventExecutorGroup businessGroup;
    private ISessionFactory sessionFactory;
 
+   private String publicHost;
+   private int publicPort;
+
    private EventLoopGroup bossGroup;
    private EventLoopGroup workerGroup;
 
@@ -38,8 +41,14 @@ public class NettyServer {
 
    public NettyServer(int port, byte[] defaultKeys, ChannelHandler businessHandler) {
       this.port = port;
-      this.defaultKeys = defaultKeys;
+      this.defaultKeys = (defaultKeys != null) ? defaultKeys : new byte[]{0};
       this.businessHandler = businessHandler;
+      this.publicPort = port;
+   }
+
+   public void setPublicConfig(String host, int port) {
+      this.publicHost = host;
+      this.publicPort = port;
    }
 
    public void setBusinessGroup(EventExecutorGroup businessGroup) {
@@ -87,7 +96,7 @@ public class NettyServer {
                   p.addLast(new IdleStateHandler(idleTimeSeconds, 0, 0, TimeUnit.SECONDS));
                   p.addLast(new NettyDecoder());
                   p.addLast(new NettyEncoder());
-                  p.addLast(new HandshakeHandler());
+                  p.addLast(new HandshakeHandler(publicHost, publicPort));
 
                   if (businessGroup != null) {
                         p.addLast(businessGroup, businessHandler);

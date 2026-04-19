@@ -36,9 +36,10 @@ public class Server {
       this.running = true;
 
       try {
-         byte[] key = "arriety".getBytes();
+         byte[] key = new byte[]{0};
          CommonHandler handler = new CommonHandler(controller);
          nettyServer = new NettyServer(config.getListen(), key, handler);
+         nettyServer.setPublicConfig(config.getGameHost(), config.getGamePort());
 
          // Set session factory to create io.Session instead of default NettySession
          nettyServer.setSessionFactory((channel, id) -> new Session(channel, id));
