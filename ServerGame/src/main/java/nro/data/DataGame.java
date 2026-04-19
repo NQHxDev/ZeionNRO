@@ -79,8 +79,8 @@ public class DataGame {
             }
          }
          session.sendMessage(msg);
-         msg.cleanup();
       } catch (Exception e) {
+         Log.error(DataGame.class, e);
       }
    }
 
@@ -105,7 +105,6 @@ public class DataGame {
          if (skill != null) msg.writer().write(skill);
 
          session.doSendMessage(msg);
-         msg.cleanup();
       } catch (Exception e) {
          e.printStackTrace();
       }
@@ -139,7 +138,6 @@ public class DataGame {
             msg.writer().writeByte(temp.dartType);
          }
          session.sendMessage(msg);
-         msg.cleanup();
       } catch (Exception e) {
          Log.error(DataGame.class, e);
       }
@@ -226,7 +224,6 @@ public class DataGame {
             }
          }
          session.doSendMessage(msg);
-         msg.cleanup();
       } catch (Exception e) {
          Log.error(DataGame.class, e);
       }
@@ -239,7 +236,6 @@ public class DataGame {
          msg.writer()
                .write(FileIO.readFile("resources/data/nro/data_img_version/x" + session.zoomLevel + "/img_version"));
          session.doSendMessage(msg);
-         msg.cleanup();
       } catch (Exception e) {
          Log.error(DataGame.class, e);
       }
@@ -252,7 +248,6 @@ public class DataGame {
          msg = Message.create(Cmd.ITEM_BACKGROUND);
          msg.writer().write(item_bg);
          session.sendMessage(msg);
-         msg.cleanup();
       } catch (Exception e) {
       }
    }
@@ -263,7 +258,6 @@ public class DataGame {
          msg = Message.create(-82);
          msg.writer().write(FileIO.readFile("resources/data/nro/map/tile_set_info"));
          session.sendMessage(msg);
-         msg.cleanup();
       } catch (Exception e) {
       }
    }
@@ -275,7 +269,6 @@ public class DataGame {
          msg = Service.getInstance().messageNotMap(Cmd.REQUEST_MAPTEMPLATE);
          msg.writer().write(FileIO.readFile("resources/map/" + id));
          session.sendMessage(msg);
-         msg.cleanup();
       } catch (Exception e) {
          Log.error(DataGame.class, e);
       }
@@ -301,7 +294,6 @@ public class DataGame {
          msg.writer().writeUTF(ServerManager.NAME + ":" + Manager.DOMAIN + ":" + ServerManager.PORT + ":0,0,0");
          msg.writer().writeByte(1);
          session.sendMessage(msg);
-         msg.cleanup();
       } catch (Exception e) {
       }
    }

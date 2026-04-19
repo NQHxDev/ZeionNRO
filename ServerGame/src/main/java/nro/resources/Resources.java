@@ -66,7 +66,6 @@ public class Resources {
          msg.writer().writeByte(1); // res version
          msg.writer().writeUTF("http://nroxanh.xyz/data/data.zip"); // link data
          session.sendMessage(msg);
-         msg.cleanup();
       } catch (Exception e) {
          e.printStackTrace();
       }
@@ -78,7 +77,6 @@ public class Resources {
          msg = Message.create(Cmd.GET_RES_UPDATE);
          msg.writer().writeByte(0);
          session.sendMessage(msg);
-         msg.cleanup();
       } catch (Exception e) {
          e.printStackTrace();
       }
@@ -95,7 +93,6 @@ public class Resources {
             ds.writeInt(version[getZoomIndex(session, version.length)]);
             ds.flush();
             session.sendMessage(mss);
-            mss.cleanup();
          }
       } catch (IOException ex) {
          ex.printStackTrace();
@@ -130,7 +127,6 @@ public class Resources {
          msg.writer().writeByte(1);
          msg.writer().writeShort(size);
          session.sendMessage(msg);
-         msg.cleanup();
       } catch (Exception e) {
       }
    }
@@ -145,7 +141,6 @@ public class Resources {
             msg.writer().writeByte(3);
             msg.writer().writeInt(version[getZoomIndex(session, version.length)]);
             session.sendMessage(msg);
-            msg.cleanup();
          } catch (Exception e) {
             e.printStackTrace();
          }
@@ -167,7 +162,6 @@ public class Resources {
          ds.write(ab);
          ds.flush();
          session.sendMessage(mss);
-         mss.cleanup();
       } catch (IOException ex) {
          ex.printStackTrace();
       }
@@ -181,7 +175,6 @@ public class Resources {
          msg.writer().writeInt(data.length);
          msg.writer().write(data);
          session.sendMessage(msg);
-         msg.cleanup();
       } catch (Exception e) {
          e.printStackTrace();
       }
@@ -194,7 +187,6 @@ public class Resources {
          byte[] data = find(session.typeClient).getMapData(session.zoomLevel, mapId);
          msg.writer().write(data);
          session.sendMessage(msg);
-         msg.cleanup();
       } catch (Exception e) {
          e.printStackTrace();
       }
@@ -207,7 +199,6 @@ public class Resources {
          byte[] data = find(session.typeClient).getRawImageData(session.zoomLevel, id);
          msg.writer().write(data);
          session.sendMessage(msg);
-         msg.cleanup();
       } catch (Exception e) {
          e.printStackTrace();
       }
@@ -222,7 +213,6 @@ public class Resources {
          msg.writer().writeInt(data.length);
          msg.writer().write(data);
          session.sendMessage(msg);
-         msg.cleanup();
       } catch (Exception e) {
          e.printStackTrace();
       }
@@ -240,7 +230,6 @@ public class Resources {
                   ms.writer().writeShort(data.length);
                   ms.writer().write(data);
                   session.sendMessage(ms);
-                  ms.cleanup();
                }
             }
          }
@@ -261,7 +250,6 @@ public class Resources {
                   ms.writer().writeShort(data.length);
                   ms.writer().write(data);
                   session.sendMessage(ms);
-                  ms.cleanup();
                }
             }
          }
@@ -279,7 +267,6 @@ public class Resources {
          msg.writer().writeInt(data.length);
          msg.writer().write(data);
          session.sendMessage(msg);
-         msg.cleanup();
       } catch (Exception e) {
          e.printStackTrace();
       }
@@ -292,7 +279,6 @@ public class Resources {
          byte[] data = find(session.typeClient).getRawMapLogoData(session.zoomLevel, id);
          msg.writer().write(data);
          session.sendMessage(msg);
-         msg.cleanup();
       } catch (Exception e) {
          e.printStackTrace();
       }
@@ -305,7 +291,6 @@ public class Resources {
          byte[] data = find(session.typeClient).getRawSmallImageData(session.zoomLevel, id);
          msg.writer().write(data);
          session.sendMessage(msg);
-         msg.cleanup();
       } catch (Exception e) {
          e.printStackTrace();
       }
@@ -318,7 +303,6 @@ public class Resources {
          byte[] data = find(session.typeClient).getRawSideIconData(session.zoomLevel, id);
          msg.writer().write(data);
          session.sendMessage(msg);
-         msg.cleanup();
       } catch (Exception e) {
          e.printStackTrace();
       }
@@ -331,7 +315,6 @@ public class Resources {
          byte[] data = find(session.typeClient).getRawItemIconData(session.zoomLevel, id);
          msg.writer().write(data);
          session.sendMessage(msg);
-         msg.cleanup();
       } catch (Exception e) {
          e.printStackTrace();
       }
@@ -349,7 +332,6 @@ public class Resources {
             msg.writer().writeInt(data.length);
             msg.writer().write(data);
             session.sendMessage(msg);
-            msg.cleanup();
          }
       } catch (Exception e) {
          e.printStackTrace();
@@ -382,7 +364,6 @@ public class Resources {
             }
             ds.flush();
             session.sendMessage(ms);
-            ms.cleanup();
          }
       } catch (Exception e) {
          e.printStackTrace();
@@ -409,7 +390,6 @@ public class Resources {
             ds.write(imgData);
             ds.flush();
             session.sendMessage(ms);
-            ms.cleanup();
          }
       } catch (Exception e) {
          e.printStackTrace();

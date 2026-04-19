@@ -27,7 +27,6 @@ public class Service {
          ms.writeInt(user.getMocNap());
          ms.writeInt(user.getServer());
          this.sendMessage(ms);
-         ms.cleanup();
       } catch (Exception ex) {
          ex.printStackTrace();
       }
@@ -38,7 +37,6 @@ public class Service {
          Message ms = Message.create(3);
          ms.writeInt(userID);
          this.sendMessage(ms);
-         ms.cleanup();
       } catch (Exception ex) {
          ex.printStackTrace();
       }
@@ -49,7 +47,6 @@ public class Service {
          Message ms = Message.create(6);
          ms.writeInt(userID);
          this.sendMessage(ms);
-         ms.cleanup();
       } catch (Exception ex) {
          ex.printStackTrace();
       }
@@ -61,7 +58,6 @@ public class Service {
          ms.writeInt(clientID);
          ms.writeUTF(text);
          this.sendMessage(ms);
-         ms.cleanup();
       } catch (Exception ex) {
          ex.printStackTrace();
       }
@@ -74,7 +70,6 @@ public class Service {
          ms.writeByte(1);
          ms.writeUTF(text);
          this.sendMessage(ms);
-         ms.cleanup();
       } catch (Exception ex) {
          ex.printStackTrace();
       }
