@@ -8,7 +8,7 @@ import nro.consts.ConstNpc;
 import nro.models.item.Item;
 import nro.models.item.ItemOption;
 import nro.models.player.Player;
-import nro.server.io.Message;
+import nro.network.io.Message;
 
 public class RuongSuuTam {
 
@@ -37,7 +37,7 @@ public class RuongSuuTam {
    public void Send_RuongSuuTamTemplate(Player pl) {
       Message msg = null;
       try {
-         msg = new Message(109);
+         msg = Message.create(109);
          msg.writer().writeByte(0);
          msg.writer().writeByte(START);
          msg.writer().writeByte(pl.active_ruong_suu_tam);
@@ -75,7 +75,7 @@ public class RuongSuuTam {
       InventoryService.gI().arrangeItems(pl.ruongSuuTam.RuongCaiTrang);
       Message msg = null;
       try {
-         msg = new Message(109);
+         msg = Message.create(109);
          msg.writer().writeByte(1);
          msg.writer().writeByte(pl.ruongSuuTam.RuongCaiTrang.size());
          for (int i = 0; i < pl.ruongSuuTam.RuongCaiTrang.size(); i++) {
@@ -104,7 +104,7 @@ public class RuongSuuTam {
       InventoryService.gI().arrangeItems(pl.ruongSuuTam.RuongPhuKien);
       Message msg = null;
       try {
-         msg = new Message(109);
+         msg = Message.create(109);
          msg.writer().writeByte(2);
          msg.writer().writeByte(pl.ruongSuuTam.RuongPhuKien.size());
          for (int i = 0; i < pl.ruongSuuTam.RuongPhuKien.size(); i++) {
@@ -133,7 +133,7 @@ public class RuongSuuTam {
       InventoryService.gI().arrangeItems(pl.ruongSuuTam.RuongPet);
       Message msg = null;
       try {
-         msg = new Message(109);
+         msg = Message.create(109);
          msg.writer().writeByte(3);
          msg.writer().writeByte(pl.ruongSuuTam.RuongPet.size());
          for (int i = 0; i < pl.ruongSuuTam.RuongPet.size(); i++) {
@@ -162,7 +162,7 @@ public class RuongSuuTam {
       InventoryService.gI().arrangeItems(pl.ruongSuuTam.RuongLinhThu);
       Message msg = null;
       try {
-         msg = new Message(109);
+         msg = Message.create(109);
          msg.writer().writeByte(4);
          msg.writer().writeByte(pl.ruongSuuTam.RuongLinhThu.size());
          for (int i = 0; i < pl.ruongSuuTam.RuongLinhThu.size(); i++) {
@@ -191,7 +191,7 @@ public class RuongSuuTam {
       InventoryService.gI().arrangeItems(pl.ruongSuuTam.RuongThuCuoi);
       Message msg = null;
       try {
-         msg = new Message(109);
+         msg = Message.create(109);
          msg.writer().writeByte(5);
          msg.writer().writeByte(pl.ruongSuuTam.RuongThuCuoi.size());
          for (int i = 0; i < pl.ruongSuuTam.RuongThuCuoi.size(); i++) {

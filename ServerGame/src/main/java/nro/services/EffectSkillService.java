@@ -3,7 +3,7 @@ package nro.services;
 import nro.models.mob.Mob;
 import nro.models.player.Player;
 import nro.models.skill.Skill;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.utils.SkillUtil;
 import nro.utils.Log;
 
@@ -50,7 +50,7 @@ public class EffectSkillService {
         Skill skill = SkillUtil.getSkillbyId(player, skillId);
         Message msg;
         try {
-            msg = new Message(-45);
+            msg = Message.create(-45);
             msg.writer().writeByte(8);
             msg.writer().writeInt((int) player.id);
             msg.writer().writeShort(skill.skillId);
@@ -64,7 +64,7 @@ public class EffectSkillService {
     public void sendEffectPlayer(Player plUseSkill, Player plTarget, byte toggle, byte effect) {
         Message msg;
         try {
-            msg = new Message(-124);
+            msg = Message.create(-124);
             msg.writer().writeByte(toggle); //0: hủy hiệu ứng, 1: bắt đầu hiệu ứng
             msg.writer().writeByte(0); //0: vào phần phayer, 1: vào phần mob
             if (toggle == TURN_OFF_ALL_EFFECT) {
@@ -84,7 +84,7 @@ public class EffectSkillService {
     public void sendEffectMob(Player plUseSkill, Mob mobTarget, byte toggle, byte effect) {
         Message msg;
         try {
-            msg = new Message(-124);
+            msg = Message.create(-124);
             msg.writer().writeByte(toggle); //0: hủy hiệu ứng, 1: bắt đầu hiệu ứng
             msg.writer().writeByte(1); //0: vào phần phayer, 1: vào phần mob
             msg.writer().writeByte(effect); //loại hiệu ứng
@@ -196,7 +196,7 @@ public class EffectSkillService {
     public void sendMobToSocola(Player player, Mob mob, int timeSocola) {
         Message msg;
         try {
-            msg = new Message(-112);
+            msg = Message.create(-112);
             msg.writer().writeByte(1);
             msg.writer().writeByte(mob.id); //mob id
             msg.writer().writeShort(4133); //icon socola
@@ -210,7 +210,7 @@ public class EffectSkillService {
     public void sendMobToBinh(Player player, Mob mob, int timeBinh) {
         Message msg;
         try {
-            msg = new Message(-112);
+            msg = Message.create(-112);
             msg.writer().writeByte(1);
             msg.writer().writeByte(mob.id); //mob id
             msg.writer().writeShort(14522); //icon socola
@@ -327,7 +327,7 @@ public class EffectSkillService {
     public void sendEffectBlindThaiDuongHaSan(Player plUseSkill, List<Player> players, List<Mob> mobs, int timeStun) {
         Message msg;
         try {
-            msg = new Message(-45);
+            msg = Message.create(-45);
             msg.writer().writeByte(0);
             msg.writer().writeInt((int) plUseSkill.id);
             msg.writer().writeShort(plUseSkill.playerSkill.skillSelect.skillId);
@@ -353,7 +353,7 @@ public class EffectSkillService {
         Skill skill = SkillUtil.getSkillbyId(player, Skill.TAI_TAO_NANG_LUONG);
         Message msg;
         try {
-            msg = new Message(-45);
+            msg = Message.create(-45);
             msg.writer().writeByte(6);
             msg.writer().writeInt((int) player.id);
             msg.writer().writeShort(skill.skillId);
@@ -369,7 +369,7 @@ public class EffectSkillService {
         Skill skill = SkillUtil.getSkillbyId(player, Skill.TAI_TAO_NANG_LUONG);
         Message msg;
         try {
-            msg = new Message(-45);
+            msg = Message.create(-45);
             msg.writer().writeByte(1);
             msg.writer().writeInt((int) player.id);
             msg.writer().writeShort(skill.skillId);
@@ -383,7 +383,7 @@ public class EffectSkillService {
     //dừng gồng
     public void sendEffectStopCharge(Player player) {
         try {
-            Message msg = new Message(-45);
+            Message msg = Message.create(-45);
             msg.writer().writeByte(3);
             msg.writer().writeInt((int) player.id);
             msg.writer().writeShort(-1);
@@ -398,7 +398,7 @@ public class EffectSkillService {
     public void sendEffectEndCharge(Player player) {
         Message msg;
         try {
-            msg = new Message(-45);
+            msg = Message.create(-45);
             msg.writer().writeByte(5);
             msg.writer().writeInt((int) player.id);
             msg.writer().writeShort(player.playerSkill.skillSelect.skillId);
@@ -414,7 +414,7 @@ public class EffectSkillService {
         Skill skill = SkillUtil.getSkillbyId(player, Skill.BIEN_KHI);
         Message msg;
         try {
-            msg = new Message(-45);
+            msg = Message.create(-45);
             msg.writer().writeByte(6);
             msg.writer().writeInt((int) player.id);
             msg.writer().writeShort(skill.skillId);
@@ -450,7 +450,7 @@ public class EffectSkillService {
     public void sendEffectEndBienHinh(Player player) {
         Message msg;
         try {
-            msg = new Message(-45);
+            msg = Message.create(-45);
             msg.writer().writeByte(5);
             msg.writer().writeInt((int) player.id);
             msg.writer().writeShort(97);
@@ -462,7 +462,7 @@ public class EffectSkillService {
     public void sendEffectBienhinh(Player player) {
         Message msg;
         try {
-            msg = new Message(-45);
+            msg = Message.create(-45);
             msg.writer().writeByte(6);
             msg.writer().writeInt((int) player.id);
             msg.writer().writeShort(97);
@@ -482,7 +482,7 @@ public class EffectSkillService {
         }
         Message msg;
         try {
-            msg = new Message(-45);
+            msg = Message.create(-45);
             msg.writer().writeByte(6);
             msg.writer().writeInt((int) player.id);
             msg.writer().writeShort(97);

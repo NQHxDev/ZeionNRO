@@ -22,7 +22,7 @@ import nro.power.Caption;
 import nro.power.CaptionManager;
 import nro.server.Client;
 import nro.server.Manager;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.server.io.Session;
 
 import nro.utils.FileIO;
@@ -154,7 +154,7 @@ public class Service {
    public void sendPopUpMultiLine(Player pl, int tempID, int avt, String text) {
       Message msg = null;
       try {
-         msg = new Message(-218);
+         msg = Message.create(-218);
          msg.writer().writeShort(tempID);
          msg.writer().writeUTF(text);
          msg.writer().writeShort(avt);
@@ -173,7 +173,7 @@ public class Service {
    public void loginDe(Session session, short second) {
       Message msg;
       try {
-         msg = new Message(122);
+         msg = Message.create(122);
          msg.writer().writeShort(second);
          session.sendMessage(msg);
          msg.cleanup();
@@ -186,7 +186,7 @@ public class Service {
       try {
          player.location.x = x;
          player.location.y = y;
-         msg = new Message(46);
+         msg = Message.create(46);
          msg.writer().writeShort(x);
          msg.writer().writeShort(y);
          player.sendMessage(msg);
@@ -199,7 +199,7 @@ public class Service {
    public void clearMap(Player player) {
       Message msg;
       try {
-         msg = new Message(-22);
+         msg = Message.create(-22);
          player.sendMessage(msg);
          msg.cleanup();
       } catch (Exception e) {
@@ -270,7 +270,7 @@ public class Service {
 
          if (text.equals("admin")) {
             String str = "|7|--Ngọc Rồng ServerGame--" + "\n"
-                  + "|4|Sessions: " + (Client.gI().getSessions().size() + soluongBot) + "\n"
+                  + "|4|Sessions: " + (Client.gI().sessions.size() + soluongBot) + "\n"
                   + "|5|Tổng Thread: " + Thread.activeCount() + "\n"
                   + "|6|Số người Online:  " + (Client.gI().getPlayers().size() + soluongBot) + "\n"
                   + "|8|Thời gian chạy Server: " + Manager.NgayRunServer + "\n"
@@ -286,7 +286,7 @@ public class Service {
             return;
          } else if (text.equals("load")) {
             String str = "|7|--Ngọc Rồng ServerGame--" + "\n"
-                  + "|4|Sessions: " + (Client.gI().getSessions().size() + soluongBot) + "\n"
+                  + "|4|Sessions: " + (Client.gI().sessions.size() + soluongBot) + "\n"
                   + "|5|Tổng Thread: " + Thread.activeCount() + "\n"
                   + "|6|Số người Online:  " + (Client.gI().getPlayers().size() + soluongBot) + "\n"
                   + "|8|Thời gian chạy Server: " + Manager.NgayRunServer + "\n"
@@ -548,7 +548,7 @@ public class Service {
    public void chatMap(Player player, String text) {
       Message msg;
       try {
-         msg = new Message(44);
+         msg = Message.create(44);
          msg.writer().writeInt((int) player.id);
          msg.writer().writeUTF(text);
          sendMessAllPlayerInMap(player, msg);
@@ -619,7 +619,7 @@ public class Service {
    public void chatJustForMe(Player me, Player plChat, String text) {
       Message msg;
       try {
-         msg = new Message(44);
+         msg = Message.create(44);
          msg.writer().writeInt((int) plChat.id);
          msg.writer().writeUTF(text);
          me.sendMessage(msg);
@@ -635,7 +635,7 @@ public class Service {
       if (!player.isPet && !player.isBoss && !player.isBot) {
          Message msg;
          try {
-            msg = new Message(-42);
+            msg = Message.create(-42);
             msg.writer().writeDouble(player.nPoint.hpg);
             msg.writer().writeDouble(player.nPoint.mpg);
             msg.writer().writeDouble(player.nPoint.dameg);
@@ -788,19 +788,19 @@ public class Service {
    }
 
    public Message messageNotLogin(byte command) throws IOException {
-      Message ms = new Message(-29);
+      Message ms = Message.create(-29);
       ms.writer().writeByte(command);
       return ms;
    }
 
    public Message messageNotMap(byte command) throws IOException {
-      Message ms = new Message(-28);
+      Message ms = Message.create(-28);
       ms.writer().writeByte(command);
       return ms;
    }
 
    public Message messageSubCommand(byte command) throws IOException {
-      Message ms = new Message(-30);
+      Message ms = Message.create(-30);
       ms.writer().writeByte(command);
       return ms;
    }
@@ -848,7 +848,7 @@ public class Service {
    // public void congTiemNang(Player pl, byte type, int tiemnang) {
    // Message msg;
    // try {
-   // msg = new Message(-3);
+   // msg = Message.create(-3);
    // msg.writer().writeByte(type);// 0 là cộng sm, 1 cộng tn, 2 là cộng cả 2
    // msg.writer().writeInt(tiemnang);// số tn cần cộng
    // if (!pl.isPet) {
@@ -941,7 +941,7 @@ public class Service {
       String win = "Chúc mừng bạn đã đoán trúng số " + winNum + " của giải lần này";
       Message msg;
       try {
-         msg = new Message(-126);
+         msg = Message.create(-126);
          msg.writer().writeByte(1);
          msg.writer().writeByte(0);
          msg.writer().writeUTF(num.format(winNum));
@@ -964,7 +964,7 @@ public class Service {
 
       Message msg;
       try {
-         msg = new Message(-126);
+         msg = Message.create(-126);
          msg.writer().writeByte(0);
          msg.writer().writeUTF(text);
          pl.sendMessage(msg);
@@ -980,7 +980,7 @@ public class Service {
          pl.nPoint.setHp(hp);
          pl.nPoint.setMp(mp);
          if (!pl.isPet) {
-            msg = new Message(-16);
+            msg = Message.create(-16);
             pl.sendMessage(msg);
             msg.cleanup();
             PlayerService.gI().sendInfoHpMpMoney(pl);
@@ -1006,7 +1006,7 @@ public class Service {
       Message msg;
       try {
          if (!pl.isPet) {
-            msg = new Message(-17);
+            msg = Message.create(-17);
             msg.writer().writeByte((int) pl.id);
             msg.writer().writeShort(pl.location.x);
             msg.writer().writeShort(pl.location.y);
@@ -1016,7 +1016,7 @@ public class Service {
             ((Pet) pl).lastTimeDie = System.currentTimeMillis();
          }
 
-         msg = new Message(-8);
+         msg = Message.create(-8);
          msg.writer().writeShort((int) pl.id);
          msg.writer().writeByte(0); // cpk
          msg.writer().writeShort(pl.location.x);
@@ -1044,7 +1044,7 @@ public class Service {
    public void sendTitleRv(Player player, Player p2, int id) {
       Message me;
       try {
-         me = new Message(-128);
+         me = Message.create(-128);
          me.writer().writeByte(0);
          me.writer().writeInt((int) player.id);
          if (id == 888) {
@@ -1096,7 +1096,7 @@ public class Service {
    public void sendTitle(Player player, int id) {
       Message me;
       try {
-         me = new Message(-128);
+         me = Message.create(-128);
          me.writer().writeByte(0);
          me.writer().writeInt((int) player.id);
          for (int i = 0; i < 9; i++) {
@@ -1157,7 +1157,7 @@ public class Service {
    public void removeTitle(Player player) {
       Message me;
       try {
-         me = new Message(-128);
+         me = Message.create(-128);
          me.writer().writeByte(2);
          me.writer().writeInt((int) player.id);
          player.getSession().sendMessage(me);
@@ -1234,7 +1234,7 @@ public class Service {
    public void sendFoot(Player player, int id) {
       Message me;
       try {
-         me = new Message(-128);
+         me = Message.create(-128);
          me.writer().writeByte(0);
          me.writer().writeInt((int) player.id);
          switch (id) {
@@ -1282,7 +1282,7 @@ public class Service {
    public void sendFootRv(Player player, Player p2, int id) {
       Message me;
       try {
-         me = new Message(-128);
+         me = Message.create(-128);
          me.writer().writeByte(0);
          me.writer().writeInt((int) player.id);
          switch (id) {
@@ -1330,7 +1330,7 @@ public class Service {
    public void loadLaiEff(Player player) {
       Message me;
       try {
-         me = new Message(-128);
+         me = Message.create(-128);
          me.writer().writeByte(2);
          me.writer().writeInt((int) player.id);
          player.getSession().sendMessage(me);
@@ -1344,7 +1344,7 @@ public class Service {
       if (player != null) {
          Message msg;
          try {
-            msg = new Message(-90);
+            msg = Message.create(-90);
             msg.writer().writeByte(1);// check type
             msg.writer().writeInt((int) player.id); // id player
             short head = player.getHead();
@@ -1366,7 +1366,7 @@ public class Service {
    public void setNotMonkey(Player player) {
       Message msg;
       try {
-         msg = new Message(-90);
+         msg = Message.create(-90);
          msg.writer().writeByte(-1);
          msg.writer().writeInt((int) player.id);
          Service.getInstance().sendMessAllPlayerInMap(player, msg);
@@ -1379,7 +1379,7 @@ public class Service {
    public void sendFlagBag(Player pl) {
       Message msg;
       try {
-         msg = new Message(-64);
+         msg = Message.create(-64);
          msg.writer().writeInt((int) pl.id);
          msg.writer().writeByte(pl.getFlagBag());
          sendMessAllPlayerInMap(pl, msg);
@@ -1394,7 +1394,7 @@ public class Service {
       }
       Message msg;
       try {
-         msg = new Message(-26);
+         msg = Message.create(-26);
          msg.writer().writeUTF(text);
          pl.sendMessage(msg);
          msg.cleanup();
@@ -1406,7 +1406,7 @@ public class Service {
    public void sendThongBaoOK(Session session, String text) {
       Message msg;
       try {
-         msg = new Message(-26);
+         msg = Message.create(-26);
          msg.writer().writeUTF(text);
          session.sendMessage(msg);
          msg.cleanup();
@@ -1417,7 +1417,7 @@ public class Service {
    public void sendThongBaoAllPlayer(String thongBao) {
       Message msg;
       try {
-         msg = new Message(-25);
+         msg = Message.create(-25);
          msg.writer().writeUTF(thongBao);
          this.sendMessAllPlayer(msg);
          msg.cleanup();
@@ -1428,7 +1428,7 @@ public class Service {
    public void sendBigMessage(Player player, int iconId, String text) {
       try {
          Message msg;
-         msg = new Message(-70);
+         msg = Message.create(-70);
          msg.writer().writeShort(iconId);
          msg.writer().writeUTF(text);
          msg.writer().writeByte(0);
@@ -1445,7 +1445,7 @@ public class Service {
    public void sendBigMessAllPlayer(int iconId, String text) {
       try {
          Message msg;
-         msg = new Message(-70);
+         msg = Message.create(-70);
          msg.writer().writeShort(iconId);
          msg.writer().writeUTF(text);
          msg.writer().writeByte(0);
@@ -1458,7 +1458,7 @@ public class Service {
    public void sendThongBao(Player pl, String thongBao) {
       Message msg;
       try {
-         msg = new Message(-25);
+         msg = Message.create(-25);
          msg.writer().writeUTF(thongBao);
          pl.sendMessage(msg);
          msg.cleanup();
@@ -1470,7 +1470,7 @@ public class Service {
    public void sendMoney(Player pl) {
       Message msg;
       try {
-         msg = new Message(6);
+         msg = Message.create(6);
          long gold = pl.inventory.getGoldDisplay();
          if (pl.isVersionAbove(214)) {
             msg.writer().writeLong(gold);
@@ -1489,7 +1489,7 @@ public class Service {
    public void sendToAntherMePickItem(Player player, int itemMapId) {
       Message msg;
       try {
-         msg = new Message(-19);
+         msg = Message.create(-19);
          msg.writer().writeShort(itemMapId);
          msg.writer().writeInt((int) player.id);
          sendMessAllPlayerIgnoreMe(player, msg);
@@ -1504,7 +1504,7 @@ public class Service {
    }
 
    public void SendImgSkill9(short SkillId, int IdAnhSKill) {
-      Message msg = new Message(62);
+      Message msg = Message.create(62);
       DataOutputStream ds = msg.writer();
       try {
          ds.writeShort(SkillId);
@@ -1534,7 +1534,7 @@ public class Service {
                pl.lastTimeChatGlobal = System.currentTimeMillis();
                Message msg;
                try {
-                  msg = new Message(92);
+                  msg = Message.create(92);
                   msg.writer().writeUTF(pl.name);
                   msg.writer().writeUTF("|5|" + text);
                   msg.writer().writeInt((int) pl.id);
@@ -1564,7 +1564,7 @@ public class Service {
       for (Player pl : list) {
          if (pl != null) {
             try {
-               Message ms = new Message(Cmd.CHAT_THEGIOI_SERVER);
+               Message ms = Message.create(Cmd.CHAT_THEGIOI_SERVER);
                ms.writer().writeUTF("THÔNG BÁO SERVER");
                ms.writer().writeUTF("|5|" + text);
                ms.writer().writeInt(-1);
@@ -1600,7 +1600,7 @@ public class Service {
    public void openFlagUI(Player pl) {
       Message msg;
       try {
-         msg = new Message(-103);
+         msg = Message.create(-103);
          msg.writer().writeByte(0);
          msg.writer().writeByte(flagTempId.length);
          for (int i = 0; i < flagTempId.length; i++) {
@@ -1631,14 +1631,14 @@ public class Service {
       Message msg;
       try {
          pl.cFlag = (byte) index;
-         msg = new Message(-103);
+         msg = Message.create(-103);
          msg.writer().writeByte(1);
          msg.writer().writeInt((int) pl.id);
          msg.writer().writeByte(index);
          Service.getInstance().sendMessAllPlayerInMap(pl, msg);
          msg.cleanup();
 
-         msg = new Message(-103);
+         msg = Message.create(-103);
          msg.writer().writeByte(2);
          msg.writer().writeByte(index);
          msg.writer().writeShort(flagIconId[index]);
@@ -1647,14 +1647,14 @@ public class Service {
 
          if (pl.pet != null) {
             pl.pet.cFlag = (byte) index;
-            msg = new Message(-103);
+            msg = Message.create(-103);
             msg.writer().writeByte(1);
             msg.writer().writeInt((int) pl.pet.id);
             msg.writer().writeByte(index);
             Service.getInstance().sendMessAllPlayerInMap(pl.pet, msg);
             msg.cleanup();
 
-            msg = new Message(-103);
+            msg = Message.create(-103);
             msg.writer().writeByte(2);
             msg.writer().writeByte(index);
             msg.writer().writeShort(flagIconId[index]);
@@ -1670,7 +1670,7 @@ public class Service {
    public void sendFlagPlayerToMe(Player me, Player pl) {
       Message msg;
       try {
-         msg = new Message(-103);
+         msg = Message.create(-103);
          msg.writer().writeByte(2);
          msg.writer().writeByte(pl.cFlag);
          msg.writer().writeShort(flagIconId[pl.cFlag]);
@@ -1725,7 +1725,7 @@ public class Service {
       }
       Message msg;
       try {
-         msg = new Message(29);
+         msg = Message.create(29);
          msg.writer().writeByte(pl.zone.map.zones.size());
          for (Zone zone : pl.zone.map.zones) {
             msg.writer().writeByte(zone.zoneId);
@@ -1744,7 +1744,7 @@ public class Service {
    public void releaseCooldownSkill(Player pl) {
       Message msg;
       try {
-         msg = new Message(-94);
+         msg = Message.create(-94);
          for (Skill skill : pl.playerSkill.skills) {
 
             skill.lastTimeUseThisSkill = 0; // hoặc now - skill.coolDown
@@ -1765,7 +1765,7 @@ public class Service {
    public void sendTimeSkill(Player pl) {
       Message msg;
       try {
-         msg = new Message(-94);
+         msg = Message.create(-94);
          for (Skill skill : pl.playerSkill.skills) {
             msg.writer().writeShort(skill.skillId);
 
@@ -1784,7 +1784,7 @@ public class Service {
    public void dropItemMap(Zone zone, ItemMap item) {
       Message msg;
       try {
-         msg = new Message(68);
+         msg = Message.create(68);
          msg.writer().writeShort(item.itemMapId);
          msg.writer().writeShort(item.itemTemplate.id);
          msg.writer().writeShort(item.x);
@@ -1803,7 +1803,7 @@ public class Service {
    public void dropItemMapForMe(Player player, ItemMap item) {
       Message msg;
       try {
-         msg = new Message(68);
+         msg = Message.create(68);
          msg.writer().writeShort(item.itemMapId);
          msg.writer().writeShort(item.itemTemplate.id);
          msg.writer().writeShort(item.x);
@@ -1823,7 +1823,7 @@ public class Service {
       if (pl != null && pl.pet != null) {
          Message msg;
          try {
-            msg = new Message(-109);
+            msg = Message.create(-109);
             msg.writer().writeDouble(pl.pet.nPoint.hpg); // hp
             msg.writer().writeDouble(pl.pet.nPoint.mpg); // hpfull
             msg.writer().writeDouble(pl.pet.nPoint.dameg); // mp
@@ -1843,7 +1843,7 @@ public class Service {
       if (pl != null && pl.pet != null) {
          Message msg;
          try {
-            msg = new Message(-107);
+            msg = Message.create(-107);
             msg.writer().writeByte(2);
             msg.writer().writeShort(pl.pet.getAvatar());
             msg.writer().writeByte(pl.pet.inventory.itemsBody.size());
@@ -1916,7 +1916,7 @@ public class Service {
    // public void sendItemTime(Player pl, int itemId, int time) {
    // Message msg;
    // try {
-   // msg = new Message(-106);
+   // msg = Message.create(-106);
    // msg.writer().writeShort(itemId);
    // msg.writer().writeShort(time);
    // pl.sendMessage(msg);
@@ -1945,7 +1945,7 @@ public class Service {
       player.location.y = y;
       Message msg;
       try {
-         msg = new Message(123);
+         msg = Message.create(123);
          msg.writer().writeInt((int) player.id);
          msg.writer().writeShort(x);
          msg.writer().writeShort(y);
@@ -1959,7 +1959,7 @@ public class Service {
    public void getPlayerMenu(Player player, int playerId) {
       Message msg;
       try {
-         msg = new Message(-79);
+         msg = Message.create(-79);
          Player pl = player.zone.getPlayerInMap(playerId);
          if (pl != null) {
             msg.writer().writeInt(playerId);
@@ -1993,7 +1993,7 @@ public class Service {
    public void hideWaitDialog(Player pl) {
       Message msg;
       try {
-         msg = new Message(-99);
+         msg = Message.create(-99);
          msg.writer().writeByte(-1);
          pl.sendMessage(msg);
          msg.cleanup();
@@ -2004,7 +2004,7 @@ public class Service {
    public void chatPrivate(Player plChat, Player plReceive, String text) {
       Message msg;
       try {
-         msg = new Message(92);
+         msg = Message.create(92);
          msg.writer().writeUTF(plChat.name);
          msg.writer().writeUTF("|5|" + text);
          msg.writer().writeInt((int) plChat.id);
@@ -2041,7 +2041,7 @@ public class Service {
    public void switchToCreateChar(Session session) {
       Message msg;
       try {
-         msg = new Message(2);
+         msg = Message.create(2);
          session.sendMessage(msg);
          msg.cleanup();
       } catch (Exception e) {
@@ -2051,8 +2051,8 @@ public class Service {
    public void sendCaption(Session session, byte gender) {
       Message msg;
       try {
-         List<Caption> captions = CaptionManager.getInstance().getCaptions();
-         msg = new Message(-41);
+         List<Caption> captions = CaptionManager.getInstance().captions;
+         msg = Message.create(-41);
          msg.writer().writeByte(captions.size());
          for (Caption caption : captions) {
             msg.writer().writeUTF(caption.getCaption(gender));
@@ -2066,7 +2066,7 @@ public class Service {
    public void sendHavePet(Player player) {
       Message msg;
       try {
-         msg = new Message(-107);
+         msg = Message.create(-107);
          msg.writer().writeByte(player.pet == null ? 0 : 1);
          player.sendMessage(msg);
          msg.cleanup();
@@ -2077,7 +2077,7 @@ public class Service {
    public void sendWaitToLogin(Session session, int secondsWait) {
       Message msg;
       try {
-         msg = new Message(122);
+         msg = Message.create(122);
          msg.writer().writeShort(secondsWait);
          session.sendMessage(msg);
          msg.cleanup();
@@ -2089,7 +2089,7 @@ public class Service {
    public void sendMessage(Session session, int cmd, String path) {
       Message msg;
       try {
-         msg = new Message(cmd);
+         msg = Message.create(cmd);
          msg.writer().write(FileIO.readFile(path));
          session.sendMessage(msg);
          msg.cleanup();
@@ -2100,7 +2100,7 @@ public class Service {
    public void sendTopRank(Player pl) {
       Message msg;
       try {
-         msg = new Message(Cmd.THELUC);
+         msg = Message.create(Cmd.THELUC);
          msg.writer().writeInt(1);
          pl.sendMessage(msg);
          msg.cleanup();
@@ -2116,7 +2116,7 @@ public class Service {
    public void sendNangDong(Player player) {
       Message msg;
       try {
-         msg = new Message(-97);
+         msg = Message.create(-97);
          msg.writer().writeInt(100);
          player.sendMessage(msg);
          msg.cleanup();
@@ -2127,7 +2127,7 @@ public class Service {
    public void sendPowerInfo(Player pl, String info, short point) {
       Message m = null;
       try {
-         m = new Message(-115);
+         m = Message.create(-115);
          m.writer().writeUTF(info);
          m.writer().writeShort(point);
          m.writer().writeShort(20);
@@ -2149,7 +2149,7 @@ public class Service {
    public void setMabuHold(Player pl, byte type) {
       Message m = null;
       try {
-         m = new Message(52);
+         m = Message.create(52);
 
       } catch (Exception e) {
          e.printStackTrace();
@@ -2162,7 +2162,7 @@ public class Service {
 
    public void sendPercentMabuEgg(Player player, byte percent) {
       try {
-         Message msg = new Message(-117);
+         Message msg = Message.create(-117);
          msg.writer().writeByte(percent);
          player.sendMessage(msg);
          msg.cleanup();
@@ -2225,19 +2225,19 @@ public class Service {
       List<Player> list = null;
       switch (top) {
          case 1:
-            list = TopManager.getInstance().getListSm();
+            list = TopManager.getInstance().listSm;
             break;
          case 2:
-            list = TopManager.getInstance().getListDetu();
+            list = TopManager.getInstance().listDetu;
             break;
          case 3:
-            list = TopManager.getInstance().getListNvu();
+            list = TopManager.getInstance().listNvu;
             break;
          case 4:
-            list = TopManager.getInstance().getListNap();
+            list = TopManager.getInstance().listNap;
             break;
       }
-      Message msg = new Message(Cmd.TOP);
+      Message msg = Message.create(Cmd.TOP);
       try {
          msg.writer().writeByte(0);
          msg.writer().writeUTF(top == TOP_SUCMANH ? "Top Sức Mạnh"
@@ -2282,8 +2282,8 @@ public class Service {
 
    public void showTopSieuHang(Player player) {
       List<Player> list = null;
-      list = TopManager.getInstance().getListSieuHang();
-      Message msg = new Message(Cmd.TOP);
+      list = TopManager.getInstance().listSieuHang;
+      Message msg = Message.create(Cmd.TOP);
       try {
          msg.writer().writeByte(0);
          msg.writer().writeUTF("Top Siêu hạng");
@@ -2316,7 +2316,7 @@ public class Service {
    public void setNotBienhinh(Player player) {
       Message msg;
       try {
-         msg = new Message(-90);
+         msg = Message.create(-90);
          msg.writer().writeByte(-1);
          msg.writer().writeInt((int) player.id);
          Service.getInstance().sendMessAllPlayerInMap(player, msg);
@@ -2330,7 +2330,7 @@ public class Service {
       mabu.isUseSpeacialSkill = true;
       mabu.lastTimeUseSpeacialSkill = System.currentTimeMillis();
       try {
-         Message msg = new Message(51);
+         Message msg = Message.create(51);
          msg.writer().writeInt((int) mabu.id);
          msg.writer().writeByte(skillId);
          msg.writer().writeShort(x);
@@ -2362,7 +2362,7 @@ public class Service {
    public void sendMabuEat(Player plHold, short... point) {
       Message msg;
       try {
-         msg = new Message(52);
+         msg = Message.create(52);
          msg.writer().writeByte(1);
          msg.writer().writeInt((int) plHold.id);
          msg.writer().writeShort(point[0]);
@@ -2382,7 +2382,7 @@ public class Service {
       plHold.effectSkill.isTaskHoldMabu = -1;
       Message msg;
       try {
-         msg = new Message(52);
+         msg = Message.create(52);
          msg.writer().writeByte(0);
          msg.writer().writeInt((int) plHold.id);
          sendMessAllPlayerInMap(plHold.zone, msg);
@@ -2397,7 +2397,7 @@ public class Service {
       plHold.effectSkill.isTaskHoldMabu = 1;
       plHold.effectSkill.lastTimeHoldMabu = System.currentTimeMillis();
       try {
-         Message msg = new Message(52);
+         Message msg = Message.create(52);
          msg.writer().writeByte(2);
          msg.writer().writeInt((int) mabu.id);
          msg.writer().writeInt((int) plHold.id);

@@ -5,7 +5,7 @@ import nro.models.item.CaiTrang;
 import nro.models.mob.Mob;
 import nro.models.skill.Skill;
 import nro.server.Manager;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.*;
 import nro.utils.SkillUtil;
 import nro.utils.TimeUtil;
@@ -274,7 +274,7 @@ public class Pet extends Player {
    private void fusionEffect(int type) {
       Message msg;
       try {
-         msg = new Message(125);
+         msg = Message.create(125);
          msg.writer().writeByte(type);
          msg.writer().writeInt((int) master.id);
          Service.getInstance().sendMessAllPlayerInMap(master, msg);

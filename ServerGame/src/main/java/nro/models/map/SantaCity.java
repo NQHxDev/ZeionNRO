@@ -31,8 +31,8 @@ import lombok.Getter;
 @Getter
 public class SantaCity extends Map {
 
-    private boolean isOpened;
-    private boolean isClosed;
+    public boolean isOpened;
+    public boolean isClosed;
     private ScheduledFuture<?> dailyOpenTask;
     private ScheduledFuture<?> closeTask;
 

@@ -4,7 +4,7 @@ import nro.services.func.ChangeMapService;
 import nro.services.PetService;
 import nro.models.player.Player;
 import nro.utils.Util;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.InventoryService;
 import nro.services.Service;
 import nro.utils.Log;
@@ -33,12 +33,12 @@ public class MabuEgg {
    public void sendMabuEgg() {
       Message msg;
       try {
-         // Message msg = new Message(-117);
+         // Message msg = Message.create(-117);
          // msg.writer().writeByte(100);
          // player.sendMessage(msg);
          // msg.cleanup();
 
-         msg = new Message(-122);
+         msg = Message.create(-122);
          msg.writer().writeShort(this.id);
          msg.writer().writeByte(1);
          msg.writer().writeShort(4664);
@@ -81,7 +81,7 @@ public class MabuEgg {
 
    public void destroyEgg() {
       try {
-         Message msg = new Message(-117);
+         Message msg = Message.create(-117);
          msg.writer().writeByte(101);
          player.sendMessage(msg);
          msg.cleanup();

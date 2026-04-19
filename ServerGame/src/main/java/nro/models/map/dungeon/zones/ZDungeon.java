@@ -15,7 +15,7 @@ import nro.models.map.dungeon.Dungeon;
 import nro.models.mob.Mob;
 import nro.models.player.Player;
 import nro.server.Manager;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.MapService;
 import nro.services.Service;
 import nro.services.func.ChangeMapService;
@@ -28,7 +28,7 @@ import lombok.Getter;
 @Getter
 public abstract class ZDungeon extends Zone {
 
-    protected Dungeon dungeon;
+    public Dungeon dungeon;
 
     public ZDungeon(Map map, Dungeon dungeon) {
         super(map, 0, 20);
@@ -65,10 +65,10 @@ public abstract class ZDungeon extends Zone {
     public void setTextTime() {
         Message msg;
         try {
-            msg = new Message(Cmd.MESSAGE_TIME);
-            msg.writer().writeByte(dungeon.getType());
-            msg.writer().writeUTF(dungeon.getTitle());
-            msg.writer().writeShort(dungeon.getCountDown());
+            msg = Message.create(Cmd.MESSAGE_TIME);
+            msg.writer().writeByte(dungeon.type);
+            msg.writer().writeUTF(dungeon.title);
+            msg.writer().writeShort(dungeon.countDown);
             Service.getInstance().sendMessAllPlayerInMap(this, msg);
             msg.cleanup();
         } catch (Exception e) {

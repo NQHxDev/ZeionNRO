@@ -9,7 +9,7 @@ import java.util.List;
 
 public abstract class AbsManager<E> implements IManager<E> {
 
-    protected List<E> list = new ArrayList<>();
+    public List<E> list = new ArrayList<>();
 
     @Override
     public void add(E e) {

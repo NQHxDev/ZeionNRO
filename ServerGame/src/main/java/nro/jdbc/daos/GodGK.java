@@ -160,8 +160,8 @@ public class GodGK {
                   loadPlayerData(player, rs);
 
                   player.server = session.server;
-                  player.event.setDiemTichLuy(session.diemTichNap);
-                  player.event.setMocNapDaNhan(rs.getInt("moc_nap"));
+                  player.event.diemTichLuy = session.diemTichNap;
+                  player.event.mocNapDaNhan = rs.getInt("moc_nap");
 
                   long now = System.currentTimeMillis();
                   long thoiGianOffline = now - session.lastTimeLogout;
@@ -264,7 +264,7 @@ public class GodGK {
                   clan.addMemberOnline(player);
                   player.clan = clan;
                   player.clanMember = cm;
-                  player.setBuff(clan.getBuff());
+                  player.buff = clan.buff;
                   break;
                }
             }
@@ -278,16 +278,16 @@ public class GodGK {
          player.name = rs.getString("name");
       }
 
-      player.event.setEventPoint(rs.getInt("event_point"));
+      player.event.eventPoint = rs.getInt("event_point");
 
       List<Integer> sk_tet = gson.fromJson(rs.getString("sk_tet"), new TypeToken<List<Integer>>() {
       }.getType());
       if (sk_tet != null && sk_tet.size() >= 5) {
-         player.event.setTimeCookTetCake(sk_tet.get(0));
-         player.event.setTimeCookChungCake(sk_tet.get(1));
-         player.event.setCookingTetCake(sk_tet.get(2) == 1);
-         player.event.setCookingChungCake(sk_tet.get(3) == 1);
-         player.event.setReceivedLuckyMoney(sk_tet.get(4) == 1);
+         player.event.timeCookTetCake = sk_tet.get(0);
+         player.event.timeCookChungCake = sk_tet.get(1);
+         player.event.cookingTetCake = sk_tet.get(2) == 1;
+         player.event.cookingChungCake = sk_tet.get(3) == 1;
+         player.event.receivedLuckyMoney = sk_tet.get(4) == 1;
       }
 
       List<PhongThiNghiem_Player> ptnList = gson.fromJson(rs.getString("phong_thi_nghiem"),
@@ -366,7 +366,7 @@ public class GodGK {
       }
       if (player.inventory.itemsBody.get(10).isNotNullItem()) {
          PetFollow pet = PetFollowManager.gI().findByID(player.inventory.itemsBody.get(10).getId());
-         player.setPetFollow(pet);
+         player.petFollow = pet;
       }
    }
 
@@ -607,35 +607,35 @@ public class GodGK {
       if (achivementsData != null) {
          for (Map<String, Object> obj : achivementsData) {
             Achivement achive = new Achivement();
-            achive.setId(((Double) obj.get("id")).intValue());
-            achive.setCount(((Double) obj.get("count")).intValue());
-            achive.setFinish(((Double) obj.get("finish")).intValue() == 1);
-            achive.setReceive(((Double) obj.get("receive")).intValue() == 1);
-            AchivementTemplate a = AchiveManager.getInstance().findByID(achive.getId());
+            achive.id = ((Double) obj.get("id")).intValue();
+            achive.count = ((Double) obj.get("count")).intValue();
+            achive.isFinish = ((Double) obj.get("finish")).intValue() == 1;
+            achive.isReceive = ((Double) obj.get("receive")).intValue() == 1;
+            AchivementTemplate a = AchiveManager.getInstance().findByID(achive.id);
             if (a != null) {
-               achive.setName(a.getName());
-               achive.setDetail(a.getDetail());
-               achive.setMaxCount(a.getMaxCount());
-               achive.setMoney(a.getMoney());
+               achive.name = a.name;
+               achive.detail = a.detail;
+               achive.maxCount = a.maxCount;
+               achive.money = a.money;
             }
             player.playerTask.achivements.add(achive);
          }
       }
 
-      List<AchivementTemplate> allAchive = AchiveManager.getInstance().getList();
+      List<AchivementTemplate> allAchive = AchiveManager.getInstance().list;
       if (player.playerTask.achivements.size() < allAchive.size()) {
          for (int i = player.playerTask.achivements.size(); i < allAchive.size(); i++) {
             AchivementTemplate a = AchiveManager.getInstance().findByID(i);
             if (a != null) {
                Achivement achive = new Achivement();
-               achive.setId(a.getId());
-               achive.setCount(0);
-               achive.setFinish(false);
-               achive.setReceive(false);
-               achive.setName(a.getName());
-               achive.setDetail(a.getDetail());
-               achive.setMaxCount(a.getMaxCount());
-               achive.setMoney(a.getMoney());
+            achive.id = a.id;
+            achive.count = 0;
+            achive.isFinish = false;
+            achive.isReceive = false;
+               achive.name = a.name;
+               achive.detail = a.detail;
+               achive.maxCount = a.maxCount;
+               achive.money = a.money;
                player.playerTask.achivements.add(achive);
             }
          }
@@ -736,9 +736,9 @@ public class GodGK {
       List<Card> cards = gson.fromJson(rs.getString("collection_book"), new TypeToken<List<Card>>() {
       }.getType());
       CollectionBook book = new CollectionBook();
-      book.setCards(cards != null ? cards : new ArrayList<>());
+      book.cards = cards != null ? cards : new ArrayList<>();
       book.init();
-      player.setCollectionBook(book);
+      player.collectionBook = book;
 
       player.firstTimeLogin = rs.getTimestamp("firstTimeLogin");
 

@@ -16,8 +16,8 @@ import lombok.Getter;
 public class Frame {
 
     @SerializedName("sprite_id")
-    private int spriteID;
-    private int dx;
-    private int dy;
+    public int spriteID;
+    public int dx;
+    public int dy;
 
 }

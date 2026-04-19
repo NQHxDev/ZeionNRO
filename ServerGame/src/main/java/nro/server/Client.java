@@ -40,7 +40,7 @@ public class Client implements Runnable {
    private static Client i;
 
    @Getter
-   private final List<Session> sessions = new ArrayList<>();
+   public final List<Session> sessions = new ArrayList<>();
    private final Map<Integer, Session> sessions_id = new HashMap<Integer, Session>();
    private final Map<Long, Player> players_id = new HashMap<Long, Player>();
    private final Map<Integer, Player> players_userId = new HashMap<Integer, Player>();
@@ -90,7 +90,7 @@ public class Client implements Runnable {
          "feat", "feed", "feel", "fees", "feet", "fell",
          "felt", "fend", "fern", "feta", "glue", "glum", "gnat", "gnaw" };
 
-   private int id = 1_000_000_000;
+   public int id = 1_000_000_000;
 
    private Client() {
       new Thread(this).start();
@@ -112,7 +112,7 @@ public class Client implements Runnable {
    public void put(Session session) {
       synchronized (sessions) {
          if (!sessions_id.containsValue(session)) {
-            this.sessions_id.put(session.id, session);
+            this.sessions_id.put(session.getId(), session);
          }
          if (!sessions.contains(session)) {
             this.sessions.add(session);
@@ -136,13 +136,13 @@ public class Client implements Runnable {
 
    }
 
-   private void remove(Session session) {
+   public void remove(Session session) {
       synchronized (sessions) {
-         this.sessions_id.remove(session.id);
+         this.sessions_id.remove(session.getId());
          this.sessions.remove(session);
-         LoginSession login = ServerManager.gI().getLogin();
-         if (login != null && login.isConnected()) {
-            login.getService().logout(session.userId);
+         LoginSession login = ServerManager.gI().login;
+         if (login != null && login.connected) {
+            login.service.logout(session.userId);
          }
          if (session.player != null) {
             this.remove(session.player);
@@ -373,4 +373,5 @@ public class Client implements Runnable {
       txt += "players: " + players.size() + "\n";
       Service.getInstance().sendThongBao(player, txt);
    }
+
 }

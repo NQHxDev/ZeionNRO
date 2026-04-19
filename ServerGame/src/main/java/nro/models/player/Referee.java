@@ -67,7 +67,7 @@ public class Referee extends Player {
                pl.location.y = 336;
                pl.isMiniPet = true;
                joinMap(z, pl);
-               z.setReferee(pl);
+               z.referee = pl;
             }
          } else if (m.mapId == ConstMap.DAI_HOI_VO_THUAT_129) {
             for (Zone z : m.zones) {
@@ -83,7 +83,7 @@ public class Referee extends Player {
                pl.location.y = 264;
                pl.isMiniPet = true;
                joinMap(z, pl);
-               z.setReferee(pl);
+               z.referee = pl;
             }
          }
       }

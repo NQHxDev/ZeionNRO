@@ -2,7 +2,7 @@ package nro.server;
 
 import com.sun.management.OperatingSystemMXBean;
 import nro.core.concurrent.GameScheduler;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.Service;
 
 import javax.swing.BorderFactory;
@@ -235,7 +235,7 @@ public class panel extends JPanel implements ActionListener {
       } else if (src == btnThongBao) {
          String chat = JOptionPane.showInputDialog(this, "Thông Báo Server");
          if (chat != null) {
-            Message msg = new Message(93);
+            Message msg = Message.create(93);
             try {
                msg.writer().writeUTF(chat);
             } catch (IOException ex) {

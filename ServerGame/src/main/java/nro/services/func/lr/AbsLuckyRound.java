@@ -8,7 +8,7 @@ package nro.services.func.lr;
 import nro.consts.Cmd;
 import nro.models.item.Item;
 import nro.models.player.Player;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.InventoryService;
 import nro.services.Service;
 import java.io.DataOutputStream;
@@ -66,7 +66,7 @@ public abstract class AbsLuckyRound {
     
     public void openUI(Player player, byte type) {
         try {
-            Message ms = new Message(Cmd.LUCKY_ROUND);
+            Message ms = Message.create(Cmd.LUCKY_ROUND);
             DataOutputStream ds = ms.writer();
             ds.writeByte(0);
             ds.writeByte(icons.size());
@@ -85,7 +85,7 @@ public abstract class AbsLuckyRound {
     
     protected void result(Player player, List<Item> items) {
         try {
-            Message ms = new Message(Cmd.LUCKY_ROUND);
+            Message ms = Message.create(Cmd.LUCKY_ROUND);
             DataOutputStream ds = ms.writer();
             ds.writeByte(1);
             ds.writeByte(items.size());

@@ -504,10 +504,10 @@ public class Manager {
             for (Attribute at : attributes) {
                try {
                   if (at.isChanged()) {
-                     ps.setInt(1, at.getTemplate().getId());
+                     ps.setInt(1, at.getTemplate().id);
                      ps.setInt(2, at.getValue());
                      ps.setInt(3, at.getTime());
-                     ps.setInt(4, at.getId());
+                     ps.setInt(4, at.id);
                      ps.addBatch();
                   }
                } catch (Exception e) {

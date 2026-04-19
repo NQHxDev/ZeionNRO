@@ -13,7 +13,7 @@ public class PowerLimitManager {
    }
 
    @Getter
-   private List<PowerLimit> powers;
+   public List<PowerLimit> powers;
 
    public PowerLimitManager() {
       powers = new ArrayList<>();

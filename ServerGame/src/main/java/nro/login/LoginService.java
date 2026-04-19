@@ -3,7 +3,7 @@ package nro.login;
 import nro.utils.Log;
 
 import nro.server.Client;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.server.io.Session;
 
 import java.io.DataOutputStream;
@@ -21,7 +21,7 @@ public class LoginService {
 
    public void login(byte server, int clientID, String username, String password) {
       try {
-         Message ms = new Message(Cmd.LOGIN);
+         Message ms = Message.create(Cmd.LOGIN);
          DataOutputStream ds = ms.writer();
          ds.writeByte(server);
          ds.writeInt(clientID);
@@ -37,7 +37,7 @@ public class LoginService {
 
    public void logout(int userID) {
       try {
-         Message ms = new Message(Cmd.LOGOUT);
+         Message ms = Message.create(Cmd.LOGOUT);
          DataOutputStream ds = ms.writer();
          ds.writeInt(userID);
          ds.flush();
@@ -51,15 +51,15 @@ public class LoginService {
    public void setServer(int serverID, Client client) {
       try {
          Log.log("Synchronizing all users to login server...");
-         List<Session> sessions = client.getSessions();
+         List<Session> sessions = client.sessions;
          synchronized (sessions) {
             List<Session> list = sessions.stream().filter((t) -> t.loginSuccess).collect(Collectors.toList());
-            Message ms = new Message(Cmd.SERVER);
+            Message ms = Message.create(Cmd.SERVER);
             DataOutputStream ds = ms.writer();
             ds.writeInt(serverID);
             ds.writeInt(list.size());
             for (Session session : list) {
-               ds.writeInt(session.id);
+               ds.writeInt(session.getId());
                ds.writeInt(session.userId);
                ds.writeUTF(session.uu);
                ds.writeUTF(session.pp);
@@ -77,4 +77,5 @@ public class LoginService {
    public void sendMessage(Message ms) {
       session.sendMessage(ms);
    }
+
 }

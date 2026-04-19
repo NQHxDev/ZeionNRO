@@ -13,7 +13,7 @@ import nro.models.shop.ItemShop;
 import nro.models.shop.Shop;
 import nro.models.shop.TabShop;
 import nro.server.Manager;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.InventoryService;
 import nro.services.ItemService;
 import nro.services.PlayerService;
@@ -267,7 +267,7 @@ public class ShopService {
       if (shop != null) {
          Message msg;
          try {
-            msg = new Message(-44);
+            msg = Message.create(-44);
             msg.writer().writeByte(NORMAL_SHOP);
             msg.writer().writeByte(shop.tabShops.size());
             for (TabShop tab : shop.tabShops) {
@@ -306,7 +306,7 @@ public class ShopService {
       if (shop != null) {
          Message msg;
          try {
-            msg = new Message(-44);
+            msg = Message.create(-44);
             msg.writer().writeByte(SPEC_SHOP);
             msg.writer().writeByte(shop.tabShops.size());
             for (TabShop tab : shop.tabShops) {
@@ -584,7 +584,7 @@ public class ShopService {
       InventoryService.gI().arrangeItems(player.inventory.itemsBoxCrackBall);
       Message msg;
       try {
-         msg = new Message(-44);
+         msg = Message.create(-44);
          msg.writer().writeByte(4);
          msg.writer().writeByte(1);
          msg.writer().writeUTF("Rương đồ");
@@ -673,7 +673,7 @@ public class ShopService {
       player.iDMark.setShopId(ConstNpc.SIDE_BOX_ITEM_REWARD);
       Message msg;
       try {
-         msg = new Message(-44);
+         msg = Message.create(-44);
          msg.writer().writeByte(4);
          msg.writer().writeByte(1);
          msg.writer().writeUTF("Phần\nthưởng");
@@ -992,7 +992,7 @@ public class ShopService {
          } else {
             goldReceive = item.quantity;
          }
-         Message msg = new Message(7);
+         Message msg = Message.create(7);
          try {
             msg.writer().writeByte(where);
             msg.writer().writeShort(index);

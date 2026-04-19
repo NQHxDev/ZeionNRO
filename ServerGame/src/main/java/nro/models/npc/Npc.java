@@ -5,7 +5,7 @@ import nro.models.map.Map;
 import nro.models.map.Zone;
 import nro.models.player.Player;
 import nro.server.Manager;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.MapService;
 import nro.services.Service;
 import nro.services.func.ShopService;
@@ -65,7 +65,7 @@ public abstract class Npc implements IAtionNpc {
         Message msg;
         try {
             player.iDMark.setIndexMenu(indexMenu);
-            msg = new Message(32);
+            msg = Message.create(32);
             msg.writer().writeShort(tempId);
             msg.writer().writeUTF(npcSay);
             msg.writer().writeByte(menuSelect.length);
@@ -84,7 +84,7 @@ public abstract class Npc implements IAtionNpc {
         Message msg;
         try {
             player.iDMark.setIndexMenu(indexMenu);
-            msg = new Message(32);
+            msg = Message.create(32);
             msg.writer().writeShort(tempId);
             msg.writer().writeUTF(npcSay);
             msg.writer().writeByte(menuSelect.length);
@@ -107,7 +107,7 @@ public abstract class Npc implements IAtionNpc {
                     baseMenu.openMenu(player);
                 } else {
                     Message msg;
-                    msg = new Message(32);
+                    msg = Message.create(32);
                     msg.writer().writeShort(tempId);
                     msg.writer().writeUTF("NPC " + this.tempId + " map " + this.mapId + " chưa làm!");
                     msg.writer().writeByte(1);
@@ -124,7 +124,7 @@ public abstract class Npc implements IAtionNpc {
     public void npcChat(Player player, String text) {
         Message msg;
         try {
-            msg = new Message(124);
+            msg = Message.create(124);
             msg.writer().writeShort(tempId);
             msg.writer().writeUTF(text);
             player.sendMessage(msg);
@@ -137,7 +137,7 @@ public abstract class Npc implements IAtionNpc {
     public void npcChat(Zone zone, String text) {
         Message msg;
         try {
-            msg = new Message(124);
+            msg = Message.create(124);
             msg.writer().writeShort(tempId);
             msg.writer().writeUTF(text);
             Service.getInstance().sendMessAllPlayerInMap(zone, msg);
@@ -150,7 +150,7 @@ public abstract class Npc implements IAtionNpc {
     public void npcChat(String text) {
         Message msg;
         try {
-            msg = new Message(124);
+            msg = Message.create(124);
             msg.writer().writeShort(tempId);
             msg.writer().writeUTF(text);
             for (Zone zone : map.zones) {

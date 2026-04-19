@@ -1,6 +1,6 @@
 package nro.server;
 
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.Service;
 
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class ServerNotify extends Thread {
    private void sendThongBaoBenDuoi(String text) {
       Message msg;
       try {
-         msg = new Message(93);
+         msg = Message.create(93);
          msg.writer().writeUTF(text);
          Service.getInstance().sendMessAllPlayer(msg);
          msg.cleanup();

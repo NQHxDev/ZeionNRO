@@ -19,9 +19,9 @@ public class Part {
 
     byte type;
 
-    private PartImage[] pi;
+    public PartImage[] pi;
 
     public short getIcon(int index) {
-        return pi[index].getIcon();
+        return pi[index].icon;
     }
 }

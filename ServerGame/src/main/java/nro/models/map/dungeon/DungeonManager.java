@@ -5,9 +5,9 @@ import java.util.List;
 
 public class DungeonManager {
 
-   private final List<Dungeon> list = new ArrayList<>();
+   public final List<Dungeon> list = new ArrayList<>();
 
-   private int increasement;
+   public int increasement;
 
    public int generateID() {
       return increasement++;
@@ -15,7 +15,7 @@ public class DungeonManager {
 
    public void addDungeon(Dungeon dungeon) {
       synchronized (list) {
-         dungeon.setId(generateID());
+         dungeon.id = generateID();
          list.add(dungeon);
       }
    }

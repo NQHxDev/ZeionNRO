@@ -9,21 +9,21 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Achivement {
 
-   private int id;
+   public int id;
 
-   private String name;
+   public String name;
 
-   private String detail;
+   public String detail;
 
-   private int money;
+   public int money;
 
    public int count;
 
-   private int maxCount;
+   public int maxCount;
 
-   private boolean isFinish;
+   public boolean isFinish;
 
-   private boolean isReceive;
+   public boolean isReceive;
 
    public boolean isDone() {
       return this.count >= this.maxCount;

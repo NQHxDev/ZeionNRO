@@ -1,20 +1,42 @@
 package nro.models.map;
 
-import lombok.Builder;
 import lombok.Getter;
 
-/**
- * @author Tuỳ Chỉnh Bởi Văn Tuấn 0337766460
- */
-@Getter
-@Builder
 public class EffectEventTemplate {
-    private int mapId;
-    private int eventId;
-    private int effId;
-    private int layer;
-    private int x;
-    private int y;
-    private int loop;
-    private int delay;
+
+   @Getter
+   public int mapId;
+
+   @Getter
+   public int eventId;
+
+   @Getter
+   public int effId;
+
+   @Getter
+   public int layer;
+
+   @Getter
+   public int x;
+
+   @Getter
+   public int y;
+
+   @Getter
+   public int loop;
+
+   @Getter
+   public int delay;
+
+   public EffectEventTemplate(int mapId, int eventId, int effId, int layer, int x, int y, int loop, int delay) {
+      this.mapId = mapId;
+      this.eventId = eventId;
+      this.effId = effId;
+      this.layer = layer;
+      this.x = x;
+      this.y = y;
+      this.loop = loop;
+      this.delay = delay;
+   }
+
 }

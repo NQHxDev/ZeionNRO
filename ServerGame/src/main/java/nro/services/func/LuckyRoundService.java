@@ -1,7 +1,7 @@
 package nro.services.func;
 
 import nro.models.player.Player;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.func.lr.LuckyRoundGem;
 import nro.services.func.lr.LuckyRoundGold;
 

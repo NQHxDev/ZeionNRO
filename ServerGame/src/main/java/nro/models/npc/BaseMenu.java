@@ -1,7 +1,7 @@
 package nro.models.npc;
 
 import nro.models.player.Player;
-import nro.server.io.Message;
+import nro.network.io.Message;
 
 /**
  *
@@ -20,7 +20,7 @@ public class BaseMenu {
     public void openMenu(Player player) {
         Message msg;
         try {
-            msg = new Message(32);
+            msg = Message.create(32);
             msg.writer().writeShort(npcId);
             msg.writer().writeUTF(npcSay);
             msg.writer().writeByte(menuSelect.length);

@@ -9,7 +9,7 @@ import nro.models.player.Pet;
 import nro.models.player.Player;
 import nro.models.pvp.PVP;
 import nro.models.skill.Skill;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.func.PVPServcice;
 import nro.utils.Log;
 import nro.utils.SkillUtil;
@@ -627,7 +627,7 @@ public class SkillService {
          double damePST = dame * percentPST / 100;
          Message msg;
          try {
-            msg = new Message(56);
+            msg = Message.create(56);
             msg.writer().writeInt((int) plAtt.id);
             // if (damePST >= plAtt.nPoint.hp) {
             // damePST = plAtt.nPoint.hp - 1;
@@ -668,7 +668,7 @@ public class SkillService {
       hutHPMP(plAtt, dameHit, false);
       Message msg;
       try {
-         msg = new Message(-60);
+         msg = Message.create(-60);
          msg.writer().writeInt((int) plAtt.id); // id pem
          msg.writer().writeByte(plAtt.playerSkill.skillSelect.skillId); // skill pem
          msg.writer().writeByte(1); // số người pem
@@ -693,7 +693,7 @@ public class SkillService {
          } else {
             plInjure.sendMessage(msg);
             msg.cleanup();
-            msg = new Message(-60);
+            msg = Message.create(-60);
             msg.writer().writeInt((int) plAtt.id); // id pem
             msg.writer().writeByte(plAtt.playerSkill.skillSelect.skillId); // skill pem
             msg.writer().writeByte(1); // số người pem
@@ -751,7 +751,7 @@ public class SkillService {
    private void sendPlayerPrepareSkill(Player player, int affterMiliseconds) {
       Message msg;
       try {
-         msg = new Message(-45);
+         msg = Message.create(-45);
          msg.writer().writeByte(4);
          msg.writer().writeInt((int) player.id);
          msg.writer().writeShort(player.playerSkill.skillSelect.skillId);
@@ -765,7 +765,7 @@ public class SkillService {
    public void sendPlayerPrepareBom(Player player, int affterMiliseconds) {
       Message msg;
       try {
-         msg = new Message(-45);
+         msg = Message.create(-45);
          msg.writer().writeByte(7);
          msg.writer().writeInt((int) player.id);
          // msg.writer().writeShort(player.playerSkill.skillSelect.skillId);
@@ -983,7 +983,7 @@ public class SkillService {
    private void sendPlayerAttackMob(Player plAtt, Mob mob) {
       Message msg;
       try {
-         msg = new Message(54);
+         msg = Message.create(54);
          msg.writer().writeInt((int) plAtt.id);
          msg.writer().writeByte(plAtt.playerSkill.skillSelect.skillId);
          msg.writer().writeByte(mob.id);
@@ -1275,7 +1275,7 @@ public class SkillService {
    public void sendEffSkillSpecialID24(Player player, byte dir, int typeskill) {
       Message message = null;
       try {
-         message = new Message(-45);// passt code k dc vcb
+         message = Message.create(-45);// passt code k dc vcb
          message.writer().writeByte(20);
          message.writer().writeInt((int) player.id);
          message.writer().writeShort(24);
@@ -1300,7 +1300,7 @@ public class SkillService {
    public void sendEffSkillSpecialID25(Player player, byte dir, int typeskill) {
       Message message = null;
       try {
-         message = new Message(-45);// passt code k dc vcb
+         message = Message.create(-45);// passt code k dc vcb
          message.writer().writeByte(20);
          message.writer().writeInt((int) player.id);
          message.writer().writeShort(25);
@@ -1325,7 +1325,7 @@ public class SkillService {
    public void sendEffSkillSpecialID26(Player player, byte dir, int typeskill) {
       Message message = null;
       try {
-         message = new Message(-45);// passt code k dc vcb
+         message = Message.create(-45);// passt code k dc vcb
          message.writer().writeByte(20);
          message.writer().writeInt((int) player.id);
          message.writer().writeShort(26);
@@ -1349,7 +1349,7 @@ public class SkillService {
    public void startSkillSpecialID24(Player player, int TypePaintSkill) {
       Message message = null;
       try {
-         message = new Message(-45);
+         message = Message.create(-45);
          message.writer().writeByte(21);
          message.writer().writeInt((int) player.id);
          message.writer().writeShort(player.skillSpecial.skillSpecial.template.id);
@@ -1376,7 +1376,7 @@ public class SkillService {
    public void startSkillSpecialID25(Player player, int TypePaintSkill) {
       Message message = null;
       try {
-         message = new Message(-45);
+         message = Message.create(-45);
          message.writer().writeByte(21);
          message.writer().writeInt((int) player.id);
          message.writer().writeShort(player.skillSpecial.skillSpecial.template.id);
@@ -1403,7 +1403,7 @@ public class SkillService {
    public void startSkillSpecialID26(Player player, int TypePaintSkill) {
       Message message = null;
       try {
-         message = new Message(-45);
+         message = Message.create(-45);
          message.writer().writeByte(21);
          message.writer().writeInt((int) player.id);
          message.writer().writeShort(26);

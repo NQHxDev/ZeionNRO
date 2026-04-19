@@ -343,9 +343,9 @@ public class SummerEvent extends Event {
       Zone z = mob.zone;
       int mapID = z.map.mapId;
       int itemID = -1;
-      byte[] rwLimit = player.getRewardLimit();
+      byte[] rwLimit = player.rewardLimit;
       if (player instanceof Pet pet) {
-         rwLimit = pet.master.getRewardLimit();
+         rwLimit = pet.master.rewardLimit;
       }
       if (Util.isTrue(1, 50)) {
          if (mapID == ConstMap.DONG_SONG_BANG && rwLimit[ConstRewardLimit.NUOC_SUOI_TINH_KHIET] < 100) { // ngay 100c
@@ -375,7 +375,7 @@ public class SummerEvent extends Event {
          ItemMap itemMap = new ItemMap(z, itemID, 1, x, yEnd, player.id);
          list.add(itemMap);
       }
-      if (Util.isTrue(1, 50) && player.event.isUseQuanHoa()) {
+      if (Util.isTrue(1, 50) && player.event.isUseQuanHoa) {
          RandomCollection<Integer> rd = new RandomCollection<>();
          rd.add(1, ConstItem.VO_OC);
          rd.add(1, ConstItem.VO_SO);
@@ -409,7 +409,7 @@ public class SummerEvent extends Event {
          Service.getInstance().sendThongBaoOK(player, "Chỉ có thể sự dụng ở các làng");
          return;
       }
-      if (player.event.isUseBonTam()) {
+      if (player.event.isUseBonTam) {
          Service.getInstance().sendThongBaoOK(player, "Không thể sử dụng khi đang tắm");
          return;
       }
@@ -470,16 +470,16 @@ public class SummerEvent extends Event {
       EffectSkillService.gI().startStun(player, System.currentTimeMillis(), 60000 * delay);
       InventoryService.gI().subQuantityItemsBag(player, item, 1);
       InventoryService.gI().sendItemBags(player);
-      player.event.setUseBonTam(true);
+      player.event.isUseBonTam = true;
       Util.setTimeout(() -> {
          InventoryService.gI().addItemBag(player, rw, 99);
          InventoryService.gI().sendItemBags(player);
-         player.event.setUseBonTam(false);
+         player.event.isUseBonTam = false;
       }, 60000 * delay);
    }
 
    private void insectTrapping(Player player, Item item) {
-      int itemID = item.getId();
+      int itemID = item.id;
       boolean flag = false;
       int mapID = player.zone.map.mapId;
       if (mapID == ConstMap.DOI_NAM_TIM || mapID == ConstMap.THUNG_LUNG_NAMEC || mapID == ConstMap.RUNG_THONG_XAYDA
@@ -510,33 +510,35 @@ public class SummerEvent extends Event {
          Item boHung = InventoryService.gI().findItem(player, ConstItem.BO_HUNG_TE_GIAC, 10);
          Item boKepKim = InventoryService.gI().findItem(player, ConstItem.BO_KEP_KIM, 10);
          if (boKienVuong != null && boHung != null && boKepKim != null) {
-            if (itemID == ConstItem.HU_MAT_ONG) {
-               BossData beetle = BossData.builder()
-                     .name("Bọ cánh cứng")
-                     .gender(ConstPlayer.TRAI_DAT)
-                     .typeDame(Boss.DAME_NORMAL)
-                     .typeHp(Boss.HP_NORMAL)
-                     .dame(1)
-                     .hp(new double[][] { { 1500 } })
-                     .outfit(new short[] { 1245, 1246, 1247 })
-                     .skillTemp(new int[][] { { Skill.DRAGON, 1, 100 } })
-                     .secondsRest(BossData._0_GIAY)
-                     .build();
-               new Beetle((byte) generateUniqueID(), beetle, player);
-            } else {
-               BossData nl = BossData.builder()
-                     .name("Ngài đêm")
-                     .gender(ConstPlayer.TRAI_DAT)
-                     .typeDame(Boss.DAME_NORMAL)
-                     .typeHp(Boss.HP_NORMAL)
-                     .dame(1)
-                     .hp(new double[][] { { 1500 } })
-                     .outfit(new short[] { 1248, 1249, 1250 })
-                     .skillTemp(new int[][] { { Skill.DRAGON, 1, 100 } })
-                     .secondsRest(BossData._0_GIAY)
-                     .build();
-               new NightLord((byte) generateUniqueID(), nl, player);
-            }
+             if (itemID == ConstItem.HU_MAT_ONG) {
+                BossData beetle = new BossData(
+                      "Bọ cánh cứng",
+                      ConstPlayer.TRAI_DAT,
+                      Boss.DAME_NORMAL,
+                      Boss.HP_NORMAL,
+                      1,
+                      new double[][] { { 1500 } },
+                      new short[] { 1245, 1246, 1247 },
+                      null, // mapJoin is null for these event bosses
+                      new int[][] { { Skill.DRAGON, 1, 100 } },
+                      BossData._0_GIAY
+                );
+                new Beetle((byte) generateUniqueID(), beetle, player);
+             } else {
+                BossData nl = new BossData(
+                      "Ngài đêm",
+                      ConstPlayer.TRAI_DAT,
+                      Boss.DAME_NORMAL,
+                      Boss.HP_NORMAL,
+                      1,
+                      new double[][] { { 1500 } },
+                      new short[] { 1248, 1249, 1250 },
+                      null, // mapJoin is null
+                      new int[][] { { Skill.DRAGON, 1, 100 } },
+                      BossData._0_GIAY
+                );
+                new NightLord((byte) generateUniqueID(), nl, player);
+             }
             InventoryService.gI().subQuantityItemsBag(player, item, 1);
             InventoryService.gI().subQuantityItemsBag(player, boKienVuong, 10);
             InventoryService.gI().subQuantityItemsBag(player, boHung, 10);

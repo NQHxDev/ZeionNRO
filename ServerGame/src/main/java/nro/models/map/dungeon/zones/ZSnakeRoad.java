@@ -93,7 +93,7 @@ public class ZSnakeRoad extends ZDungeon {
 
     @Override
     public void initMob(Mob mob) {
-        int level = ((SnakeRoad) dungeon).getLevel();
+        int level = ((SnakeRoad) dungeon).level;
         double maxHP = mob.point.getHpFull() * 300 * level;
         mob.point.setHP(maxHP);
         mob.point.setHpFull(maxHP);
@@ -102,7 +102,7 @@ public class ZSnakeRoad extends ZDungeon {
 
     @Override
     public void playerMove(Player player, int x, int y) {
-        if (map.mapId == ConstMap.RUNG_KARIN && player.isInteractWithKarin()) {
+        if (map.mapId == ConstMap.RUNG_KARIN && player.interactWithKarin) {
             if (player.location.x < 200) {
                 ZSnakeRoad r = (ZSnakeRoad) dungeon.find(ConstMap.HOANG_MAC);
                 int xGo = 375;

@@ -3,69 +3,112 @@ package nro.network.netty;
 import io.netty.channel.Channel;
 import nro.network.ISession;
 import nro.network.io.Message;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.net.InetSocketAddress;
 
 public class NettySession implements ISession {
 
-   @Getter
-   private final int id;
-   private final Channel channel;
+    private final int id;
+    private final Channel channel;
 
-   @Getter @Setter
-   private byte[] keys;
-   @Getter @Setter
-   private byte curR, curW;
+    private byte[] keys;
+    private byte curR, curW;
+    private boolean connected;
+    private Object handler;
 
-   @Getter @Setter
-   private boolean connected;
+    public int getId() {
+        return id;
+    }
 
-   @Getter @Setter
-   private Object handler;
+    public byte[] getKeys() {
+        return keys;
+    }
 
-   public NettySession(Channel channel, int id) {
-      this.channel = channel;
-      this.id = id;
-   }
+    public void setKeys(byte[] keys) {
+        this.keys = keys;
+    }
 
-   @Override
-   public void sendMessage(Message msg) {
-      if (channel.isActive()) {
-         channel.writeAndFlush(msg);
-      }
-   }
+    public byte getCurR() {
+        return curR;
+    }
 
-   @Override
-   public void disconnect() {
-      if (channel.isActive()) {
-         channel.close();
-      }
-   }
+    public void setCurR(byte curR) {
+        this.curR = curR;
+    }
 
-   @Override
-   public String getIPString() {
-      if (channel.remoteAddress() instanceof InetSocketAddress addr) {
-         return addr.getAddress().getHostAddress();
-      }
-      return channel.remoteAddress().toString();
-   }
+    public byte getCurW() {
+        return curW;
+    }
 
-   public byte readKey(byte b) {
-      byte i = (byte) ((keys[curR++] & 255) ^ (b & 255));
-      if (curR >= keys.length) {
-         curR %= keys.length;
-      }
-      return i;
-   }
+    public void setCurW(byte curW) {
+        this.curW = curW;
+    }
 
-   public byte writeKey(byte b) {
-      byte i = (byte) ((keys[curW++] & 255) ^ (b & 255));
-      if (curW >= keys.length) {
-         curW %= keys.length;
-      }
-      return i;
-   }
+    public boolean isConnected() {
+        return connected;
+    }
+
+    public void setConnected(boolean connected) {
+        this.connected = connected;
+    }
+
+    public Object getHandler() {
+        return handler;
+    }
+
+    public void setHandler(Object handler) {
+        this.handler = handler;
+    }
+
+    public NettySession(Channel channel, int id) {
+        this.channel = channel;
+        this.id = id;
+    }
+
+    @Override
+    public void sendMessage(Message msg) {
+        if (channel.isActive()) {
+            channel.writeAndFlush(msg);
+        }
+    }
+
+    public void doSendMessage(Message msg) {
+        sendMessage(msg);
+    }
+
+    @Override
+    public void disconnect() {
+        if (channel.isActive()) {
+            channel.close();
+        }
+    }
+
+    public void close() {
+        disconnect();
+    }
+
+    @Override
+    public String getIPString() {
+        if (channel.remoteAddress() instanceof InetSocketAddress addr) {
+            return addr.getAddress().getHostAddress();
+        }
+        return channel.remoteAddress().toString();
+    }
+
+    public byte readKey(byte b) {
+        byte i = (byte) ((keys[curR++] & 255) ^ (b & 255));
+        if (curR >= keys.length) {
+            curR %= keys.length;
+        }
+        return i;
+    }
+
+    public byte writeKey(byte b) {
+        byte i = (byte) ((keys[curW++] & 255) ^ (b & 255));
+        if (curW >= keys.length) {
+            curW %= keys.length;
+        }
+        return i;
+    }
 
 }

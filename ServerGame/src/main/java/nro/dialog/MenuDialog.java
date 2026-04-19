@@ -3,7 +3,7 @@ package nro.dialog;
 import lombok.Getter;
 import nro.consts.ConstNpc;
 import nro.models.player.Player;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.NpcService;
 import nro.utils.Log;
 
@@ -29,8 +29,8 @@ public class MenuDialog extends ConfirmDialog{
     @Override
     public void show(Player player) {
         player.iDMark.setIndexMenu(ConstNpc.CONFIRM_DIALOG);
-        player.setConfirmDialog(this);
-        Message msg = new Message(32);
+        player.confirmDialog = this;
+        Message msg = Message.create(32);
         DataOutputStream ds = msg.writer();
         try {
             ds.writeShort(ConstNpc.CON_MEO);

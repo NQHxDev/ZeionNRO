@@ -6,7 +6,7 @@ import nro.models.map.Zone;
 import nro.models.map.EffectEventManager;
 import nro.models.player.Player;
 import nro.server.Manager;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.Service;
 
 public class EffectMapService {
@@ -26,10 +26,10 @@ public class EffectMapService {
 
    public void sendEffEvent(Player pl) {
       int plmapid = pl.zone.map.mapId;
-      for (EffectEventTemplate i : EffectEventManager.gI().getTemplates()) {
-         if (Manager.EVENT_SEVER == i.getEventId()) {
-            if (plmapid == i.getMapId()) {
-               EffectMapService.gI().sendEffectMapToPlayer(pl, i.getEffId(),
+      for (EffectEventTemplate i : EffectEventManager.gI().templates) {
+         if (Manager.EVENT_SEVER == i.eventId) {
+            if (plmapid == i.mapId) {
+               EffectMapService.gI().sendEffectMapToPlayer(pl, i.effId,
                      i.getLayer(), i.getLoop(), i.getX(), i.getY(), i.getDelay());
             }
          }
@@ -39,7 +39,7 @@ public class EffectMapService {
    public void sendEffectMapToPlayer(Player player, int id, int layer, int loop, int x, int y, int delay) {
       Message msg;
       try {
-         msg = new Message(113);
+         msg = Message.create(113);
          msg.writer().writeByte(loop);
          msg.writer().writeByte(layer);
          msg.writer().writeByte(id);
@@ -55,7 +55,7 @@ public class EffectMapService {
    public void sendCharEffect(Player player, byte type, short id, byte layer, byte loop, short delay, boolean isStand) {
       Message msg;
       try {
-         msg = new Message(Cmd.CHAR_EFFECT);
+         msg = Message.create(Cmd.CHAR_EFFECT);
          msg.writer().writeByte(type);
          msg.writer().writeInt((int) player.id);
          if (type == 0) {
@@ -76,7 +76,7 @@ public class EffectMapService {
    public void sendEffectMapToAllInMap(Zone zone, int id, int layer, int loop, int x, int y, int delay) {
       Message msg;
       try {
-         msg = new Message(113);
+         msg = Message.create(113);
          msg.writer().writeByte(loop);
          msg.writer().writeByte(layer);
          msg.writer().writeByte(id);

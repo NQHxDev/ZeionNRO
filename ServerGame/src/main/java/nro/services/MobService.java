@@ -9,7 +9,7 @@ import nro.models.map.ItemMap;
 import nro.models.mob.Mob;
 import nro.models.player.Pet;
 import nro.models.player.Player;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.utils.Log;
 import nro.utils.Util;
 
@@ -40,7 +40,7 @@ public class MobService {
     public void sendMobStillAliveAffterAttacked(Mob mob, double dameHit, boolean crit) {
         Message msg;
         try {
-            msg = new Message(-9);
+            msg = Message.create(-9);
             msg.writer().writeByte(mob.id);
             msg.writer().writeDouble(mob.point.getHP());
             msg.writer().writeDouble(dameHit);
@@ -56,7 +56,7 @@ public class MobService {
     public void sendMobDieAffterAttacked(Mob mob, Player plKill, double dameHit) {
         Message msg;
         try {
-            msg = new Message(-12);
+            msg = Message.create(-12);
             msg.writer().writeByte(mob.id);
             msg.writer().writeDouble(dameHit);
             msg.writer().writeBoolean(plKill.nPoint.isCrit); // crit
@@ -122,7 +122,7 @@ public class MobService {
         if (!player.isPet) {
             Message msg;
             try {
-                msg = new Message(-11);
+                msg = Message.create(-11);
                 msg.writer().writeByte(mob.id);
                 msg.writer().writeDouble(dame); //dame
                 player.sendMessage(msg);
@@ -136,7 +136,7 @@ public class MobService {
     public void sendMobAttackPlayer(Mob mob, Player player) {
         Message msg;
         try {
-            msg = new Message(-10);
+            msg = Message.create(-10);
             msg.writer().writeByte(mob.id);
             msg.writer().writeInt((int) player.id);
             msg.writer().writeDouble(player.nPoint.hp);
@@ -154,7 +154,7 @@ public class MobService {
         if (isDie) {
             Message msg;
             try {
-                msg = new Message(-13);
+                msg = Message.create(-13);
                 msg.writer().writeByte(mob.id);
                 msg.writer().writeByte(mob.tempId);
                 msg.writer().writeByte(0); //level mob

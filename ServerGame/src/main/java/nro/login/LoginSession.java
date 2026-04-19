@@ -1,6 +1,6 @@
 package nro.login;
 
-import nro.server.io.Message;
+import nro.network.io.Message;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -11,10 +11,10 @@ import lombok.Getter;
 public class LoginSession {
 
    @Getter
-   private boolean connected;
+   public boolean connected;
    private LoginController controller;
    @Getter
-   private LoginService service;
+   public LoginService service;
    public boolean isStopSend = false;
    private DataOutputStream dos;
    public DataInputStream dis;
@@ -112,7 +112,7 @@ public class LoginSession {
          collectorThread = new Thread(new MessageCollector());
          collectorThread.start();
          timeConnected = System.currentTimeMillis();
-         doSendMessage(new Message(-27));
+         doSendMessage(Message.create(-27));
          connecting = false;
       }
    }
@@ -212,7 +212,7 @@ public class LoginSession {
       public void run() {
          Message message;
          try {
-            while (isConnected()) {
+            while (connected) {
                message = readMessage();
                if (message != null) {
                   try {
@@ -301,7 +301,7 @@ public class LoginSession {
                data[i] = readKey(data[i]);
             }
          }
-         Message msg = new Message(cmd, data);
+         Message msg = Message.create(cmd, data);
          return msg;
       }
    }

@@ -16,7 +16,7 @@ import nro.models.map.war.NamekBallWar;
 import nro.models.mob.Mob;
 import nro.models.player.Player;
 import nro.models.pvp.PVP;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.*;
 import nro.utils.Log;
 import nro.utils.TimeUtil;
@@ -60,7 +60,7 @@ public class ChangeMapService {
       }
       Message msg;
       try {
-         msg = new Message(-91);
+         msg = Message.create(-91);
          switch (pl.iDMark.getTypeChangeMap()) {
             case ConstMap.CHANGE_CAPSULE:
                list = (pl.mapCapsule = MapService.gI().getMapCapsule(pl));
@@ -380,7 +380,7 @@ public class ChangeMapService {
       Message msg;
       try {
          if (player.effectSkill.isShielding) {
-            msg = new Message(-124);
+            msg = Message.create(-124);
             msg.writer().writeByte(1);
             msg.writer().writeByte(0);
             msg.writer().writeByte(33);
@@ -390,7 +390,7 @@ public class ChangeMapService {
          }
 
          if (player.effectSkill.isHoldMabu) {
-            msg = new Message(52);
+            msg = Message.create(52);
             msg.writer().writeByte(1);
             msg.writer().writeInt((int) player.id);
             msg.writer().writeShort(player.location.x);
@@ -400,7 +400,7 @@ public class ChangeMapService {
          }
 
          if (player.mobMe != null) {
-            msg = new Message(Cmd.MOB_ME_UPDATE);
+            msg = Message.create(Cmd.MOB_ME_UPDATE);
             msg.writer().writeByte(0);// type
             msg.writer().writeInt((int) player.id);
             msg.writer().writeShort(player.mobMe.tempId);
@@ -409,7 +409,7 @@ public class ChangeMapService {
             msg.cleanup();
          }
          if (player.pet != null && player.pet.mobMe != null) {
-            msg = new Message(Cmd.MOB_ME_UPDATE);
+            msg = Message.create(Cmd.MOB_ME_UPDATE);
             msg.writer().writeByte(0);// type
             msg.writer().writeInt((int) player.pet.mobMe.id);
             msg.writer().writeShort(player.pet.mobMe.tempId);
@@ -426,13 +426,13 @@ public class ChangeMapService {
       try {
          for (Mob mob : player.zone.mobs) {
             if (mob.isDie()) {
-               msg = new Message(-12);
+               msg = Message.create(-12);
                msg.writer().writeByte(mob.id);
                player.sendMessage(msg);
                msg.cleanup();
             }
             if (mob.effectSkill.isThoiMien) {
-               msg = new Message(-124);
+               msg = Message.create(-124);
                msg.writer().writeByte(1); // b5
                msg.writer().writeByte(1); // b6
                msg.writer().writeByte(41); // num6
@@ -441,7 +441,7 @@ public class ChangeMapService {
                msg.cleanup();
             }
             if (mob.effectSkill.isSocola) {
-               msg = new Message(-112);
+               msg = Message.create(-112);
                msg.writer().writeByte(1);
                msg.writer().writeByte(mob.id); // b4
                msg.writer().writeShort(4133);// b5
@@ -449,7 +449,7 @@ public class ChangeMapService {
                msg.cleanup();
             }
             if (mob.effectSkill.isBinh) {
-               msg = new Message(-112);
+               msg = Message.create(-112);
                msg.writer().writeByte(1);
                msg.writer().writeByte(mob.id); // b4
                msg.writer().writeShort(14522);// b5
@@ -457,7 +457,7 @@ public class ChangeMapService {
                msg.cleanup();
             }
             if (mob.effectSkill.isStun || mob.effectSkill.isBlindDCTT) {
-               msg = new Message(-124);
+               msg = Message.create(-124);
                msg.writer().writeByte(1);
                msg.writer().writeByte(1);
                msg.writer().writeByte(40);
@@ -476,7 +476,7 @@ public class ChangeMapService {
                if (!player.equals(pl)) {
 
                   if (pl.effectSkill.isShielding) {
-                     msg = new Message(-124);
+                     msg = Message.create(-124);
                      msg.writer().writeByte(1);
                      msg.writer().writeByte(0);
                      msg.writer().writeByte(33);
@@ -486,7 +486,7 @@ public class ChangeMapService {
                   }
 
                   if (pl.effectSkill.isHoldMabu) {
-                     msg = new Message(52);
+                     msg = Message.create(52);
                      msg.writer().writeByte(1);
                      msg.writer().writeInt((int) pl.id);
                      msg.writer().writeShort(pl.location.x);
@@ -496,7 +496,7 @@ public class ChangeMapService {
                   }
 
                   if (pl.effectSkill.isThoiMien) {
-                     msg = new Message(-124);
+                     msg = Message.create(-124);
                      msg.writer().writeByte(1); // b5
                      msg.writer().writeByte(0); // b6
                      msg.writer().writeByte(41); // num3
@@ -505,7 +505,7 @@ public class ChangeMapService {
                      msg.cleanup();
                   }
                   if (pl.effectSkill.isBlindDCTT || pl.effectSkill.isStun) {
-                     msg = new Message(-124);
+                     msg = Message.create(-124);
                      msg.writer().writeByte(1);
                      msg.writer().writeByte(0);
                      msg.writer().writeByte(40);
@@ -518,7 +518,7 @@ public class ChangeMapService {
 
                   if (pl.effectSkill.useTroi) {
                      if (pl.effectSkill.plAnTroi != null) {
-                        msg = new Message(-124);
+                        msg = Message.create(-124);
                         msg.writer().writeByte(1); // b5
                         msg.writer().writeByte(0);// b6
                         msg.writer().writeByte(32);// num3
@@ -528,7 +528,7 @@ public class ChangeMapService {
                         msg.cleanup();
                      }
                      if (pl.effectSkill.mobAnTroi != null) {
-                        msg = new Message(-124);
+                        msg = Message.create(-124);
                         msg.writer().writeByte(1); // b4
                         msg.writer().writeByte(1);// b5
                         msg.writer().writeByte(32);// num8
@@ -539,7 +539,7 @@ public class ChangeMapService {
                      }
                   }
                   if (pl.mobMe != null) {
-                     msg = new Message(Cmd.MOB_ME_UPDATE);
+                     msg = Message.create(Cmd.MOB_ME_UPDATE);
                      msg.writer().writeByte(0);// type
                      msg.writer().writeInt((int) pl.id);
                      msg.writer().writeShort(pl.mobMe.tempId);
@@ -557,7 +557,7 @@ public class ChangeMapService {
    public void spaceShipArrive(Player player, byte typeSendMSG, byte typeSpace) {
       Message msg;
       try {
-         msg = new Message(-65);
+         msg = Message.create(-65);
          msg.writer().writeInt((int) player.id);
          msg.writer().writeByte(typeSpace);
          switch (typeSendMSG) {
@@ -638,7 +638,7 @@ public class ChangeMapService {
    private void effectChangeMap(Player player, int seconds, byte type) {
       Message msg;
       try {
-         msg = new Message(-105);
+         msg = Message.create(-105);
          msg.writer().writeShort(seconds);
          msg.writer().writeByte(type);
          player.sendMessage(msg);

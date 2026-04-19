@@ -7,7 +7,7 @@ import nro.models.map.phoban.BanDoKhoBau;
 import nro.models.map.phoban.DoanhTrai;
 import nro.models.player.Fusion;
 import nro.models.player.Player;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.utils.Log;
 
 import static nro.models.item.ItemTime.*;
@@ -154,7 +154,7 @@ public class ItemTimeService {
     public void sendCanAutoPlay(Player player) {
         Message msg;
         try {
-            msg = new Message(-116);
+            msg = Message.create(-116);
             msg.writer().writeByte(player.itemTime.isUseTDLT ? 1 : 0);
             player.sendMessage(msg);
         } catch (Exception e) {
@@ -205,7 +205,7 @@ public class ItemTimeService {
     private void sendTextTime(Player player, byte id, String text, int seconds) {
         Message msg;
         try {
-            msg = new Message(65);
+            msg = Message.create(65);
             msg.writer().writeByte(id);
             msg.writer().writeUTF(text);
             msg.writer().writeShort(seconds);
@@ -218,7 +218,7 @@ public class ItemTimeService {
     public void sendItemTime(Player player, int itemId, int time) {
         Message msg;
         try {
-            msg = new Message(-106);
+            msg = Message.create(-106);
             msg.writer().writeShort(itemId);
             msg.writer().writeShort(time);
             player.sendMessage(msg);

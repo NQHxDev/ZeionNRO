@@ -5,7 +5,7 @@ import nro.models.npc.NpcManager;
 import nro.models.player.Player;
 import nro.services.Service;
 import nro.utils.Util;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.InventoryService;
 import nro.services.PlayerService;
 import nro.utils.Log;
@@ -105,7 +105,7 @@ public class MagicTree {
    public void loadMagicTree() {
       Message msg;
       try {
-         msg = new Message(-34);
+         msg = Message.create(-34);
          msg.writer().writeByte(0);
 
          msg.writer().writeShort(ID_MAGIC_TREE[player.gender][level - 1]);
@@ -137,7 +137,7 @@ public class MagicTree {
    public void openMenuTree() {
       Message msg;
       try {
-         msg = new Message(-34);
+         msg = Message.create(-34);
          msg.writer().writeByte(1);
          if (!isUpgrade) {
             msg.writer().writeUTF("Thu\nhoạch");
@@ -175,7 +175,7 @@ public class MagicTree {
          InventoryService.gI().sendItemBox(player);
          Message msg;
          try {
-            msg = new Message(-34);
+            msg = Message.create(-34);
             msg.writer().writeByte(2);
             msg.writer().writeShort(this.currPeas);
             msg.writer().writeInt(getSecondPea());

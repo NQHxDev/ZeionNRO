@@ -5,7 +5,7 @@ import nro.models.npc.Npc;
 import nro.models.npc.NpcFactory;
 import nro.models.player.Player;
 import nro.server.Manager;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.utils.Log;
 
 /**
@@ -42,7 +42,7 @@ public class NpcService {
         Message msg;
         try {
             player.iDMark.setIndexMenu(indexMenu);
-            msg = new Message(32);
+            msg = Message.create(32);
             msg.writer().writeShort(npcTempId);
             msg.writer().writeUTF(npcSay);
             msg.writer().writeByte(menuSelect.length);
@@ -62,7 +62,7 @@ public class NpcService {
     public void createTutorial(Player player, int avatar, String npcSay) {
         Message msg;
         try {
-            msg = new Message(38);
+            msg = Message.create(38);
             msg.writer().writeShort(ConstNpc.CON_MEO);
             msg.writer().writeUTF(npcSay);
             if (avatar != -1) {

@@ -246,10 +246,10 @@ public class PlayerDAO {
       JsonArray dataAchive = new JsonArray();
       for (Achivement a : player.playerTask.achivements) {
          JsonObject jobj = new JsonObject();
-         jobj.addProperty("id", a.getId());
+         jobj.addProperty("id", a.id);
          jobj.addProperty("count", a.getCount());
-         jobj.addProperty("finish", a.isFinish() ? 1 : 0);
-         jobj.addProperty("receive", a.isReceive() ? 1 : 0);
+         jobj.addProperty("finish", a.isFinish ? 1 : 0);
+         jobj.addProperty("receive", a.isReceive ? 1 : 0);
          dataAchive.add(jobj);
       }
       return gson.toJson(dataAchive);
@@ -571,9 +571,9 @@ public class PlayerDAO {
 
    private static String createDefaultAchivements() {
       JsonArray dataAchive = new JsonArray();
-      for (AchivementTemplate a : AchiveManager.getInstance().getList()) {
+      for (AchivementTemplate a : AchiveManager.getInstance().list) {
          JsonObject jobj = new JsonObject();
-         jobj.addProperty("id", a.getId());
+         jobj.addProperty("id", a.id);
          jobj.addProperty("count", 0);
          jobj.addProperty("finish", 0);
          jobj.addProperty("receive", 0);
@@ -629,7 +629,7 @@ public class PlayerDAO {
       JsonArray dataKhamNgoc = new JsonArray();
       for (nro.services.KhamNgoc a : nro.services.KhamNgoc.KHAM_NGOC) {
          JsonObject jobjk = new JsonObject();
-         jobjk.addProperty("id", a.getId());
+         jobjk.addProperty("id", a.id);
          jobjk.addProperty("level", -1);
          dataKhamNgoc.add(jobjk);
       }
@@ -693,11 +693,11 @@ public class PlayerDAO {
 
    private static String saveSkTet(Player player) {
       JsonArray array = new JsonArray();
-      array.add(player.event.getTimeCookTetCake());
-      array.add(player.event.getTimeCookChungCake());
-      array.add(player.event.isCookingTetCake() ? 1 : 0);
-      array.add(player.event.isCookingChungCake() ? 1 : 0);
-      array.add(player.event.isReceivedLuckyMoney() ? 1 : 0);
+      array.add(player.event.timeCookTetCake);
+      array.add(player.event.timeCookChungCake);
+      array.add(player.event.cookingTetCake ? 1 : 0);
+      array.add(player.event.cookingChungCake ? 1 : 0);
+      array.add(player.event.receivedLuckyMoney ? 1 : 0);
       return gson.toJson(array);
    }
 
@@ -819,10 +819,10 @@ public class PlayerDAO {
    }
 
    public static void updatePlayer(Player player, Connection connection) {
-      if (player.isDisposed() || player.isSaving() || !player.loaded) {
+      if (player.isDisposed || player.isSaving || !player.loaded) {
          return;
       }
-      player.setSaving(true);
+      player.isSaving = true;
       try {
          int[] itemCounts = countItems(player);
          int n1s = itemCounts[0], n2s = itemCounts[1], n3s = itemCounts[2], tv = itemCounts[3];
@@ -881,13 +881,13 @@ public class PlayerDAO {
             ps.setInt(31, n1s);
             ps.setInt(32, n2s);
             ps.setInt(33, n3s);
-            ps.setString(34, gson.toJson(player.getCollectionBook().getCards()));
+            ps.setString(34, gson.toJson(player.collectionBook.cards));
             ps.setInt(35, player.evenpoint);
             ps.setString(36, Util.toDateString(player.firstTimeLogin));
             ps.setString(37, saveChallenge(player));
             ps.setString(38, saveSkTet(player));
             ps.setString(39, saveBuyLimit(player));
-            ps.setInt(40, player.event.getMocNapDaNhan());
+            ps.setInt(40, player.event.mocNapDaNhan);
             ps.setString(41, saveAchivements(player));
             ps.setString(42, saveRewardLimit(player));
             ps.setString(43, saveVangNgoc(player));
@@ -944,7 +944,7 @@ public class PlayerDAO {
             }
          }
       } finally {
-         player.setSaving(false);
+         player.isSaving = false;
       }
    }
 

@@ -10,7 +10,16 @@ package nro.consts;
  * @author Tuỳ Chỉnh Bởi Văn Tuấn 0337766460
  */
 public class Cmd {
-
+    public static final byte GET_RES_UPDATE = -87; 
+    public static final byte DOWNLOAD_RESOURCES = -74; 
+    public static final byte MAP_RESOURCES = -24; 
+    public static final byte GET_IMAGE = -74; 
+    public static final byte GET_ICON = -67; 
+    public static final byte GET_BG = -32; 
+    public static final byte GET_MAP_LOGO = -111; 
+    public static final byte GET_SMALL_IMAGE = -77; 
+    public static final byte GET_SIDE_ICON = -111; 
+    public static final byte GET_ITEM_ICON = -67;
     public static final byte LOGIN = 0;
     public static final byte REGISTER = 1;
     public static final byte CLIENT_INFO = 2;

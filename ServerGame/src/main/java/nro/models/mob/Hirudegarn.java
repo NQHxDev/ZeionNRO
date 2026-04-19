@@ -7,7 +7,7 @@ package nro.models.mob;
 
 import nro.consts.Cmd;
 import nro.models.player.Player;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.MobService;
 import nro.services.Service;
 import nro.utils.Util;
@@ -74,7 +74,7 @@ public class Hirudegarn extends BigBoss {
 
     public void send(long[][] array, byte type) {
         try {
-            Message ms = new Message(Cmd.BIG_BOSS);
+            Message ms = Message.create(Cmd.BIG_BOSS);
             DataOutputStream ds = ms.writer();
             ds.writeByte(type);
             ds.writeByte(array.length);
@@ -121,7 +121,7 @@ public class Hirudegarn extends BigBoss {
 
     public void send(Player cAttack, double damage, byte type) {
         try {
-            Message ms = new Message(Cmd.BIG_BOSS);
+            Message ms = Message.create(Cmd.BIG_BOSS);
             DataOutputStream ds = ms.writer();
             ds.writeByte(type);
             ds.writeByte(1);
@@ -142,7 +142,7 @@ public class Hirudegarn extends BigBoss {
             if (this.type <= 2) {
                 MobService.gI().hoiSinhMob(this);
             }
-            Message ms = new Message(Cmd.BIG_BOSS);
+            Message ms = Message.create(Cmd.BIG_BOSS);
             DataOutputStream ds = ms.writer();
             if (type == 1) {
                 ds.writeByte(6);
@@ -165,7 +165,7 @@ public class Hirudegarn extends BigBoss {
     public void flyTo(int x, int y) {
         try {
             super.move(x, y);
-            Message ms = new Message(Cmd.BIG_BOSS);
+            Message ms = Message.create(Cmd.BIG_BOSS);
             DataOutputStream ds = ms.writer();
             ds.writeByte(3);
             ds.writeShort(x);
@@ -182,7 +182,7 @@ public class Hirudegarn extends BigBoss {
     public void move(int x, int y) {
         super.move(x, y);
         try {
-            Message ms = new Message(Cmd.BIG_BOSS);
+            Message ms = Message.create(Cmd.BIG_BOSS);
             DataOutputStream ds = ms.writer();
             ds.writeByte(8);
             ds.writeShort(x);

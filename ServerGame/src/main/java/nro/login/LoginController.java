@@ -6,13 +6,12 @@ import nro.models.player.Player;
 import nro.resources.Resources;
 import nro.server.Client;
 import nro.server.Manager;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.server.io.Session;
 import nro.services.Service;
 import nro.utils.Log;
 import nro.utils.Util;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -84,7 +83,7 @@ public class LoginController {
          if (session != null) {
             Service.getInstance().sendThongBaoOK(session, text);
          }
-      } catch (IOException ex) {
+      } catch (Exception ex) {
          Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
       }
    }
@@ -96,7 +95,7 @@ public class LoginController {
          if (player != null) {
             Client.gI().kickSession(player.getSession());
          }
-      } catch (IOException ex) {
+      } catch (Exception ex) {
          ex.printStackTrace();
       }
    }
@@ -141,8 +140,8 @@ public class LoginController {
                   session.ruby = ruby;
                   session.diemTichNap = diemTichNap;
                   session.server = server;
-                  Resources.getInstance().sendSmallVersion(session);
-                  Resources.getInstance().sendBGVersion(session);
+                  Resources.gI().sendSmallVersion(session);
+                  Resources.gI().sendBGVersion(session);
                   session.timeWait = 0;
                   session.loginSuccess = true;
                   DataGame.sendVersionGame(session);
@@ -152,10 +151,10 @@ public class LoginController {
                }
             } finally {
 
-               session.setLogging(false);
+               session.logging = false;
             }
          }
-      } catch (IOException ex) {
+      } catch (Exception ex) {
          ex.printStackTrace();
       }
    }
@@ -169,12 +168,12 @@ public class LoginController {
    }
 
    public void onConnectOK() {
-      Log.success("Connected to login server successfully!");
-      session.getService().setServer(Manager.SERVER, Client.gI());
+      Log.success("Connected to ServerLogin Successfully!");
+      session.service.setServer(Manager.SERVER, Client.gI());
    }
 
    public void onDisconnected() {
-      System.out.println("Mat ket noi may chu login");
+      System.out.println("Disconnect to ServerLogin Successfully!");
       Util.setTimeout(() -> {
          session.reconnect();
       }, 10000);

@@ -1,25 +1,41 @@
 package nro.network.io;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import io.netty.buffer.PooledByteBufAllocator;
-import lombok.Getter;
-import lombok.Setter;
+import io.netty.buffer.Unpooled;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.nio.charset.StandardCharsets;
 
 public class Message {
 
-   @Getter
    public byte command;
    private ByteBuf buffer;
 
-   @Getter @Setter
+   private DataOutputStream dos;
+   private DataInputStream dis;
+
    private boolean isBigMsg;
 
-   /**
-    * Constructor for writing a message with a command.
-    * Allocates a pooled buffer.
-    */
+   public byte getCommand() {
+      return command;
+   }
+
+   public boolean isBigMsg() {
+      return isBigMsg;
+   }
+
+   public void setBigMsg(boolean bigMsg) {
+      isBigMsg = bigMsg;
+   }
+
+   public Message() {
+      this((byte) 0);
+   }
+
    public Message(int command) {
       this((byte) command);
    }
@@ -29,27 +45,58 @@ public class Message {
       this.buffer = PooledByteBufAllocator.DEFAULT.buffer();
    }
 
-   /**
-    * Constructor for reading a message with a command and data buffer.
-    */
    public Message(byte command, ByteBuf data) {
       this.command = command;
       this.buffer = data;
    }
 
-   /**
-    * Constructor for compatibility with byte array data.
-    */
    public Message(byte command, byte[] data) {
       this.command = command;
       this.buffer = Unpooled.wrappedBuffer(data);
+   }
+
+   public static Message create() {
+      return new Message();
+   }
+
+   public static Message create(int command) {
+      return new Message(command);
+   }
+
+   public static Message create(byte command) {
+      return new Message(command);
+   }
+
+   public static Message create(byte command, byte[] data) {
+      return new Message(command, data);
    }
 
    public ByteBuf getBuffer() {
       return buffer;
    }
 
-   // --- Writing Methods ---
+   // --- Writing Methods (Compatibility) ---
+
+   public DataOutputStream writer() {
+      if (dos == null) {
+         dos = new DataOutputStream(new ByteBufOutputStream(buffer));
+      }
+      return dos;
+   }
+
+   public void flush() {
+      try {
+         if (dos != null) {
+               dos.flush();
+         }
+      } catch (Exception ignored) {
+      }
+   }
+
+   public void transformData() {
+      // No-op for compatibility with legacy code.
+      // Encryption/Transformation is now handled in the Netty pipeline (NettyEncoder).
+   }
 
    public void writeByte(int b) {
       buffer.writeByte(b);
@@ -71,6 +118,10 @@ public class Message {
       buffer.writeLong(l);
    }
 
+   public void writeDouble(double d) {
+      buffer.writeDouble(d);
+   }
+
    public void writeUTF(String s) {
       if (s == null) s = "";
       byte[] bytes = s.getBytes(StandardCharsets.UTF_8);
@@ -82,7 +133,14 @@ public class Message {
       buffer.writeBytes(bytes);
    }
 
-   // --- Reading Methods ---
+   // --- Reading Methods (Compatibility) ---
+
+   public DataInputStream reader() {
+      if (dis == null) {
+         dis = new DataInputStream(new ByteBufInputStream(buffer));
+      }
+      return dis;
+   }
 
    public byte readByte() {
       return buffer.readByte();
@@ -111,6 +169,14 @@ public class Message {
       return new String(bytes, StandardCharsets.UTF_8);
    }
 
+   public int available() {
+      return buffer.readableBytes();
+   }
+
+   public int readUnsignedByte() {
+      return buffer.readUnsignedByte();
+   }
+
    public int readerIndex() {
       return buffer.readerIndex();
    }
@@ -119,10 +185,6 @@ public class Message {
       buffer.readerIndex(index);
    }
 
-   /**
-    * Returns the underlying data as a byte array.
-    * Note: This might involve a copy if the buffer is pooled or direct.
-    */
    public byte[] getData() {
       if (buffer.hasArray()) {
          return buffer.array();
@@ -132,19 +194,12 @@ public class Message {
       return bytes;
    }
 
-   /**
-    * Cleanup and release the underlying buffer.
-    * Essential to avoid memory leaks with Pooled ByteBufs.
-    */
    public void cleanup() {
       if (buffer != null && buffer.refCnt() > 0) {
          buffer.release();
       }
    }
 
-   /**
-    * Alias for cleanup to match legacy code disposing.
-    */
    public void dispose() {
       cleanup();
    }

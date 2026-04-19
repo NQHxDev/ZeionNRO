@@ -3,7 +3,7 @@ package nro.services;
 import nro.consts.ConstNpc;
 import nro.models.player.Player;
 import nro.server.Client;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.utils.Log;
 
 /**
@@ -73,7 +73,7 @@ public class SubMenuService {
 
     public static class SubMenu {
 
-        private int id;
+        public int id;
         private String caption1;
         private String caption2;
 

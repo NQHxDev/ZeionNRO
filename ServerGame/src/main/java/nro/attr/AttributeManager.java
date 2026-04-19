@@ -17,7 +17,7 @@ import lombok.Getter;
 public class AttributeManager {
 
     @Getter
-    private List<Attribute> attributes;
+    public List<Attribute> attributes;
     private long lastUpdate;
 
     public AttributeManager() {
@@ -39,7 +39,7 @@ public class AttributeManager {
     public Attribute find(int templateID) {
         synchronized (attributes) {
             for (Attribute at : attributes) {
-                if (at.getTemplate().getId() == templateID) {
+                if (at.template.id == templateID) {
                     return at;
                 }
             }

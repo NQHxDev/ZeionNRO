@@ -8,7 +8,7 @@ import nro.models.npc.Npc;
 import nro.models.npc.NpcManager;
 import nro.models.player.Player;
 import nro.server.Client;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.GameDuDoan;
 import nro.services.GiftService;
 import nro.services.GiftcodePlayer;
@@ -577,7 +577,7 @@ public class Input {
       pl.iDMark.setTypeInput(typeInput);
       Message msg;
       try {
-         msg = new Message(-125);
+         msg = Message.create(-125);
          msg.writer().writeUTF(title);
          msg.writer().writeByte(subInputs.length);
          for (SubInput si : subInputs) {

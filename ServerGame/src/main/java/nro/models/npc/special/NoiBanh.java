@@ -98,7 +98,7 @@ public class NoiBanh extends Npc {
    }
 
    private void handleNauBanhTet(Player player) {
-      if (!player.event.isCookingTetCake()) {
+      if (!player.event.cookingTetCake) {
          Item banhTet = InventoryService.gI().findItem(player, ConstItem.BANH_TET_2023, 1);
          Item phuGia = InventoryService.gI().findItem(player, ConstItem.PHU_GIA_TAO_MAU, 1);
          Item giaVi = InventoryService.gI().findItem(player, ConstItem.GIA_VI_TONG_HOP, 1);
@@ -114,7 +114,7 @@ public class NoiBanh extends Npc {
          } else {
             Service.getInstance().sendThongBao(player, "Không đủ nguyên liệu");
          }
-      } else if (player.event.isCookingTetCake() && player.event.getTimeCookTetCake() == 0) {
+      } else if (player.event.cookingTetCake && player.event.timeCookTetCake == 0) {
          Item cake = ItemService.gI().createNewItem((short) ConstItem.BANH_TET_CHIN, 1);
          cake.itemOptions.add(new ItemOption(77, 20));
          cake.itemOptions.add(new ItemOption(103, 20));
@@ -128,7 +128,7 @@ public class NoiBanh extends Npc {
    }
 
    private void handleNauBanhChung(Player player) {
-      if (!player.event.isCookingChungCake()) {
+      if (!player.event.cookingChungCake) {
          Item banhChung = InventoryService.gI().findItem(player, ConstItem.BANH_CHUNG_2023, 1);
          Item phuGia = InventoryService.gI().findItem(player, ConstItem.PHU_GIA_TAO_MAU, 1);
          Item giaVi = InventoryService.gI().findItem(player, ConstItem.GIA_VI_TONG_HOP, 1);
@@ -144,7 +144,7 @@ public class NoiBanh extends Npc {
          } else {
             Service.getInstance().sendThongBao(player, "Không đủ nguyên liệu");
          }
-      } else if (player.event.isCookingChungCake() && player.event.getTimeCookChungCake() == 0) {
+      } else if (player.event.cookingChungCake && player.event.timeCookChungCake == 0) {
          Item cake = ItemService.gI().createNewItem((short) ConstItem.BANH_CHUNG_CHIN, 1);
          cake.itemOptions.add(new ItemOption(50, 20));
          cake.itemOptions.add(new ItemOption(5, 15));
@@ -177,8 +177,8 @@ public class NoiBanh extends Npc {
 
    public String getMenuLamBanh(Player player, int type) {
       String name = type == 0 ? "Bánh Tét" : "Bánh Chưng";
-      boolean isCooking = type == 0 ? player.event.isCookingTetCake() : player.event.isCookingChungCake();
-      int time = type == 0 ? player.event.getTimeCookTetCake() : player.event.getTimeCookChungCake();
+      boolean isCooking = type == 0 ? player.event.cookingTetCake : player.event.cookingChungCake;
+      int time = type == 0 ? player.event.timeCookTetCake : player.event.timeCookChungCake;
 
       if (isCooking) {
          if (time > 0) {

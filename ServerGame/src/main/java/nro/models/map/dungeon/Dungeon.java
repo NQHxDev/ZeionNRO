@@ -8,7 +8,7 @@ package nro.models.map.dungeon;
 import nro.consts.Cmd;
 import nro.models.map.dungeon.zones.ZDungeon;
 import nro.models.player.Player;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.Service;
 import nro.utils.Log;
 import java.io.DataOutputStream;
@@ -28,24 +28,24 @@ public abstract class Dungeon {
 
     public static final int SNAKE_ROAD = 2;
 
-    protected final List<ZDungeon> zones = new ArrayList<>();
-    protected int id;
-    protected int type;
-    protected int level;
-    protected String name;
-    protected long createdAt;
-    protected int countDown;
-    protected String title;
-    protected boolean closed;
-    protected boolean finish;
+    public final List<ZDungeon> zones = new ArrayList<>();
+    public int id;
+    public int type;
+    public int level;
+    public String name;
+    public long createdAt;
+    public int countDown;
+    public String title;
+    public boolean closed;
+    public boolean finish;
 
     public Dungeon(int level) {
         createdAt = System.currentTimeMillis();
-        setLevel(level);
+        this.level = level;
         init();
     }
 
-    protected abstract void init();
+    public abstract void init();
 
     public void addZone(ZDungeon zone) {
         synchronized (zones) {
@@ -83,7 +83,7 @@ public abstract class Dungeon {
 
     public abstract void join(Player player);
 
-    protected void setTime(int countDown) {
+    public void setTime(int countDown) {
         this.countDown = countDown;
         synchronized (zones) {
             zones.forEach((z) -> {
@@ -106,7 +106,7 @@ public abstract class Dungeon {
 
     public void sendNotification(String text) {
         try {
-            Message ms = new Message(Cmd.SERVER_MESSAGE);
+            Message ms = Message.create(Cmd.SERVER_MESSAGE);
             DataOutputStream ds = ms.writer();
             ds.writeUTF(text);
             ds.flush();

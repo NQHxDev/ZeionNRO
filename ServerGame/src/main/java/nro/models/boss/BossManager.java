@@ -32,7 +32,7 @@ import nro.models.boss.vip.ZamasuZombie;
 
 import nro.models.player.Player;
 
-import nro.server.io.Message;
+import nro.network.io.Message;
 
 import nro.utils.Util;
 
@@ -179,7 +179,7 @@ public class BossManager {
    }
 
    public void showListBoss(Player player) {
-      Message msg = new Message(-96);
+      Message msg = Message.create(-96);
       try {
          msg.writer().writeByte(0);
          msg.writer().writeUTF("Danh sách BOSS");
@@ -223,7 +223,7 @@ public class BossManager {
    }
 
    public void showListBossMember(Player player) {
-      Message msg = new Message(-96);
+      Message msg = Message.create(-96);
       try {
          msg.writer().writeByte(0);
          msg.writer().writeUTF("Danh sách BOSS");
@@ -281,7 +281,7 @@ public class BossManager {
    }
 
    public void showListBossVIP(Player player) {
-      Message msg = new Message(-96);
+      Message msg = Message.create(-96);
       try {
          msg.writer().writeByte(0);
          msg.writer().writeUTF("Danh sách BOSS VIP");

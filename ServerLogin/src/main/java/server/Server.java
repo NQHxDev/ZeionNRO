@@ -1,23 +1,25 @@
 package server;
 
 import db.DbManager;
+import io.Controller;
 import io.Session;
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import nro.network.netty.CommonHandler;
+import nro.network.netty.NettyServer;
 import util.Log;
 import util.LoginScheduler;
 
 public class Server {
 
    private static final Server instance = new Server();
-   private ServerSocket listen;
-   private Config config = new Config("server.ini");
-   private ServerManager manager = new ServerManager();
-   private ServerService service = new ServerService(this.manager);
+   private NettyServer nettyServer;
+   private final Config config = new Config("server.ini");
+   private final ServerManager manager = new ServerManager();
+   private final ServerService service = new ServerService(this.manager);
    private boolean running;
    private long startTime;
+
+   // Shared controller for all Netty sessions
+   private final Controller controller = new Controller();
 
    public static Server getInstance() {
       return instance;
@@ -32,18 +34,22 @@ public class Server {
       this.activeCommandLine();
       DbManager.getInstance().start();
       this.running = true;
+
       try {
-         this.listen = new ServerSocket(this.config.getListen());
-         Log.success("Server đang lắng nghe tại cổng: " + this.config.getListen());
-         int i = 0;
-         while (this.running) {
-            Session session = new Session(this.listen.accept(), i++);
-            Log.info("Client connected! IP: " + session.sc.getInetAddress().getHostAddress() + " | Session Name: "
-                  + session.sessionName);
-         }
-      } catch (IOException ex) {
+         byte[] key = "arriety".getBytes();
+         CommonHandler handler = new CommonHandler(controller);
+         nettyServer = new NettyServer(config.getListen(), key, handler);
+
+         // Set session factory to create io.Session instead of default NettySession
+         nettyServer.setSessionFactory((channel, id) -> new Session(channel, id));
+
+         Log.success("Netty Server đang lắng nghe tại cổng: " + this.config.getListen());
+         nettyServer.start();
+
+      } catch (Exception ex) {
          if (this.running) {
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            Log.error("Lỗi khi khởi động Netty Server: " + ex.getMessage());
+            ex.printStackTrace();
          }
       }
    }
@@ -63,13 +69,11 @@ public class Server {
       }
       Log.warning("Đang đóng các kết nối và dừng Server ...");
       this.running = false;
-      try {
-         if (this.listen != null) {
-            this.listen.close();
-         }
-      } catch (IOException iOException) {
-         // empty catch block
+
+      if (nettyServer != null) {
+         nettyServer.stop();
       }
+
       DbManager.getInstance().shutdown();
    }
 
@@ -96,4 +100,5 @@ public class Server {
    public ServerService getService() {
       return this.service;
    }
+
 }

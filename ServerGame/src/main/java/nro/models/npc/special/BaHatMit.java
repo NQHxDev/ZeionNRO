@@ -5,7 +5,7 @@ import nro.models.item.ItemOption;
 import nro.models.npc.Npc;
 import nro.models.player.Player;
 import nro.consts.ConstNpc;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.InventoryService;
 import nro.services.ItemService;
 import nro.services.Service;
@@ -280,21 +280,21 @@ public class BaHatMit extends Npc {
                         sachTuyetKy.itemOptions.add(new ItemOption(242, 5));
                         sachTuyetKy.itemOptions.add(new ItemOption(243, 1000));
                         try { // send effect susscess
-                           Message msg = new Message(-81);
+                           Message msg = Message.create(-81);
                            msg.writer().writeByte(0);
                            msg.writer().writeUTF("test");
                            msg.writer().writeUTF("test");
                            msg.writer().writeShort(tempId);
                            player.sendMessage(msg);
                            msg.cleanup();
-                           msg = new Message(-81);
+                           msg = Message.create(-81);
                            msg.writer().writeByte(1);
                            msg.writer().writeByte(2);
                            msg.writer().writeByte(InventoryService.gI().getIndexBag(player, kimBam));
                            msg.writer().writeByte(InventoryService.gI().getIndexBag(player, cuonSachCu));
                            player.sendMessage(msg);
                            msg.cleanup();
-                           msg = new Message(-81);
+                           msg = Message.create(-81);
                            msg.writer().writeByte(7);
                            msg.writer().writeShort(sachTuyetKy.template.iconID);
                            msg.writer().writeShort(-1);
@@ -311,21 +311,21 @@ public class BaHatMit extends Npc {
                         return;
                      } else {
                         try { // send effect faile
-                           Message msg = new Message(-81);
+                           Message msg = Message.create(-81);
                            msg.writer().writeByte(0);
                            msg.writer().writeUTF("test");
                            msg.writer().writeUTF("test");
                            msg.writer().writeShort(tempId);
                            player.sendMessage(msg);
                            msg.cleanup();
-                           msg = new Message(-81);
+                           msg = Message.create(-81);
                            msg.writer().writeByte(1);
                            msg.writer().writeByte(2);
                            msg.writer().writeByte(InventoryService.gI().getIndexBag(player, kimBam));
                            msg.writer().writeByte(InventoryService.gI().getIndexBag(player, cuonSachCu));
                            player.sendMessage(msg);
                            msg.cleanup();
-                           msg = new Message(-81);
+                           msg = Message.create(-81);
                            msg.writer().writeByte(8);
                            msg.writer().writeShort(-1);
                            msg.writer().writeShort(-1);
@@ -349,21 +349,21 @@ public class BaHatMit extends Npc {
                      if (Util.isTrue(60, 100)) {
                         cuonSachCu.itemOptions.add(new ItemOption(30, 0));
                         try { // send effect susscess
-                           Message msg = new Message(-81);
+                           Message msg = Message.create(-81);
                            msg.writer().writeByte(0);
                            msg.writer().writeUTF("test");
                            msg.writer().writeUTF("test");
                            msg.writer().writeShort(tempId);
                            player.sendMessage(msg);
                            msg.cleanup();
-                           msg = new Message(-81);
+                           msg = Message.create(-81);
                            msg.writer().writeByte(1);
                            msg.writer().writeByte(2);
                            msg.writer().writeByte(InventoryService.gI().getIndexBag(player, trangSachCu));
                            msg.writer().writeByte(InventoryService.gI().getIndexBag(player, biaSach));
                            player.sendMessage(msg);
                            msg.cleanup();
-                           msg = new Message(-81);
+                           msg = Message.create(-81);
                            msg.writer().writeByte(7);
                            msg.writer().writeShort(cuonSachCu.template.iconID);
                            msg.writer().writeShort(-1);
@@ -380,21 +380,21 @@ public class BaHatMit extends Npc {
                         return;
                      } else {
                         try { // send effect faile
-                           Message msg = new Message(-81);
+                           Message msg = Message.create(-81);
                            msg.writer().writeByte(0);
                            msg.writer().writeUTF("test");
                            msg.writer().writeUTF("test");
                            msg.writer().writeShort(tempId);
                            player.sendMessage(msg);
                            msg.cleanup();
-                           msg = new Message(-81);
+                           msg = Message.create(-81);
                            msg.writer().writeByte(1);
                            msg.writer().writeByte(2);
                            msg.writer().writeByte(InventoryService.gI().getIndexBag(player, biaSach));
                            msg.writer().writeByte(InventoryService.gI().getIndexBag(player, trangSachCu));
                            player.sendMessage(msg);
                            msg.cleanup();
-                           msg = new Message(-81);
+                           msg = Message.create(-81);
                            msg.writer().writeByte(8);
                            msg.writer().writeShort(-1);
                            msg.writer().writeShort(-1);

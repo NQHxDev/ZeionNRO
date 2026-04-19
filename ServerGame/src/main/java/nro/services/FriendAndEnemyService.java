@@ -8,7 +8,7 @@ import nro.models.player.Enemy;
 import nro.models.player.Friend;
 import nro.models.player.Player;
 import nro.server.Client;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.func.ChangeMapService;
 import nro.services.func.PVPServcice;
 import nro.utils.Log;
@@ -132,7 +132,7 @@ public class FriendAndEnemyService {
       reloadFriend(player);
       Message msg;
       try {
-         msg = new Message(Cmd.FRIEND);
+         msg = Message.create(Cmd.FRIEND);
          msg.writer().writeByte(OPEN_LIST);
          msg.writer().writeByte(player.friends.size());
          for (Friend f : player.friends) {
@@ -159,7 +159,7 @@ public class FriendAndEnemyService {
       reloadEnemy(player);
       Message msg;
       try {
-         msg = new Message(-99);
+         msg = Message.create(-99);
          msg.writer().writeByte(OPEN_LIST);
          msg.writer().writeByte(player.enemies.size());
          for (Enemy e : player.enemies) {
@@ -213,7 +213,7 @@ public class FriendAndEnemyService {
                   + player.friends.get(i).name + " khỏi danh sách bạn");
             Message msg;
             try {
-               msg = new Message(Cmd.FRIEND);
+               msg = Message.create(Cmd.FRIEND);
                msg.writer().writeByte(REMOVE_FRIEND);
                msg.writer().writeInt((int) player.friends.get(i).id);
                player.sendMessage(msg);

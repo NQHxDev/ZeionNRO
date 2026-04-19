@@ -36,7 +36,7 @@ public class Tapion extends Npc {
                   case 0:
                      SantaCity santaCity = (SantaCity) MapService.gI().getMapById(126);
                      if (santaCity != null) {
-                        if (!santaCity.isOpened() || santaCity.isClosed()) {
+                        if (!santaCity.isOpened || santaCity.isClosed) {
                            Service.getInstance().sendThongBao(player,
                                  "Hẹn gặp bạn lúc 22h mỗi ngày");
                            return;

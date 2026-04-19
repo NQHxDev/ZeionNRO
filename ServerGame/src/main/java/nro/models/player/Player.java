@@ -28,7 +28,7 @@ import nro.models.skill.PlayerSkill;
 import nro.models.task.TaskPlayer;
 import nro.server.Client;
 import nro.server.Manager;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.server.io.Session;
 import nro.services.*;
 import nro.services.func.ChangeMapService;
@@ -279,28 +279,28 @@ public class Player {
    public long lastTimePickItem;
    @Setter
    @Getter
-   private CollectionBook collectionBook;
+   public CollectionBook collectionBook;
    @Getter
    @Setter
-   private boolean isSaving, isDisposed;
+   public boolean isSaving, isDisposed;
    @Getter
    @Setter
-   private boolean interactWithKarin;
+   public boolean interactWithKarin;
    @Getter
    @Setter
    private EscortedBoss escortedBoss;
    @Setter
    @Getter
-   private ConfirmDialog confirmDialog;
+   public ConfirmDialog confirmDialog;
    @Getter
    @Setter
    public byte[] rewardLimit;
    @Setter
    @Getter
-   private PetFollow petFollow;
+   public PetFollow petFollow;
    @Setter
    @Getter
-   private Buff buff;
+   public Buff buff;
 
    public int idPhucLoi;
    public List<Integer> listNhan = new ArrayList<>();

@@ -2,7 +2,7 @@ package nro.services;
 
 import nro.models.map.ItemMap;
 import nro.models.player.Player;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.utils.Log;
 import nro.utils.Util;
 
@@ -42,7 +42,7 @@ public class ItemMapService {
     public void sendItemMapDisappear(ItemMap itemMap) {
         Message msg;
         try {
-            msg = new Message(-21);
+            msg = Message.create(-21);
             msg.writer().writeShort(itemMap.itemMapId);
             Service.getInstance().sendMessAllPlayerInMap(itemMap.zone, msg);
             msg.cleanup();

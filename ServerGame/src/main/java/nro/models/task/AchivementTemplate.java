@@ -1,24 +1,26 @@
 package nro.models.task;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-
-/**
- * @author Tuỳ Chỉnh Bởi Văn Tuấn 0337766460
- */
-@Setter
-@Getter
-@AllArgsConstructor
 public class AchivementTemplate {
 
-    private int id;
+   public int id;
 
-    private String name;
+   public String name;
 
-    private String detail;
+   public String detail;
 
-    private int money;
+   public int money;
 
-    private int maxCount;
+   public int maxCount;
+
+   public AchivementTemplate() {
+   }
+
+   public AchivementTemplate(int id, String name, String detail, int money, int maxCount) {
+      this.id = id;
+      this.name = name;
+      this.detail = detail;
+      this.money = money;
+      this.maxCount = maxCount;
+   }
+
 }

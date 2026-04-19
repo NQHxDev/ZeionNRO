@@ -11,7 +11,7 @@ import java.util.List;
 import nro.models.item.Item;
 import nro.models.player.Player;
 import nro.server.Client;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.func.Input;
 import nro.utils.TimeUtil;
 import nro.utils.Util;
@@ -317,7 +317,7 @@ public class GameDuDoan implements Runnable {
     public void Send_TaiXiu(Player pl) {
         Message msg = null;
         try {
-            msg = new Message(111);
+            msg = Message.create(111);
             msg.writer().writeByte(0);
             msg.writer().writeByte(START);
             msg.writer().writeLong((this.lastTimeEnd - System.currentTimeMillis()) / 1000);//thời gian còn lại
@@ -348,7 +348,7 @@ public class GameDuDoan implements Runnable {
     public void thongbao(String text) {
         Message msg;
         try {
-            msg = new Message(111);
+            msg = Message.create(111);
             msg.writer().writeByte(4);
             msg.writer().writeUTF(text);
             Service.getInstance().sendMessAllPlayer(msg);

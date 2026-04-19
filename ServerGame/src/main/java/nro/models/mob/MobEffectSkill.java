@@ -1,6 +1,6 @@
 package nro.models.mob;
 
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.Service;
 import nro.utils.Util;
 
@@ -58,7 +58,7 @@ public class MobEffectSkill {
         isStun = false;
         Message msg;
         try {
-            msg = new Message(-124);
+            msg = Message.create(-124);
             msg.writer().writeByte(0);
             msg.writer().writeByte(1);
             msg.writer().writeByte(40);
@@ -82,7 +82,7 @@ public class MobEffectSkill {
         this.isThoiMien = false;
         Message msg;
         try {
-            msg = new Message(-124);
+            msg = Message.create(-124);
             msg.writer().writeByte(0); //b5
             msg.writer().writeByte(1); //b6
             msg.writer().writeByte(41); //num6
@@ -107,7 +107,7 @@ public class MobEffectSkill {
         this.isBlindDCTT = false;
         Message msg;
         try {
-            msg = new Message(-124);
+            msg = Message.create(-124);
             msg.writer().writeByte(0);
             msg.writer().writeByte(1);
             msg.writer().writeByte(40);
@@ -132,7 +132,7 @@ public class MobEffectSkill {
         isAnTroi = false;
         Message msg;
         try {
-            msg = new Message(-124);
+            msg = Message.create(-124);
             msg.writer().writeByte(0); //b4
             msg.writer().writeByte(1);//b5
             msg.writer().writeByte(32);//num8
@@ -157,7 +157,7 @@ public class MobEffectSkill {
         Message msg;
         this.isSocola = false;
         try {
-            msg = new Message(-112);
+            msg = Message.create(-112);
             msg.writer().writeByte(0);
             msg.writer().writeByte(mob.id);
             Service.getInstance().sendMessAllPlayerInMap(mob.zone, msg);
@@ -170,7 +170,7 @@ public class MobEffectSkill {
         Message msg;
         this.isBinh = false;
         try {
-            msg = new Message(-112);
+            msg = Message.create(-112);
             msg.writer().writeByte(0);
             msg.writer().writeByte(mob.id);
             Service.getInstance().sendMessAllPlayerInMap(mob.zone, msg);

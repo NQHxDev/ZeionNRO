@@ -16,10 +16,10 @@ import lombok.Getter;
 @Getter
 public class Attribute {
 
-    private int id;
-    private int value;
-    private int time;
-    private AttributeTemplate template;
+    public int id;
+    public int value;
+    public int time;
+    public AttributeTemplate template;
     private transient boolean changed;
 
     @Builder

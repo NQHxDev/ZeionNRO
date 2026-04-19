@@ -12,15 +12,15 @@ import java.util.List;
 public class TopManager {
 
    @Getter
-   private List<Player> listSm = new ArrayList<>();
+   public List<Player> listSm = new ArrayList<>();
    @Getter
-   private List<Player> listDetu = new ArrayList<>();
+   public List<Player> listDetu = new ArrayList<>();
    @Getter
-   private List<Player> listNvu = new ArrayList<>();
+   public List<Player> listNvu = new ArrayList<>();
    @Getter
-   private List<Player> listNap = new ArrayList<>();
+   public List<Player> listNap = new ArrayList<>();
    @Getter
-   private List<Player> listSieuHang = new ArrayList<>();
+   public List<Player> listSieuHang = new ArrayList<>();
 
    private static final TopManager INSTANCE = new TopManager();
 

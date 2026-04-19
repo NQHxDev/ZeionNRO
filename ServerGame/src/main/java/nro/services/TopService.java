@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import nro.jdbc.DBService;
 import nro.models.player.Player;
 import nro.server.Client;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.utils.Log;
 import nro.utils.Util;
 
@@ -423,7 +423,7 @@ public final class TopService {
     private void sendTop(Player viewer, String title, List<Row> rows) throws Exception {
         if (rows == null) rows = Collections.emptyList();
 
-        Message msg = new Message(-96);
+        Message msg = Message.create(-96);
         try {
             msg.writer().writeByte(0);           // typeTop = 0 (client cho click)
             msg.writer().writeUTF(title);

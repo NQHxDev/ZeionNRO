@@ -167,6 +167,6 @@ public class TestDame extends Player {
 
       // QUAN TRỌNG:
       // Bạn đang dùng cơ chế referee, nên gắn vào zone để zone giữ reference/update
-      z.setReferee(pl);
+      z.referee = pl;
    }
 }

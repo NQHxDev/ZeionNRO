@@ -14,7 +14,7 @@ public class EffectEventManager {
    }
 
    @Getter
-   private final List<EffectEventTemplate> templates = new ArrayList<>();
+   public final List<EffectEventTemplate> templates = new ArrayList<>();
 
    public void add(EffectEventTemplate ee) {
       templates.add(ee);

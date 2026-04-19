@@ -6,7 +6,7 @@ import nro.models.player.Player;
 import nro.utils.SkillUtil;
 import nro.services.Service;
 import nro.utils.Util;
-import nro.server.io.Message;
+import nro.network.io.Message;
 
 /**
  *
@@ -55,7 +55,7 @@ public final class MobMe extends Mob {
             if (pl != null) {
                 if (pl.nPoint.hp > this.point.dame) {
                     double dameHit = pl.injured(null, this.point.dame, true, true);
-                    msg = new Message(Cmd.MOB_ME_UPDATE);
+                    msg = Message.create(Cmd.MOB_ME_UPDATE);
                     msg.writer().writeByte(2);
                     msg.writer().writeInt(this.id);
                     msg.writer().writeInt((int) pl.id);
@@ -69,7 +69,7 @@ public final class MobMe extends Mob {
             if (mob != null) {
                 if (mob.point.getHP() > this.point.dame) {
                     double tnsm = mob.getTiemNangForPlayer(this.player, this.point.dame);
-                    msg = new Message(Cmd.MOB_ME_UPDATE);
+                    msg = Message.create(Cmd.MOB_ME_UPDATE);
                     msg.writer().writeByte(3);
                     msg.writer().writeInt(this.id);
                     msg.writer().writeInt((int) mob.id);
@@ -89,7 +89,7 @@ public final class MobMe extends Mob {
     public void spawn() {
         Message msg;
         try {
-            msg = new Message(Cmd.MOB_ME_UPDATE);
+            msg = Message.create(Cmd.MOB_ME_UPDATE);
             msg.writer().writeByte(0);//type
             msg.writer().writeInt((int) player.id);
             msg.writer().writeShort(this.tempId);
@@ -112,7 +112,7 @@ public final class MobMe extends Mob {
     private void removeMobInMap() {
         Message msg;
         try {
-            msg = new Message(Cmd.MOB_ME_UPDATE);
+            msg = Message.create(Cmd.MOB_ME_UPDATE);
             msg.writer().writeByte(7);//type
             msg.writer().writeInt((int) player.id);
             Service.getInstance().sendMessAllPlayerInMap(this.zone, msg);
@@ -124,7 +124,7 @@ public final class MobMe extends Mob {
     public void mobMeDie() {
         Message msg;
         try {
-            msg = new Message(Cmd.MOB_ME_UPDATE);
+            msg = Message.create(Cmd.MOB_ME_UPDATE);
             msg.writer().writeByte(6);//type
             msg.writer().writeInt((int) player.id);
             Service.getInstance().sendMessAllPlayerInMap(this.zone, msg);

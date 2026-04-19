@@ -2,7 +2,7 @@ package nro.notification;
 
 import nro.consts.Cmd;
 import nro.models.player.Player;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.Service;
 
 import java.io.DataOutputStream;
@@ -43,14 +43,14 @@ public class NotiManager {
    }
 
    public void sendNoti(Player player) {
-      Message m = new Message(Cmd.GAME_INFO);
+      Message m = Message.create(Cmd.GAME_INFO);
       try {
          DataOutputStream ds = m.writer();
          ds.writeByte(notifications.size());
          for (Notification notification : notifications) {
-            ds.writeShort(notification.getId());
-            ds.writeUTF(notification.getTitle());
-            ds.writeUTF(notification.getContent());
+            ds.writeShort(notification.id);
+            ds.writeUTF(notification.title);
+            ds.writeUTF(notification.content);
          }
          ds.flush();
          player.sendMessage(m);

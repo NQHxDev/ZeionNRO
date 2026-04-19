@@ -1,72 +1,68 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package nro.resources.entity;
 
-import com.google.gson.annotations.SerializedName;
-import nro.server.io.Message;
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import lombok.Getter;
 
-/**
- *
- * @author Tuỳ Chỉnh Bởi Văn Tuấn 0337766460
- */
-@Getter
 public class MobData {
 
-    private int id;
-    private byte type;
-    @SerializedName("type_data")
-    private byte typeData;
-    private Sprite[] sprites;
-    private Frame[][] frames;
-    private short[] animations;
-    @SerializedName("data")
-    private byte[][] frameBoss;
-    private transient byte[] dataMob;
+   public int id;
 
-    public void setData() {
-        try {
-            Message ms = new Message();
-            DataOutputStream ds = ms.writer();
-            ds.writeByte(sprites.length);
-            for (Sprite sprite : sprites) {
-                ds.writeByte(sprite.getId());
-                if (type == 0 || type == 1) {
-                    ds.writeByte(sprite.getX());
-                    ds.writeByte(sprite.getY());
-                } else {
-                    ds.writeShort(sprite.getX());
-                    ds.writeShort(sprite.getY());
-                }
-                ds.writeByte(sprite.getW());
-                ds.writeByte(sprite.getH());
+   public byte type;
+    public byte typeData;
+    public byte[][] frameBoss;
+
+   public Sprite[] sprites;
+
+   public Frame[][] frames;
+
+   public short[] animations;
+
+   public byte[] dataMob;
+
+   public void dispose() {
+      dataMob = null;
+   }
+
+   public byte[] getMobData() {
+      if (dataMob != null) {
+         return dataMob;
+      }
+      ByteArrayOutputStream ms = new ByteArrayOutputStream();
+      DataOutputStream ds = new DataOutputStream(ms);
+      try {
+         ds.writeByte(sprites.length);
+         for (Sprite sprite : sprites) {
+            ds.writeByte(sprite.id);
+            if (type == 0 || type == 1) {
+               ds.writeByte(sprite.x);
+               ds.writeByte(sprite.y);
+            } else {
+               ds.writeShort(sprite.x);
+               ds.writeShort(sprite.y);
             }
-            ds.writeShort(frames.length);
-            for (Frame[] a : frames) {
-                ds.writeByte(a.length);
-                for (Frame frame : a) {
-                    ds.writeShort(frame.getDx());
-                    ds.writeShort(frame.getDy());
-                    ds.writeByte(frame.getSpriteID());
-                }
+            ds.writeByte(sprite.w);
+            ds.writeByte(sprite.h);
+         }
+         ds.writeShort(frames.length);
+         for (Frame[] a : frames) {
+            ds.writeByte(a.length);
+            for (Frame frame : a) {
+               ds.writeShort(frame.dx);
+               ds.writeShort(frame.dy);
+               ds.writeByte(frame.spriteID);
             }
-            ds.writeShort(animations.length);
-            for (short a : animations) {
-                ds.writeShort(a);
-            }
-            ds.flush();
-            dataMob = ms.getData();
-            ms.cleanup();
-        } catch (IOException ex) {
-            Logger.getLogger(MobData.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+         }
+         ds.writeShort(animations.length);
+         for (short a : animations) {
+            ds.writeShort(a);
+         }
+         ds.flush();
+         dataMob = ms.toByteArray();
+      } catch (IOException ex) {
+         ex.printStackTrace();
+      }
+      return dataMob;
+   }
 
 }

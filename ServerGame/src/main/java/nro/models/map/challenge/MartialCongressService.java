@@ -3,7 +3,7 @@ package nro.models.map.challenge;
 import nro.consts.ConstMap;
 import nro.models.map.Zone;
 import nro.models.player.Player;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.MapService;
 import nro.services.Service;
 import nro.services.func.ChangeMapService;
@@ -29,8 +29,8 @@ public class MartialCongressService {
             ChangeMapService.gI().changeMap(player, zone, player.location.x, 360);
             Util.setTimeout(() -> {
                 MartialCongress mc = new MartialCongress();
-                mc.setPlayer(player);
-                mc.setNpc(zone.getReferee());
+                mc.player = player;
+                mc.npc = zone.referee;
                 mc.toTheNextRound();
                 MartialCongressManager.gI().add(mc);
                 Service.getInstance().sendThongBao(player, "Số thứ tự của ngươi là 1\n chuẩn bị thi đấu nhé");
@@ -43,7 +43,7 @@ public class MartialCongressService {
     public void moveFast(Player pl, int x, int y) {
         Message msg;
         try {
-            msg = new Message(58);
+            msg = Message.create(58);
             msg.writer().writeInt((int) pl.id);
             msg.writer().writeShort(x);
             msg.writer().writeShort(y);

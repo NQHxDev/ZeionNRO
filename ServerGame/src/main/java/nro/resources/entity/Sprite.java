@@ -14,10 +14,10 @@ import lombok.Getter;
 @Getter
 public class Sprite {
 
-    private short id;
-    private short x;
-    private short y;
-    private short w;
-    private short h;
+    public short id;
+    public short x;
+    public short y;
+    public short w;
+    public short h;
 
 }

@@ -6,7 +6,8 @@ import nro.jdbc.daos.AccountDAO;
 import nro.jdbc.daos.HistoryTransactionDAO;
 import nro.jdbc.daos.PlayerDAO;
 import nro.login.LoginSession;
-
+import nro.network.netty.CommonHandler;
+import nro.network.netty.NettyServer;
 import nro.models.boss.BossFactory;
 import nro.models.boss.BossManager;
 import nro.models.map.challenge.MartialCongressManager;
@@ -14,7 +15,6 @@ import nro.models.map.dungeon.DungeonManager;
 import nro.models.map.phoban.BanDoKhoBau;
 import nro.models.map.phoban.DoanhTrai;
 import nro.models.player.Player;
-
 import nro.server.io.Session;
 import nro.services.ClanService;
 import nro.utils.Log;
@@ -25,10 +25,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.awt.GraphicsEnvironment;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -43,28 +39,24 @@ import javax.swing.JPanel;
 public class ServerManager {
 
    public static String timeStart;
-
    public static final Map<String, Integer> CLIENTS = new HashMap<>();
-
    public static String NAME = "";
    public static int PORT = 14445;
 
    private Controller controller;
-
    private static ServerManager instance;
-
-   public static ServerSocket listenSocket;
+   private NettyServer nettyServer;
    public static boolean isRunning;
 
    @Getter
-   private LoginSession login;
+   public LoginSession login;
    public static boolean updateTimeLogin;
    @Getter
    @Setter
-   private AttributeManager attributeManager;
+   public AttributeManager attributeManager;
    private long lastUpdateAttribute;
    @Getter
-   private DungeonManager dungeonManager;
+   public DungeonManager dungeonManager;
 
    public void init() {
       Log.log("Đang khởi tạo Manager...");
@@ -73,7 +65,7 @@ public class ServerManager {
       HistoryTransactionDAO.deleteHistory();
       Log.log("Đang khởi tạo Boss...");
       BossFactory.initBoss();
-      this.controller = new Controller();
+      this.controller = Controller.getInstance();
       if (updateTimeLogin) {
          AccountDAO.updateLastTimeLoginAllAccount();
       }
@@ -120,43 +112,41 @@ public class ServerManager {
       activeGame();
       activeLogin();
       autoTask();
-      (new AutoMaintenance(23, 58, 59)).start(); // thời gian bảo trì định kì
-      // (new AutoMaintenance(12, 0, 0)).start(); //thời gian bảo trì định kì
-      // NettyServer nettyServer = new NettyServer();
-      // nettyServer.start();
-      activeServerSocket();
+      (new AutoMaintenance(23, 58, 59)).start();
+      activeNettyServer();
+   }
 
+   private void activeNettyServer() {
+      try {
+         // Sử dụng Key XOR {0} mặc định cho ServerGame
+         byte[] key = { 0 };
+         CommonHandler handler = new CommonHandler(controller);
+         nettyServer = new NettyServer(PORT, key, handler);
+
+         // Cấu hình Session Factory để tạo nro.server.io.Session
+         nettyServer.setSessionFactory((channel, id) -> {
+            String ip = channel.remoteAddress().toString().replace("/", "").split(":")[0];
+            if (canConnectWithIp(ip)) {
+               Session session = new Session(channel, id);
+               session.ipAddress = ip;
+               return session;
+            } else {
+               channel.close();
+               return null;
+            }
+         });
+
+         Log.success("Netty Server (Game) đang lắng nghe tại cổng: " + PORT);
+         nettyServer.start();
+      } catch (Exception e) {
+         Log.error(ServerManager.class, e, "Lỗi khi khởi động Netty Server tại port " + PORT);
+         System.exit(0);
+      }
    }
 
    public void activeLogin() {
       login = new LoginSession();
       login.connect(Manager.loginHost, Manager.loginPort);
-   }
-
-   private void activeServerSocket() {
-      try {
-         Log.log("Bắt đầu mở Socket... Thread hiện tại: " + Thread.activeCount());
-         listenSocket = new ServerSocket(PORT);
-         Log.success("Server đang lắng nghe tại cổng: " + PORT);
-         while (isRunning) {
-            try {
-               Socket sc = listenSocket.accept();
-               String ip = (((InetSocketAddress) sc.getRemoteSocketAddress()).getAddress()).toString().replace("/", "");
-               if (canConnectWithIp(ip)) {
-                  Session session = new Session(sc, controller, ip);
-                  session.ipAddress = ip;
-               } else {
-                  sc.close();
-               }
-            } catch (Exception e) {
-               // Logger.logException(ServerManager.class, e);
-            }
-         }
-         listenSocket.close();
-      } catch (Exception e) {
-         Log.error(ServerManager.class, e, "Lỗi mở port " + PORT);
-         System.exit(0);
-      }
    }
 
    private boolean canConnectWithIp(String ipAddress) {
@@ -196,11 +186,9 @@ public class ServerManager {
                   String line = sc.nextLine();
                   if (line.equals("baotri")) {
                      new Thread(() -> {
-                        // Thời gian đếm ngược bảo trì
                         Maintenance.gI().start(1);
                      }).start();
                   } else if (line.equals("athread")) {
-                     ServerNotify.gI().notify("Debug server: " + Thread.activeCount());
                      Log.log("Thread Server: " + Thread.activeCount());
                   } else if (line.equals("nplayer")) {
                      Log.log("Player in game: " + Client.gI().getPlayers().size());
@@ -297,7 +285,11 @@ public class ServerManager {
       } catch (Exception e) {
          Log.error(ServerManager.class, e);
       }
-      // try {
+
+      if (nettyServer != null) {
+         nettyServer.stop();
+      }
+
       Log.success("----------------------------------------------------");
       Log.success("      >>> MAINTENANCE COMPLETED SUCCESSFULLY <<<    ");
       Log.success("----------------------------------------------------");
@@ -325,14 +317,6 @@ public class ServerManager {
       GameScheduler.SCHED.scheduleWithFixedDelay(() -> {
          saveAll(false);
       }, 300000, 300000, TimeUnit.MILLISECONDS);
-
-      // load bảng xếp hạng npc vados
-      // ScheduledExecutorService autoTopPower = Executors.newScheduledThreadPool(1);
-      // autoTopPower.scheduleWithFixedDelay(() -> {
-      // TopManager.getInstance().load();
-      // TopManager.getInstance().load1();
-      // TopManager.getInstance().load2();
-      // TopManager.getInstance().load3();
-      // }, 0, 300000, TimeUnit.MILLISECONDS);
    }
+
 }

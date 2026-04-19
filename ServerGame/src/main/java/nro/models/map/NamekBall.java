@@ -13,15 +13,15 @@ import nro.services.Service;
 @Setter
 public class NamekBall extends ItemMap {
 
-    private boolean isHolding;
-    private boolean isCleaning;
-    private boolean isStone;
-    private long cleaningTime;
-    private int index;
-    private String holderName;
+    public boolean isHolding;
+    public boolean isCleaning;
+    public boolean isStone;
+    public long cleaningTime;
+    public int index;
+    public String holderName;
     public NamekBall(Zone zone, int tempId, int quantity, int x, int y, long playerId) {
         super(zone, tempId, quantity, x, y, playerId);
-        setHolderName("");
+        holderName = "";
     }
 
     @Override

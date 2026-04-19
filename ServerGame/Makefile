@@ -3,7 +3,7 @@ MVN := mvn
 JAVA := java
 OS := $(shell uname -s)
 FINAL_JAR := ServerGame.jar
-JAR_NAME := target/VIP-1.0-RELEASE-jar-with-dependencies.jar
+JAR_NAME := target/ServerGame-1.0-RELEASE.jar
 
 # Colors
 BLUE   := \033[0;34m

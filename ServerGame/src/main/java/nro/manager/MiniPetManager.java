@@ -12,7 +12,7 @@ public class MiniPetManager implements IManager<MinipetTemplate> {
    private static final MiniPetManager INSTANCE = new MiniPetManager();
 
    @Getter
-   private List<MinipetTemplate> list = new ArrayList<>();
+   public List<MinipetTemplate> list = new ArrayList<>();
 
    public static MiniPetManager gI() {
       return INSTANCE;
@@ -31,7 +31,7 @@ public class MiniPetManager implements IManager<MinipetTemplate> {
    @Override
    public MinipetTemplate findByID(int id) {
       for (MinipetTemplate temp : list) {
-         if (temp.getId() == id) {
+         if (temp.id == id) {
             return temp;
          }
       }

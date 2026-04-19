@@ -3,7 +3,7 @@ package nro.services;
 import nro.models.item.FlagBag;
 import nro.models.player.Player;
 import nro.server.Manager;
-import nro.server.io.Message;
+import nro.network.io.Message;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public class FlagBagService {
         if (fb != null) {
             Message msg;
             try {
-                msg = new Message(-62);
+                msg = Message.create(-62);
                 msg.writer().writeByte(fb.id);
                 msg.writer().writeByte(1);
                 msg.writer().writeShort(fb.iconId);
@@ -48,7 +48,7 @@ public class FlagBagService {
         if (fb != null) {
             Message msg;
             try {
-                msg = new Message(-63);
+                msg = Message.create(-63);
                 msg.writer().writeByte(fb.id);
                 msg.writer().writeByte(fb.iconEffect.length);
                 for (Short iconId : fb.iconEffect) {
@@ -65,7 +65,7 @@ public class FlagBagService {
         List<FlagBag> list = getFlagsForChooseClan();
         Message msg;
         try {
-            msg = new Message(-46);
+            msg = Message.create(-46);
             msg.writer().writeByte(1); //type
             msg.writer().writeByte(list.size());
             for (FlagBag fb : list) {

@@ -13,7 +13,7 @@ import nro.jdbc.DBService;
 import nro.models.item.Item;
 import nro.models.item.ItemOption;
 import nro.models.player.Player;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.utils.Util;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -42,12 +42,12 @@ public class TamBao {
    // private static final int DEFAULT_VIP_FLAG = 0;
    private static final int DEFAULT_FALLBACK_KEY = 1778;
    public static final List<TamBao_Item> MOC_TAMBAO = new ArrayList<>();
-   private final Map<Integer, List<Integer>> POOL_TILE = new HashMap<>();
+   public final Map<Integer, List<Integer>> POOL_TILE = new HashMap<>();
 
-   private final Map<Integer, List<Item>> POOLS = new HashMap<>();
-   private int DEFAULT_KEY_ITEM_ID = -1;
+   public final Map<Integer, List<Item>> POOLS = new HashMap<>();
+   public int DEFAULT_KEY_ITEM_ID = -1;
 
-   private final Map<Integer, List<Integer>> POOL_VIP_FLAGS = new HashMap<>();
+   public final Map<Integer, List<Integer>> POOL_VIP_FLAGS = new HashMap<>();
 
    private static final byte START = 0;
    private static TamBao instance;
@@ -336,7 +336,7 @@ public class TamBao {
    // =========================================================
    public void Send_QuayThuong(Player pl) {
       try {
-         Message msg = new Message(106);
+         Message msg = Message.create(106);
          msg.writer().writeByte(2);
          msg.writer().writeByte(pl.list_id_nhan.length);
          for (int v : pl.list_id_nhan)
@@ -357,7 +357,7 @@ public class TamBao {
       SpinPool sp = ensureSpinPool14(keyId);
       LAST_SPIN_VIEW.put(pl.id, sp); // cache cho lần quay sắp tới
       try {
-         Message msg = new Message(106);
+         Message msg = Message.create(106);
          msg.writer().writeByte(0);
          msg.writer().writeByte(START);
          msg.writer().writeShort((short) keyId);
@@ -388,7 +388,7 @@ public class TamBao {
       // chỉ việc gọi lại như hiện tại. Không đổi wire-protocol.
       TamBao.gI().Check_active(pl);
       try {
-         Message msg = new Message(106);
+         Message msg = Message.create(106);
          msg.writer().writeByte(1);
          msg.writer().writeInt(pl.diem_quay);
          msg.writer().writeByte(MOC_TAMBAO.size());

@@ -6,17 +6,17 @@ import lombok.Setter;
 @Setter
 @Getter
 public class PlayerEvent {
-   private boolean isUseQuanHoa;
-   private boolean isUseBonTam;
-   private int diemTichLuy;
-   private int mocNapDaNhan;
-   private int eventPoint;
-   private Player player;
-   private boolean cookingChungCake;
-   private int timeCookChungCake;
-   private boolean cookingTetCake;
-   private int timeCookTetCake;
-   private boolean receivedLuckyMoney;
+   public boolean isUseQuanHoa;
+   public boolean isUseBonTam;
+   public int diemTichLuy;
+   public int mocNapDaNhan;
+   public int eventPoint;
+   public Player player;
+   public boolean cookingChungCake;
+   public int timeCookChungCake;
+   public boolean cookingTetCake;
+   public int timeCookTetCake;
+   public boolean receivedLuckyMoney;
 
    public PlayerEvent(Player player) {
       this.player = player;

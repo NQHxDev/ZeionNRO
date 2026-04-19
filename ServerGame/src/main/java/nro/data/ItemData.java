@@ -5,7 +5,7 @@ import java.util.List;
 import nro.models.item.ItemOptionTemplate;
 import nro.models.item.ItemTemplate;
 import nro.server.Manager;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.server.io.Session;
 
 public class ItemData {
@@ -49,7 +49,7 @@ public class ItemData {
     private static void updateTocBay(Session session) {
         Message msg;
         try {
-            msg = new Message(-28);
+            msg = Message.create(-28);
             msg.writer().writeByte(8);
             msg.writer().writeByte(DataGame.vsItem);//vcitem
             msg.writer().writeByte(100); //type NroItem100
@@ -69,7 +69,7 @@ public class ItemData {
     private static void updateItemOptionItemplate(Session session) {
         Message msg;
         try {
-            msg = new Message(-28);
+            msg = Message.create(-28);
             msg.writer().writeByte(8);
             msg.writer().writeByte(DataGame.vsItem); //vcitem
             msg.writer().writeByte(0); //update option
@@ -88,7 +88,7 @@ public class ItemData {
     private static void updateItemTemplate(Session session, int count) {
         Message msg;
         try {
-            msg = new Message(-28);
+            msg = Message.create(-28);
             msg.writer().writeByte(8);
 
             msg.writer().writeByte(DataGame.vsItem); //vcitem
@@ -118,7 +118,7 @@ public class ItemData {
     private static void updateItemTemplate(Session session, int start, int end) {
         Message msg;
         try {
-            msg = new Message(-28);
+            msg = Message.create(-28);
             msg.writer().writeByte(8);
 
             msg.writer().writeByte(DataGame.vsItem); //vcitem

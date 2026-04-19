@@ -386,7 +386,7 @@ public class NPoint {
       if (!player.isBoss && !player.isMiniPet) {
          if (player.inventory.itemsBody.get(1).isNotNullItem()) {
             Item pants = itemsBody.get(1);
-            if (pants.isNotNullItem() && pants.getId() >= 691 && pants.getId() >= 693) {
+            if (pants.isNotNullItem() && pants.id >= 691 && pants.id >= 693) {
                player.event.setUseQuanHoa(true);
             }
          }
@@ -394,7 +394,7 @@ public class NPoint {
       if (Manager.EVENT_SEVER == 3) {
          if (!this.player.isBoss && !this.player.isMiniPet) {
             if (itemsBody.get(5).isNotNullItem()) {
-               int tempID = itemsBody.get(5).getId();
+               int tempID = itemsBody.get(5).id;
                switch (tempID) {
                   case 386, 389, 392 -> {
                      wearingGrayNoelHat = true;

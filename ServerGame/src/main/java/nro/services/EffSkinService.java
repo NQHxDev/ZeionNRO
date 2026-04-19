@@ -1,7 +1,7 @@
 package nro.services;
 
 import nro.models.player.Player;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.utils.Log;
 
 /**
@@ -136,7 +136,7 @@ public class EffSkinService {
     public void sendEffectPlayer(Player plUseSkill, Player plTarget, byte toggle, byte effect) {
         Message msg;
         try {
-            msg = new Message(-124);
+            msg = Message.create(-124);
             msg.writer().writeByte(toggle); //0: hủy hiệu ứng, 1: bắt đầu hiệu ứng
             msg.writer().writeByte(0); //0: vào phần phayer, 1: vào phần mob
             if (toggle == TURN_OFF_ALL_EFFECT) {

@@ -1,15 +1,25 @@
 package nro.models.item;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
-@Setter
-@Getter
-@AllArgsConstructor
 public class MinipetTemplate {
-    private int id;
-    private short head;
-    private short body;
-    private short leg;
+
+   public int id;
+
+   @Getter
+   public short head;
+
+   @Getter
+   public short body;
+
+   @Getter
+   public short leg;
+
+   public MinipetTemplate(int id, short head, short body, short leg) {
+      this.id = id;
+      this.head = head;
+      this.body = body;
+      this.leg = leg;
+   }
+
 }

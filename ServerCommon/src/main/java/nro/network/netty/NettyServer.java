@@ -9,6 +9,8 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.EventExecutorGroup;
+import nro.network.ISession;
+import nro.network.ISessionFactory;
 import nro.network.stats.NetworkStats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +29,7 @@ public class NettyServer {
    private final byte[] defaultKeys;
    private final ChannelHandler businessHandler;
    private EventExecutorGroup businessGroup;
+   private ISessionFactory sessionFactory;
 
    private EventLoopGroup bossGroup;
    private EventLoopGroup workerGroup;
@@ -41,6 +44,10 @@ public class NettyServer {
 
    public void setBusinessGroup(EventExecutorGroup businessGroup) {
       this.businessGroup = businessGroup;
+   }
+
+   public void setSessionFactory(ISessionFactory sessionFactory) {
+      this.sessionFactory = sessionFactory;
    }
 
    public void start() throws Exception {
@@ -58,25 +65,34 @@ public class NettyServer {
             .childHandler(new ChannelInitializer<SocketChannel>() {
                @Override
                protected void initChannel(SocketChannel ch) {
-                  // 1. Create Session
-                  NettySession session = new NettySession(ch, sessionCounter.getAndIncrement());
-                  session.setKeys(defaultKeys);
-                  ch.attr(SESSION_KEY).set(session);
+                  // Create Session
+                  ISession session;
+                  if (sessionFactory != null) {
+                        session = sessionFactory.createSession(ch, sessionCounter.getAndIncrement());
+                  } else {
+                        session = new NettySession(ch, sessionCounter.getAndIncrement());
+                  }
+
+                  if (session instanceof NettySession ns) {
+                        ns.setKeys(defaultKeys);
+                  }
+
+                  ch.attr(SESSION_KEY).set((NettySession) session);
 
                   NetworkStats.gI().sessionCreated();
 
                   ChannelPipeline p = ch.pipeline();
 
-                  // 2. Add Handlers
+                  // Add Handlers
                   p.addLast(new IdleStateHandler(idleTimeSeconds, 0, 0, TimeUnit.SECONDS));
                   p.addLast(new NettyDecoder());
                   p.addLast(new NettyEncoder());
                   p.addLast(new HandshakeHandler());
 
                   if (businessGroup != null) {
-                      p.addLast(businessGroup, businessHandler);
+                        p.addLast(businessGroup, businessHandler);
                   } else {
-                      p.addLast(businessHandler);
+                        p.addLast(businessHandler);
                   }
 
                   ch.closeFuture().addListener(future -> NetworkStats.gI().sessionClosed());

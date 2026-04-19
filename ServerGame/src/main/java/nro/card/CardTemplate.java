@@ -1,40 +1,66 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package nro.card;
 
 import nro.models.item.ItemOption;
 import java.util.ArrayList;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-/**
- *
- * @author Tuỳ Chỉnh Bởi Văn Tuấn 0337766460
- */
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+import lombok.Getter;
+
 public class CardTemplate {
 
-    private int id;
-    private int itemID;
-    private byte rank;
-    private byte maxAmount;
-    private byte type;
-    private int icon;
-    private String name;
-    private String info;
-    private short mobID;
-    private short head;
-    private short body;
-    private short leg;
-    private short bag;
-    private short aura;
-    private ArrayList<ItemOption> options;
+   public int id;
+
+   @Getter
+   public int itemID;
+
+   public byte rank;
+
+   public byte maxAmount;
+
+   public byte type;
+
+   public int icon;
+
+   public String name;
+
+   public String info;
+
+   @Getter
+   public short mobID;
+
+   public short head;
+
+   public short body;
+
+   public short leg;
+
+   public short bag;
+
+   @Getter
+   public short aura;
+
+   @Getter
+   public ArrayList<ItemOption> options;
+
+   public CardTemplate() {
+      this.options = new ArrayList<>();
+   }
+
+   public CardTemplate(int id, int itemID, byte rank, byte maxAmount, byte type, int icon, String name, String info,
+         short mobID, short head, short body, short leg, short bag, short aura, ArrayList<ItemOption> options) {
+      this.id = id;
+      this.itemID = itemID;
+      this.rank = rank;
+      this.maxAmount = maxAmount;
+      this.type = type;
+      this.icon = icon;
+      this.name = name;
+      this.info = info;
+      this.mobID = mobID;
+      this.head = head;
+      this.body = body;
+      this.leg = leg;
+      this.bag = bag;
+      this.aura = aura;
+      this.options = options;
+   }
 }

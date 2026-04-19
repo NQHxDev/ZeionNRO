@@ -6,17 +6,17 @@ import nro.models.player.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-import nro.server.io.Message;
+import nro.network.io.Message;
 
 @Getter
 @Setter
 public class BangTin {
 
-   private int id;
+   public int id;
 
-   private String tieude;
+   public String tieude;
 
-   private String info;
+   public String info;
 
    private static final int START = 1;
 
@@ -34,7 +34,7 @@ public class BangTin {
    public void Send_BangTin(Player pl) {
       Message msg = null;
       try {
-         msg = new Message(104);
+         msg = Message.create(104);
          msg.writer().writeByte(START);
          msg.writer().writeByte(BANGTIN_MANAGER.size());
 

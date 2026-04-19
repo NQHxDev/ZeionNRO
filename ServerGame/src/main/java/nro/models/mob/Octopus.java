@@ -7,7 +7,7 @@ package nro.models.mob;
 
 import nro.consts.Cmd;
 import nro.models.player.Player;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.MobService;
 import nro.services.Service;
 import nro.utils.Util;
@@ -63,7 +63,7 @@ public class Octopus extends BigBoss {
     public void hide() {
         try {
             move(-1000, -1000);
-            Message ms = new Message(Cmd.BIG_BOSS_2);
+            Message ms = Message.create(Cmd.BIG_BOSS_2);
             DataOutputStream ds = ms.writer();
             ds.writeByte(7);
             ds.flush();
@@ -76,7 +76,7 @@ public class Octopus extends BigBoss {
 
     public void send(Player cAttack, double damage, byte type) {
         try {
-            Message ms = new Message(Cmd.BIG_BOSS_2);
+            Message ms = Message.create(Cmd.BIG_BOSS_2);
             DataOutputStream ds = ms.writer();
             ds.writeByte(type);
             ds.writeByte(1);
@@ -93,7 +93,7 @@ public class Octopus extends BigBoss {
 
     public void moveX(short x) {
         try {
-            Message ms = new Message(Cmd.BIG_BOSS_2);
+            Message ms = Message.create(Cmd.BIG_BOSS_2);
             DataOutputStream ds = ms.writer();
             ds.writeByte(5);
             ds.writeShort(x);

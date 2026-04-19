@@ -29,13 +29,13 @@ public class NamekBallManager extends AbsManager<NamekBall> {
          int y = m.yPhysicInTop(m.mapWidth / 2, m.mapHeight / 2);
          NamekBall ball = new NamekBall(z, ConstItem.NGOC_RONG_NAMEK_1_SAO + i, 1, m.mapWidth / 2, y, -1);
          ball.itemMapId = id++;
-         ball.setIndex(i);
+         ball.index = i;
          add(ball);
       }
    }
 
    public void initFossil() {
-      Player[] holders = NamekBallWar.gI().getHolders();
+      Player[] holders = NamekBallWar.gI().holders;
       for (Player p : holders) {
          if (p != null) {
             p.isHoldNamecBall = false;
@@ -52,7 +52,7 @@ public class NamekBallManager extends AbsManager<NamekBall> {
          Zone z = m.zones.get(Util.nextInt(0, m.zones.size()));
          int y = m.yPhysicInTop(m.mapWidth / 2, m.mapHeight / 2);
          NamekBall ball = new NamekBall(z, ConstItem.HOA_THACH_NGOC_RONG, 1, m.mapWidth / 2, y, -1);
-         ball.setStone(true);
+         ball.isStone = true;
          add(ball);
          Service.getInstance().dropItemMap(z, ball);
       }

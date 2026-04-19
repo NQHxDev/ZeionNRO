@@ -7,7 +7,7 @@ import lombok.Getter;
 import nro.consts.ConstNpc;
 import nro.models.item.Item;
 import nro.models.player.Player;
-import nro.server.io.Message;
+import nro.network.io.Message;
 
 public class KhamNgoc {
 
@@ -29,7 +29,7 @@ public class KhamNgoc {
    public void Send_KhamNgocTemplate(Player pl) {
       Message msg = null;
       try {
-         msg = new Message(108);
+         msg = Message.create(108);
          msg.writer().writeByte(0);
          msg.writer().writeByte(START);
          msg.writer().writeByte(KHAM_NGOC.size());
@@ -56,7 +56,7 @@ public class KhamNgoc {
    public void Send_KhamNgoc_Player(Player pl) {
       Message msg = null;
       try {
-         msg = new Message(108);
+         msg = Message.create(108);
          msg.writer().writeByte(1);
          msg.writer().writeByte(pl.active_kham_ngoc);
          msg.writer().writeByte(pl.khamNgoc.size());

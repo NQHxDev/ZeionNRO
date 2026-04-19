@@ -10,7 +10,7 @@ import nro.models.item.Item;
 import nro.models.map.ItemMap;
 import nro.models.map.Zone;
 import nro.models.player.Player;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.InventoryService;
 import nro.services.ItemMapService;
 import nro.services.ItemService;
@@ -35,7 +35,7 @@ public class TranhNgocService {
     public void sendCreatePhoBan(Player pl) {
         Message msg;
         try {
-            msg = new Message(20);
+            msg = Message.create(20);
             msg.writer().writeByte(0);
             msg.writer().writeByte(0);
             msg.writer().writeShort(ConstTranhNgocNamek.MAP_ID);
@@ -53,7 +53,7 @@ public class TranhNgocService {
     public void sendUpdateLift(Player pl) {
         Message msg;
         try {
-            msg = new Message(20);
+            msg = Message.create(20);
             msg.writer().writeByte(0);
             msg.writer().writeByte(1);
             msg.writer().writeInt((int) pl.zone.getPlayersCadic().stream().filter(p -> p != null && !p.isDie()).count());
@@ -67,7 +67,7 @@ public class TranhNgocService {
     public void sendEndPhoBan(Zone zone, byte type, boolean isFide) {
         Message msg;
         try {
-            msg = new Message(20);
+            msg = Message.create(20);
             msg.writer().writeByte(0);
             msg.writer().writeByte(2);
             msg.writer().writeByte(type);
@@ -89,7 +89,7 @@ public class TranhNgocService {
     public void sendUpdateTime(Player pl, short second) {
         Message msg;
         try {
-            msg = new Message(20);
+            msg = Message.create(20);
             msg.writer().writeByte(0);
             msg.writer().writeByte(5);
             msg.writer().writeShort(second);
@@ -102,7 +102,7 @@ public class TranhNgocService {
     public void sendUpdatePoint(Player pl) {
         Message msg;
         try {
-            msg = new Message(20);
+            msg = Message.create(20);
             msg.writer().writeByte(0);
             msg.writer().writeByte(4);
             msg.writer().writeByte(pl.zone.pointCadic);

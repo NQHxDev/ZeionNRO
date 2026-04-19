@@ -1,29 +1,36 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package nro.power;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- *
- * @author Kitak
- */
-@Setter
-@Getter
-@AllArgsConstructor
-@Builder
 public class PowerLimit {
 
-    private int id;
-    private long power;
-    private int hp;
-    private int mp;
-    private int damage;
-    private int defense;
-    private int critical;
+   @Setter
+   @Getter
+   public int id;
+
+   @Setter
+   @Getter
+   public long power;
+
+   @Setter
+   @Getter
+   public int hp;
+
+   @Setter
+   @Getter
+   public int mp;
+
+   @Setter
+   @Getter
+   public int damage;
+
+   @Setter
+   @Getter
+   public int defense;
+
+   @Setter
+   @Getter
+   public int critical;
+
 }

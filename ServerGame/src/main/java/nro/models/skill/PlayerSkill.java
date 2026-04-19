@@ -2,7 +2,7 @@ package nro.models.skill;
 
 import nro.consts.Cmd;
 import nro.models.player.Player;
-import nro.server.io.Message;
+import nro.network.io.Message;
 import nro.services.Service;
 
 // đổi Timer -> Scheduler dùng chung

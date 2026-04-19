@@ -15,11 +15,11 @@ import lombok.Setter;
 @Setter
 public class PartImage {
 
-    private short icon;
+    public short icon;
 
-    private byte dx;
+    public byte dx;
 
-    private byte dy;
+    public byte dy;
 
     public PartImage(short icon, byte dx, byte dy) {
         this.icon = icon;

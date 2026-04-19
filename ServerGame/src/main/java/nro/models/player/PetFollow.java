@@ -1,22 +1,30 @@
 package nro.models.player;
 
-
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
-@Setter
-@Getter
-@AllArgsConstructor
 public class PetFollow {
 
-    private int id;
+   @Getter
+   public int id;
 
-    private int iconID;
+   @Getter
+   public int iconID;
 
-    private int width;
+   @Getter
+   public int width;
 
-    private int height;
+   @Getter
+   public int height;
 
-    private byte nFrame;
+   @Getter
+   public byte nFrame;
+
+   public PetFollow(int id, int iconID, int width, int height, byte nFrame) {
+      this.id = id;
+      this.iconID = iconID;
+      this.width = width;
+      this.height = height;
+      this.nFrame = nFrame;
+   }
+
 }
