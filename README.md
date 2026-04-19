@@ -21,34 +21,78 @@
 - **Modern Runtime**: Powered by **JDK 21**, utilizing the latest JVM optimizations.
 - **Vivid Logging Engine**: A custom-built, color-coded diagnostic data implementation.
 - **Concurrency Mastered**: Core managers refactored with thread-safe collections for fail-safe multi-threading.
+- **Next-Gen Security**: Integrated Rust-based **Anti-DDoS PRO** engine for kernel-level protection.
 - **Rapid Deployment**: Orchestrated via a master **Makefile** for one-command environment setup.
 
 ## System Architecture
 ```mermaid
 graph TD
-    User((Player)) -->|Gateway| SL[ServerLogin]
+    User((Player)) -->|Firewall Filter| AD[antiddos-rs]
+    AD -->|Gateway| SL[ServerLogin]
     SL -->|Auth Success| HM[ServerGame Core]
     HM -->|Persistence| DB[(MySQL Database)]
     HM -->|Logic| Engine[Game Engine]
     Engine --> Map[Map System]
     Engine --> Boss[Boss Factory]
     Engine --> Combat[Combat Logic]
+
+    style AD fill:#2c3e50,stroke:#34495e,stroke-width:2px,color:#fff
 ```
 
 ## Monorepo Structure
 | Component | Description |
 | :--- | :--- |
-| **`ServerLogin`** | High-speed authentication gateway & session manager. |
-| **`ServerGame`** | The flagship game core handling world logic, entities, and skills. |
+| **`antiddos-rs`** | High-performance security engine (Rust) protecting against connection floods. |
+| **`ServerCommon`** | Core networking layer, shared utilities, and framework abstractions. |
+| **`ServerLogin`** | Authentication service powered by ServerCommon networking. |
+| **`ServerGame`** | The flagship game core handling world logic, using standardized common I/O. |
 | **`SQL`** | Optimized database schemas and migration scripts. |
+
+---
+
+## Core Infrastructure: ServerCommon
+The backbone of Zeion NRO's networking and utility layer. It centralizes all shared logic to ensure building new modules is rapid and standardized.
+
+- **High-Performance Networking**: Built on Netty 4.1 for non-blocking I/O.
+- **Standardized Messaging**: Unified `Message` protocol shared across all services.
+- **Unified Diagnostics**: Color-coded logging system for real-time monitoring.
+
+> [!TIP]
+> **Technical Deep Dive**:
+> For a detailed look at the core networking, abstractions, and shared utilities, read the [ServerCommon Technical Documentation](docs/server_common.md).
+
+---
 
 ## Management CLI
 | Command | Action |
 | :--- | :--- |
-| `make setup` | Initializes configuration files and asset directories. |
-| `make build` | Compiles and packages modules into production JARs. |
+| `make setup` | Initializes configuration files and log directories. |
+| `make build` | Compiles and packages all modules into production JARs. |
+| `make run` | Launches the full stack (**Login** ➔ **Game** ➔ **Gateway**) in background. |
+| `make stop` | Safely shuts down all running services. |
+| `make logs` | Streams real-time diagnostic data from all services. |
 | `make clean` | Purges build artifacts and system logs. |
-| `make run` | Launches the full server infrastructure. |
+
+---
+
+## Operating Guide
+1. **First Time Setup**: Run `make setup` to initialize configuration templates.
+2. **Configuration**: Update `ServerGame/config/server.properties` and `ServerLogin/server.ini` with your database credentials.
+3. **Compilation**: Execute `make build` to package the microservices.
+4. **Execution**: Start the entire cluster with `make run`.
+5. **Monitoring**: Use `make logs` to watch the server status.
+
+---
+
+## Next-Gen Security: Anti-DDoS PRO
+Unlike traditional scripts that process logs or poll netstat slowly, Zeion NRO includes a dedicated security engine written in **Rust** (`antiddos-rs`).
+
+- **Kernel-Level Blocking**: Interacts directly with `ipset` (Linux), `pfctl` (macOS), and `netsh` (Windows).
+- **Extreme Performance**: Low-latency monitoring using asynchronous I/O (Tokio), ensuring zero impact on game performance even during heavy attacks.
+- **Self-Healing**: Built-in state management with `DashMap` to prevent false positives and ensure automatic unblocking.
+
+> [!NOTE]
+> For a deep dive into the technical internals, read the [Anti-DDoS Technical Architecture](docs/antiddos_architecture.md).
 
 ---
 
@@ -128,5 +172,6 @@ cd ../ServerGame && make run
 
 <div align="center">
   <sub>Developed with ❤️ by <b>Zeion</b> - Professional Grade Game Server Infrastructure</sub>
+  <br>
   <sub><i>Remade from <b>Hashirama</b> source</i></sub>
 </div>

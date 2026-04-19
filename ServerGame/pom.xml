@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.arriety</groupId>
-    <artifactId>VIP</artifactId>
     <version>1.0-RELEASE</version>
+    <artifactId>ServerGame</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
@@ -74,10 +74,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
+                <version>3.13.0</version>
                 <configuration>
-                    <source>21</source>
-                    <target>21</target>
+                    <release>21</release>
                     <fork>true</fork>
                     <compilerArgs>
                         <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
@@ -125,10 +124,8 @@
     </build>
 
     <properties>
-        <target>21</target>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.release>21</maven.compiler.release>
     </properties>
     <name>ServerGame</name>
 </project>
