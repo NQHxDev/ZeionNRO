@@ -63,7 +63,8 @@ public final class MobMe extends Mob {
 
          if (mob != null) {
             if (mob.point.getHP() > this.point.dame) {
-               double tnsm = mob.getTiemNangForPlayer(this.player, this.point.dame);
+               long tnsm = mob.getTiemNangForPlayer(this.player, this.point.dame);
+
                msg = Message.create(Cmd.MOB_ME_UPDATE);
                msg.writer().writeByte(3);
                msg.writer().writeInt(this.id);
@@ -71,7 +72,9 @@ public final class MobMe extends Mob {
                mob.point.setHP(mob.point.getHP() - this.point.dame);
                msg.writer().writeDouble(mob.point.getHP());
                msg.writer().writeDouble(this.point.dame);
+
                Service.getInstance().sendMessAllPlayerInMap(this.zone, msg);
+
                msg.cleanup();
                Service.getInstance().addSMTN(player, (byte) 2, tnsm, true);
             }

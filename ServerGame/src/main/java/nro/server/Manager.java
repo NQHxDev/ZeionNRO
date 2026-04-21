@@ -627,8 +627,6 @@ public class Manager {
             linkServer += String.valueOf(value) + ":0,";
          }
       }
-      // DataGame.LINK_IP_PORT = "FreeAll:14.225.209.128:14445:0";
-      Log.log("Đang gán LINK_IP_PORT...");
       if (!linkServer.isEmpty()) {
          DataGame.LINK_IP_PORT = linkServer.substring(0, linkServer.length() - 1);
       } else {
@@ -659,6 +657,7 @@ public class Manager {
 
    /**
     * @param tileTypeFocus tile type: top, bot, left, right...
+    *
     * @return [tileMapId][tileType]
     */
    private int[][] readTileIndexTileType(int tileTypeFocus) {

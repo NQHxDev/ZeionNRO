@@ -43,6 +43,7 @@ import nro.services.PhongThiNghiem_Player;
 import nro.services.PlayerService;
 import nro.services.Service;
 import nro.services.TaskService;
+import nro.utils.Log;
 import nro.utils.SkillUtil;
 import nro.utils.TimeUtil;
 
@@ -152,12 +153,12 @@ public class GodGK {
             }
          }
 
-         try (PreparedStatement ps = conn.prepareStatement("select * from player where account_id = ? limit 1")) {
+         try (PreparedStatement ps = conn.prepareStatement("SELECT p.*, pp.* FROM player p INNER JOIN player_point pp ON p.id = pp.player_id WHERE p.account_id = ? LIMIT 1")) {
             ps.setInt(1, session.userId);
             try (ResultSet rs = ps.executeQuery()) {
                if (rs.next()) {
                   Player player = new Player();
-                  loadPlayerData(player, rs);
+                  loadPlayerData(player, rs, conn);
 
                   player.server = session.server;
                   player.event.diemTichLuy = session.diemTichNap;
@@ -196,12 +197,12 @@ public class GodGK {
    public static Player loadPlayerbyId(int id) {
       try {
          Connection connection = DBService.gI().getConnectionForLogin();
-         try (PreparedStatement ps = connection.prepareStatement("select * from player where id = ? limit 1")) {
+         try (PreparedStatement ps = connection.prepareStatement("SELECT p.*, pp.* FROM player p INNER JOIN player_point pp ON p.id = pp.player_id WHERE p.id = ? LIMIT 1")) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                if (rs.next()) {
                   Player player = new Player();
-                  loadPlayerData(player, rs);
+                  loadPlayerData(player, rs, connection);
                   return player;
                }
             }
@@ -214,16 +215,16 @@ public class GodGK {
 
    private static final Gson gson = new Gson();
 
-   private static void loadPlayerData(Player player, ResultSet rs) throws Exception {
+   private static void loadPlayerData(Player player, ResultSet rs, Connection con) throws Exception {
       loadBaseInfo(player, rs);
       loadInventory(player, rs);
       loadLocation(player, rs);
-      loadPoint(player, rs);
+      loadPoints(player, rs);
       loadMagicTree(player, rs);
       loadBlackBallReward(player, rs);
       loadIntrinsic(player, rs);
       loadItemTime(player, rs);
-      loadTask(player, rs);
+      loadTask(player, rs, con);
       loadMabuEgg(player, rs);
       loadOtherData(player, rs);
       loadSkill(player, rs);
@@ -421,23 +422,19 @@ public class GodGK {
       }
    }
 
-   private static void loadPoint(Player player, ResultSet rs) throws Exception {
-      List<Object> points = gson.fromJson(rs.getString("data_point"), new TypeToken<List<Object>>() {
-      }.getType());
-      if (points != null && points.size() >= 13) {
-         player.nPoint.limitPower = ((Double) points.get(0)).byteValue();
-         player.nPoint.power = (Double) points.get(1);
-         player.nPoint.tiemNang = (Double) points.get(2);
-         player.nPoint.stamina = ((Double) points.get(3)).shortValue();
-         player.nPoint.maxStamina = ((Double) points.get(4)).shortValue();
-         player.nPoint.hpg = (Double) points.get(5);
-         player.nPoint.mpg = (Double) points.get(6);
-         player.nPoint.dameg = (Double) points.get(7);
-         player.nPoint.defg = (Double) points.get(8);
-         player.nPoint.critg = ((Double) points.get(9)).byteValue();
-         player.nPoint.hp = (Double) points.get(11);
-         player.nPoint.mp = (Double) points.get(12);
-      }
+   private static void loadPoints(Player player, ResultSet rs) throws Exception {
+      player.nPoint.power = rs.getLong("power");
+      player.nPoint.tiemNang = rs.getLong("tiem_nang");
+      player.nPoint.hpg = rs.getDouble("hp_goc");
+      player.nPoint.mpg = rs.getDouble("mp_goc");
+      player.nPoint.dameg = rs.getDouble("dame_goc");
+      player.nPoint.defg = rs.getDouble("def_goc");
+      player.nPoint.critg = (byte) rs.getInt("crit_goc");
+      player.nPoint.hp = rs.getDouble("hp");
+      player.nPoint.mp = rs.getDouble("mp");
+      player.nPoint.stamina = (short) rs.getInt("stamina");
+      player.nPoint.maxStamina = (short) rs.getInt("max_stamina");
+      player.nPoint.limitPower = (byte) rs.getInt("limit_power");
    }
 
    private static void loadMagicTree(Player player, ResultSet rs) throws Exception {
@@ -570,15 +567,38 @@ public class GodGK {
       }
    }
 
-   private static void loadTask(Player player, ResultSet rs) throws Exception {
-      List<Integer> taskData = gson.fromJson(rs.getString("data_task"), new TypeToken<List<Integer>>() {
-      }.getType());
-      if (taskData != null && taskData.size() >= 3) {
-         TaskMain taskMain = TaskService.gI().getTaskMainById(player, taskData.get(1).byteValue());
-         if (taskMain != null) {
-            taskMain.subTasks.get(taskData.get(2)).count = taskData.get(0).shortValue();
-            taskMain.index = taskData.get(2).byteValue();
-            player.playerTask.taskMain = taskMain;
+   private static void loadTask(Player player, ResultSet rs, Connection con) throws Exception {
+      PreparedStatement ps = null;
+      ResultSet rs_task = null;
+      try {
+         ps = con.prepareStatement("SELECT * FROM player_task WHERE player_id = ?");
+         ps.setInt(1, (int) player.id);
+         rs_task = ps.executeQuery();
+         if (rs_task.next()) {
+            int taskId = rs_task.getInt("task_id");
+            int subId = rs_task.getInt("sub_id");
+            int count = rs_task.getInt("task_count");
+
+            TaskMain taskMain = TaskService.gI().getTaskMainById(player, (byte) taskId);
+            if (taskMain != null) {
+               taskMain.subTasks.get(subId).count = (short) count;
+               taskMain.index = (byte) subId;
+               player.playerTask.taskMain = taskMain;
+            }
+         } else {
+            TaskMain taskMain = TaskService.gI().getTaskMainById(player, 0);
+            if (taskMain != null) {
+               player.playerTask.taskMain = taskMain;
+            }
+         }
+      } catch (Exception e) {
+         Log.error(GodGK.class, e, "Lỗi load player_task " + player.name);
+      } finally {
+         if (rs_task != null) {
+            rs_task.close();
+         }
+         if (ps != null) {
+            ps.close();
          }
       }
 
@@ -628,10 +648,10 @@ public class GodGK {
             AchivementTemplate a = AchiveManager.getInstance().findByID(i);
             if (a != null) {
                Achivement achive = new Achivement();
-            achive.id = a.id;
-            achive.count = 0;
-            achive.isFinish = false;
-            achive.isReceive = false;
+               achive.id = a.id;
+               achive.count = 0;
+               achive.isFinish = false;
+               achive.isReceive = false;
                achive.name = a.name;
                achive.detail = a.detail;
                achive.maxCount = a.maxCount;
@@ -875,8 +895,8 @@ public class GodGK {
          pet.nPoint.dameg = (Double) petPoint.get("damg");
          pet.nPoint.defg = (Double) petPoint.get("defg");
          pet.nPoint.critg = ((Double) petPoint.get("critg")).intValue();
-         pet.nPoint.power = (Double) petPoint.get("power");
-         pet.nPoint.tiemNang = (Double) petPoint.get("tiem_nang");
+         pet.nPoint.power = (Long) petPoint.get("power");
+         pet.nPoint.tiemNang = (Long) petPoint.get("tiem_nang");
          pet.nPoint.limitPower = ((Double) petPoint.get("limit_power")).byteValue();
          pet.nPoint.hp = (Double) petPoint.get("hp");
          pet.nPoint.mp = (Double) petPoint.get("mp");

@@ -133,24 +133,36 @@ public class Mob {
       }
    }
 
-   public double getTiemNangForPlayer(Player pl, double dame) {
+   public long getTiemNangForPlayer(Player pl, double dame) {
+      if (this.tempId == 0) { // Mộc nhân
+         return 10; // Cố định 10 tiềm năng mỗi lần đánh cho mộc nhân
+      }
       int levelPlayer = CaptionManager.getInstance().getLevel(pl);
-      int n = levelPlayer - this.level;
-      double pDameHit = dame * 50.0 / point.getHpFull();
-      double tiemNang = pDameHit * maxTiemNang / 100.0;
+      int levelDiff = levelPlayer - this.level;
+
+      double ratio = dame / point.getHpFull();
+      if (ratio > 1.0) {
+         ratio = 1.0 + (ratio - 1.0) / 10.0; // Diminishing returns for over-damage
+      }
+
+      long tiemNang = Util.parseLong(ratio * maxTiemNang * 0.5);
+
+      if (levelDiff > 0) {
+         for (int i = 0; i < levelDiff; i++) {
+            tiemNang -= (tiemNang * 15 / 100); // 15% reduction per level diff
+         }
+      }
+
+      if (levelDiff > 10) {
+         tiemNang = 1;
+      }
+
       if (tiemNang <= 0) {
          tiemNang = 1;
       }
-      if (n >= 0) {
-         for (int i = 0; i < n; i++) {
-            double sub = tiemNang * 10 / 100;
-            if (sub <= 0) {
-               sub = 1;
-            }
-            tiemNang -= sub;
-         }
-      } else {
-         for (int i = 0; i < -n; i++) {
+
+      if (levelDiff < 0) {
+         for (int i = 0; i < -levelDiff; i++) {
             double add = tiemNang * 10 / 100;
             if (add <= 0) {
                add = 1;
@@ -189,7 +201,9 @@ public class Mob {
       if (MapService.gI().isMapBanDoKhoBau(pl.zone.map.mapId)) {
          tiemNang *= 4.0;
       }
+
       tiemNang = pl.nPoint.calSucManhTiemNang(tiemNang);
+
       return tiemNang;
    }
 

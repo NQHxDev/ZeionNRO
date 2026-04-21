@@ -79,13 +79,13 @@ public class PlayerService {
       }
    }
 
-   public void sendTNSM(Player player, byte type, double param) {
+   public void sendTNSM(Player player, byte type, long param) {
       if (param > 0) {
          Message msg;
          try {
             msg = Message.create(-3);
             msg.writer().writeByte(type);// 0 là cộng sm, 1 cộng tn, 2 là cộng cả 2
-            msg.writer().writeDouble(param);// số tn cần cộng
+            msg.writer().writeLong(param);// số tn cần cộng
             player.sendMessage(msg);
             msg.cleanup();
          } catch (Exception e) {

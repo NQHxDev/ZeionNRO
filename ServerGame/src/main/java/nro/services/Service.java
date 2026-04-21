@@ -650,7 +650,7 @@ public class Service {
             msg.writer().writeDouble(player.nPoint.dame);// dam base
             msg.writer().writeDouble(player.nPoint.def);// def full
             msg.writer().writeByte(player.nPoint.crit);// crit full
-            msg.writer().writeDouble(player.nPoint.tiemNang);
+            msg.writer().writeLong(player.nPoint.tiemNang);
             msg.writer().writeShort(100);
             msg.writer().writeDouble(player.nPoint.defg);
             msg.writer().writeByte(player.nPoint.critg);
@@ -670,13 +670,13 @@ public class Service {
       try {
          msg = messageSubCommand((byte) 0);
          msg.writer().writeInt((int) pl.id);
-         msg.writer().writeByte(pl.playerTask.taskMain.id);
+         msg.writer().writeByte(pl.playerTask.taskMain != null ? pl.playerTask.taskMain.id : 0);
          msg.writer().writeByte(pl.gender);
          msg.writer().writeShort(pl.head);
          msg.writer().writeUTF(pl.name);
          msg.writer().writeByte(0); // cPK
          msg.writer().writeByte(pl.typePk);
-         msg.writer().writeDouble(pl.nPoint.power);
+         msg.writer().writeLong(pl.nPoint.power);
          msg.writer().writeShort(0);
          msg.writer().writeShort(0);
          msg.writer().writeByte(pl.gender);
@@ -805,7 +805,7 @@ public class Service {
       return ms;
    }
 
-   public void addSMTN(Player player, byte type, double param, boolean isOri) {
+   public void addSMTN(Player player, byte type, long param, boolean isOri) {
       if (player.isPet) {
          if (player.nPoint.power > player.nPoint.getPowerLimit()) {
             return;
@@ -1879,8 +1879,8 @@ public class Service {
             msg.writer().writeDouble(pl.pet.nPoint.dame); // damefull
             msg.writer().writeUTF(pl.pet.name); // name
             msg.writer().writeUTF(getCurrStrLevel(pl.pet)); // curr level
-            msg.writer().writeDouble(pl.pet.nPoint.power); // power
-            msg.writer().writeDouble(pl.pet.nPoint.tiemNang); // tiềm năng
+            msg.writer().writeLong(pl.pet.nPoint.power); // power
+            msg.writer().writeLong(pl.pet.nPoint.tiemNang); // tiềm năng
             msg.writer().writeByte(pl.pet.getStatus()); // status
             msg.writer().writeShort(pl.pet.nPoint.stamina); // stamina
             msg.writer().writeShort(pl.pet.nPoint.maxStamina); // stamina full
@@ -1963,7 +1963,7 @@ public class Service {
          Player pl = player.zone.getPlayerInMap(playerId);
          if (pl != null) {
             msg.writer().writeInt(playerId);
-            msg.writer().writeDouble(pl.nPoint.power);
+            msg.writer().writeLong(pl.nPoint.power);
             msg.writer().writeUTF(Service.getInstance().getCurrStrLevel(pl));
             player.sendMessage(msg);
          }

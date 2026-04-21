@@ -147,9 +147,12 @@ public class MobService {
          try {
             msg = Message.create(-13);
             msg.writer().writeByte(mob.id);
-            msg.writer().writeByte(mob.tempId);
-            msg.writer().writeByte(0); // level mob
-            msg.writer().writeDouble(mob.point.hp);
+            msg.writer().writeDouble(mob.point.getHP());
+            msg.writer().writeByte(mob.level);
+            msg.writer().writeDouble(mob.point.getHpFull());
+            msg.writer().writeShort(mob.location.x);
+            msg.writer().writeShort(mob.location.y);
+            msg.writer().writeByte(5); // status MA_WALK
             Service.getInstance().sendMessAllPlayerInMap(mob.zone, msg);
          } catch (Exception e) {
             Log.error(MobService.class, e);

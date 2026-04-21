@@ -45,7 +45,16 @@ public class CommonHandler extends SimpleChannelInboundHandler<Message> {
 
    @Override
    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-      logger.error("Exception in networking layer for channel {}", ctx.channel(), cause);
+      if (cause instanceof java.io.IOException || cause instanceof java.net.SocketException) {
+         String msg = cause.getMessage();
+         if (msg != null && (msg.contains("Connection reset") || msg.contains("Broken pipe") || msg.contains("Connection timed out"))) {
+            logger.info("Client disconnected: {} (Reason: {})", ctx.channel().remoteAddress(), msg);
+         } else {
+            logger.error("Network IO Exception for channel {}", ctx.channel(), cause);
+         }
+      } else {
+         logger.error("Unexpected exception in networking layer for channel {}", ctx.channel(), cause);
+      }
       ctx.close();
    }
 

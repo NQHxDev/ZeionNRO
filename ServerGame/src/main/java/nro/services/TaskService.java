@@ -157,6 +157,9 @@ public class TaskService {
    public void sendUpdateCountSubTask(Player player) {
       Message msg;
       try {
+         if (player.playerTask.taskMain == null) {
+            return;
+         }
          msg = Message.create(43);
          msg.writer().writeShort(player.playerTask.taskMain.subTasks.get(player.playerTask.taskMain.index).count);
          player.sendMessage(msg);
@@ -178,6 +181,9 @@ public class TaskService {
 
    // gửi thông tin nhiệm vụ hiện tại
    public void sendInfoCurrentTask(Player player) {
+      if (player.playerTask.taskMain == null) {
+         return;
+      }
       Service.getInstance().sendThongBao(player, "Nhiệm vụ hiện tại của bạn là "
             + player.playerTask.taskMain.subTasks.get(player.playerTask.taskMain.index).name);
    }
