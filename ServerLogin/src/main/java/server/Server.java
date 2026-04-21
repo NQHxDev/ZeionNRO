@@ -1,6 +1,6 @@
 package server;
 
-import db.DbManager;
+import nro.data.db.DbManager;
 import io.Controller;
 import io.Session;
 import nro.network.netty.CommonHandler;
@@ -37,7 +37,8 @@ public class Server {
       Log.info("Phiên bản Java: " + System.getProperty("java.version"));
 
       this.activeCommandLine();
-      DbManager.getInstance().start();
+      DbManager.getInstance().init(config.getJdbcUrl(), config.getUsername(), config.getPassword(), config.getDriver());
+
       this.running = true;
 
       try {

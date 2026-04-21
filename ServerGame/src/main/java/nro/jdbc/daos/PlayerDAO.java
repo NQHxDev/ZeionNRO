@@ -565,9 +565,9 @@ public class PlayerDAO {
 
    private static String createDefaultTask() {
       JsonArray dataTask = new JsonArray();
-      dataTask.add(0);
-      dataTask.add(15);
-      dataTask.add(0);
+      dataTask.add(0); // Task ID
+      dataTask.add(0); // Task Sub ID
+      dataTask.add(0); // Task Count
       return gson.toJson(dataTask);
    }
 

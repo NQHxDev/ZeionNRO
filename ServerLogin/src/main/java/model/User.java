@@ -1,255 +1,123 @@
 package model;
 
-import db.DbManager;
+import nro.data.dao.AccountDAO;
+import nro.data.model.Account;
 import io.Session;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import server.Server;
+import lombok.Getter;
 
+@Getter
 public class User {
 
    private Session session;
 
-   private int userID;
-
-   private String username;
-
-   private String password;
+   private Account account;
 
    private int serverID;
 
    private int clientID;
 
-   private boolean admin;
-
-   private boolean actived;
-
-   private int goldBar;
-
-   private long lastTimeLogin;
-
-   private long lastTimeLogout;
-
-   private String rewards;
-
-   private int ruby;
-
-   private int mocNap;
-
-   private int server;
-
    public User(String username, String password, int serverID, int clientID, Session session) {
-      this.username = username;
-      this.password = password;
       this.serverID = serverID;
       this.clientID = clientID;
       this.session = session;
+      this.account = AccountDAO.findAccount(username, password);
    }
 
    public boolean login() {
-      PreparedStatement ps = null;
-      ResultSet rs = null;
-      try {
-         Connection conn = DbManager.getInstance().getConnectionForLogin();
-         String query = "select * from account where username = ? and password = ? limit 1";
-         ps = conn.prepareStatement(query);
-         ps.setString(1, this.username);
-         ps.setString(2, this.password);
-         rs = ps.executeQuery();
-         if (rs.next()) {
-            this.userID = rs.getInt("account.id");
-            int serverLogin = rs.getInt("server_login");
-
-            if (serverLogin != this.serverID) {
-               this.session.getService().loginFailed(this.clientID,
-                     "Vui lòng truy cập NROBLUE.ONLINE để thiết lập Server Đăng Nhập.");
-               return false;
-            }
-
-            User us = UserManager.getInstance().find(this.userID);
-            if (us != null) {
-               us.disconnect();
-            }
-
-            this.lastTimeLogin = rs.getTimestamp("last_time_login").getTime();
-            this.lastTimeLogout = rs.getTimestamp("last_time_logout").getTime();
-            this.admin = rs.getBoolean("is_admin");
-
-            this.actived = rs.getBoolean("active");
-            this.goldBar = rs.getInt("account.thoi_vang");
-            this.rewards = rs.getString("reward");
-            this.ruby = rs.getInt("ruby");
-            this.mocNap = rs.getInt("count_card");
-            this.server = rs.getInt("server_login");
-
-            boolean ban = rs.getBoolean("ban");
-            if (ban) {
-               this.session.getService().loginFailed(this.clientID,
-                     "Tài khoản đã bị khóa do vi phạm điều khoản!");
-               return false;
-            }
-
-            if (rs.getTimestamp("last_time_login").getTime() > this.lastTimeLogout) {
-               this.session.getService().updateTimeLogout(this.userID);
-            }
-
-            if (!this.admin && Server.getInstance().getConfig().getTestmode() == 1) {
-               this.session.getService().loginFailed(this.clientID,
-                     "Server đang được admin xử lý và kiểm tra lại, vui lòng quay lại sau");
-               return false;
-            }
-
-            this.session.getService().loginSuccessful(this);
-            return true;
-         }
-
+      if (this.account == null) {
          this.session.getService().loginFailed(this.clientID,
                "Thông tin tài khoản hoặc mật khẩu không chính xác");
          return false;
-      } catch (Exception e) {
-         e.printStackTrace();
-         return false;
-      } finally {
-         if (rs != null) {
-            try {
-               rs.close();
-            } catch (SQLException ignored) {
-            }
-         }
-         if (ps != null) {
-            try {
-               ps.close();
-            } catch (SQLException ignored) {
-            }
-         }
       }
+
+      if (this.account.getServerLogin() != this.serverID) {
+         this.session.getService().loginFailed(this.clientID,
+               "Vui lòng truy cập NROBLUE.ONLINE để thiết lập Server Đăng Nhập.");
+         return false;
+      }
+
+      User us = UserManager.getInstance().find(this.account.getId());
+      if (us != null) {
+         us.disconnect();
+      }
+
+      if (this.account.isBan()) {
+         this.session.getService().loginFailed(this.clientID,
+               "Tài khoản đã bị khóa do vi phạm điều khoản!");
+         return false;
+      }
+
+      if (!this.account.isAdmin() && Server.getInstance().getConfig().getTestmode() == 1) {
+         this.session.getService().loginFailed(this.clientID,
+               "Server đang bảo trì, vui lòng quay lại sau!");
+         return false;
+      }
+
+      this.session.getService().loginSuccessful(this);
+      return true;
    }
 
    public void disconnect() {
-      this.session.getService().disconnect(this.userID);
-      UserManager.getInstance().remove(this);
-   }
-
-   public Session getSession() {
-      return this.session;
+      if (this.account != null) {
+         this.session.getService().disconnect(this.account.getId());
+         UserManager.getInstance().remove(this);
+      }
    }
 
    public int getUserID() {
-      return this.userID;
+      return this.account != null ? this.account.getId() : -1;
    }
 
    public String getUsername() {
-      return this.username;
-   }
-
-   public String getPassword() {
-      return this.password;
-   }
-
-   public int getServerID() {
-      return this.serverID;
-   }
-
-   public int getClientID() {
-      return this.clientID;
+      return this.account != null ? this.account.getUsername() : "";
    }
 
    public boolean isAdmin() {
-      return this.admin;
-   }
-
-   public boolean isActived() {
-      return this.actived;
-   }
-
-   public int getGoldBar() {
-      return this.goldBar;
-   }
-
-   public long getLastTimeLogin() {
-      return this.lastTimeLogin;
-   }
-
-   public long getLastTimeLogout() {
-      return this.lastTimeLogout;
-   }
-
-   public String getRewards() {
-      return this.rewards;
-   }
-
-   public int getRuby() {
-      return this.ruby;
-   }
-
-   public int getMocNap() {
-      return this.mocNap;
-   }
-
-   public int getServer() {
-      return this.server;
-   }
-
-   public void setSession(Session session) {
-      this.session = session;
+      return this.account != null && this.account.isAdmin();
    }
 
    public void setUserID(int userID) {
-      this.userID = userID;
+      if (this.account == null) {
+         this.account = new Account();
+      }
+      this.account.setId(userID);
    }
 
-   public void setUsername(String username) {
-      this.username = username;
+   public boolean isActived() {
+      return this.account != null && this.account.isActive();
    }
 
-   public void setPassword(String password) {
-      this.password = password;
+   public int getGoldBar() {
+      return this.account != null ? this.account.getGoldBar() : 0;
    }
 
-   public void setServerID(int serverID) {
-      this.serverID = serverID;
+   public long getLastTimeLogin() {
+      return (this.account != null && this.account.getLastTimeLogin() != null)
+            ? this.account.getLastTimeLogin().getTime()
+            : 0;
    }
 
-   public void setClientID(int clientID) {
-      this.clientID = clientID;
+   public long getLastTimeLogout() {
+      return (this.account != null && this.account.getLastTimeLogout() != null)
+            ? this.account.getLastTimeLogout().getTime()
+            : 0;
    }
 
-   public void setAdmin(boolean admin) {
-      this.admin = admin;
+   public String getRewards() {
+      return this.account != null ? this.account.getReward() : "";
    }
 
-   public void setActived(boolean actived) {
-      this.actived = actived;
+   public int getRuby() {
+      return this.account != null ? this.account.getRuby() : 0;
    }
 
-   public void setGoldBar(int goldBar) {
-      this.goldBar = goldBar;
+   public int getMocNap() {
+      return this.account != null ? this.account.getCountCard() : 0;
    }
 
-   public void setLastTimeLogin(long lastTimeLogin) {
-      this.lastTimeLogin = lastTimeLogin;
-   }
-
-   public void setLastTimeLogout(long lastTimeLogout) {
-      this.lastTimeLogout = lastTimeLogout;
-   }
-
-   public void setRewards(String rewards) {
-      this.rewards = rewards;
-   }
-
-   public void setRuby(int ruby) {
-      this.ruby = ruby;
-   }
-
-   public void setMocNap(int mocNap) {
-      this.mocNap = mocNap;
-   }
-
-   public void setServer(int server) {
-      this.server = server;
+   public int getServer() {
+      return this.account != null ? this.account.getServerLogin() : 0;
    }
 
 }

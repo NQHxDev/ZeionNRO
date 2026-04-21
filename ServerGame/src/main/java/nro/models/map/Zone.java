@@ -592,7 +592,15 @@ public class Zone {
                   if (ItemService.gI().isItemNoLimitQuantity(item.template.id)) {
                      maxQuantity = 99999;
                   }
-                  boolean picked = InventoryService.gI().addItemBag(player, item, maxQuantity);
+                  boolean isEatChicken = item.template.id == 73 && TaskService.gI().getIdTask(player) != ConstTask.TASK_2_0;
+                  boolean picked = false;
+                  if (isEatChicken) {
+                     player.nPoint.setFullHpMp();
+                     PlayerService.gI().sendInfoHpMp(player);
+                     picked = true;
+                  } else {
+                     picked = InventoryService.gI().addItemBag(player, item, maxQuantity);
+                  }
                   if (picked) {
                      if (itemMap.itemTemplate.id != 74 && itemMap.itemTemplate.id != 78) {
                         itemMap.isPickedUp = true;
@@ -619,19 +627,17 @@ public class Zone {
                            default:
                               switch (item.template.id) {
                                  case 73:
-                                    msg.writer().writeUTF("");
-                                    msg.writer().writeShort(item.quantity);
-                                    player.sendMessage(msg);
-                                    msg.cleanup();
+                                    if (isEatChicken) {
+                                       msg.writer().writeUTF("Bạn vừa ăn " + item.template.name);
+                                    } else {
+                                       msg.writer().writeUTF("Bạn nhặt được " + item.template.name);
+                                    }
                                     break;
                                  case 74:
                                     msg.writer().writeUTF("Bạn vừa ăn " + item.template.name);
                                     break;
                                  case 78:
                                     msg.writer().writeUTF("Wow, một cậu bé dễ thương!");
-                                    msg.writer().writeShort(item.quantity);
-                                    player.sendMessage(msg);
-                                    msg.cleanup();
                                     break;
                                  case 516:
                                     player.nPoint.setFullHpMp();
@@ -644,9 +650,10 @@ public class Zone {
                                     InventoryService.gI().sendItemBags(player);
                                     break;
                               }
-
                         }
-                        msg.writer().writeShort(item.quantity);
+                        if (itemType != 9 && itemType != 10 && itemType != 34) {
+                           msg.writer().writeShort(item.quantity);
+                        }
                         player.sendMessage(msg);
                         msg.cleanup();
                         Service.getInstance().sendToAntherMePickItem(player, itemMapId);
