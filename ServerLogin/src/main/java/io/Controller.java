@@ -30,9 +30,37 @@ public class Controller implements IController {
             s.setServer(ms);
             break;
          }
+         case -29: {
+            this.login29(s, ms);
+            break;
+         }
          default: {
             Log.info("Unknown cmd: " + ms.getCommand());
          }
+      }
+   }
+
+   public void login29(Session session, Message ms) {
+      try {
+         byte subCmd = ms.readByte();
+         if (subCmd == 0) {
+            String username = ms.readUTF();
+            String password = ms.readUTF();
+            // In case of -29, we just log it and assume the client should be redirecting.
+            // But we can trigger user.login() if we want ServerLogin to actually authenticate.
+            this.lock.lock();
+            try {
+               User user = new User(username, password, (byte) 0, 0, session);
+               boolean result = user.login();
+               if (result) {
+                  UserManager.getInstance().add(user);
+               }
+            } finally {
+               this.lock.unlock();
+            }
+         }
+      } catch (Exception ex) {
+         ex.printStackTrace();
       }
    }
 

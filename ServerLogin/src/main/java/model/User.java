@@ -11,19 +11,33 @@ import server.Server;
 public class User {
 
    private Session session;
+
    private int userID;
+
    private String username;
+
    private String password;
+
    private int serverID;
+
    private int clientID;
+
    private boolean admin;
+
    private boolean actived;
+
    private int goldBar;
+
    private long lastTimeLogin;
+
    private long lastTimeLogout;
+
    private String rewards;
+
    private int ruby;
+
    private int mocNap;
+
    private int server;
 
    public User(String username, String password, int serverID, int clientID, Session session) {
@@ -57,23 +71,11 @@ public class User {
             User us = UserManager.getInstance().find(this.userID);
             if (us != null) {
                us.disconnect();
-               this.session.getService().loginFailed(this.clientID,
-                     "Đã xảy ra lỗi, vui lòng liên hệ ADMIN!");
-               return false;
             }
 
             this.lastTimeLogin = rs.getTimestamp("last_time_login").getTime();
             this.lastTimeLogout = rs.getTimestamp("last_time_logout").getTime();
             this.admin = rs.getBoolean("is_admin");
-
-            int waitLogin = Server.getInstance().getConfig().getSecondWaitLogin();
-            int secondsPass = (int) ((System.currentTimeMillis() - this.lastTimeLogout) / 1000L);
-
-            if (secondsPass < waitLogin && !this.admin) {
-               this.session.getService().loginFailed(this.clientID, "Vui lòng chờ "
-                     + (waitLogin - secondsPass) + " giây để đăng nhập lại.");
-               return false;
-            }
 
             this.actived = rs.getBoolean("active");
             this.goldBar = rs.getInt("account.thoi_vang");
@@ -90,10 +92,7 @@ public class User {
             }
 
             if (rs.getTimestamp("last_time_login").getTime() > this.lastTimeLogout) {
-               this.session.getService().loginFailed(this.clientID,
-                     "Đã xảy ra lỗi, vui lòng liên hệ ADMIN!");
                this.session.getService().updateTimeLogout(this.userID);
-               return false;
             }
 
             if (!this.admin && Server.getInstance().getConfig().getTestmode() == 1) {
@@ -252,4 +251,5 @@ public class User {
    public void setServer(int server) {
       this.server = server;
    }
+
 }

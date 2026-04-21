@@ -144,6 +144,7 @@ public class LoginController {
                   session.timeWait = 0;
                   session.loginSuccess = true;
                   DataGame.sendVersionGame(session);
+                  session.finishUpdate();
                } else {
                   String text = ms.reader().readUTF();
                   Service.getInstance().sendThongBaoOK(session, text);

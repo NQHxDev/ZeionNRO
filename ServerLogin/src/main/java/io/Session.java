@@ -10,10 +10,15 @@ import server.Server;
 public class Session extends NettySession {
 
    public String sessionName;
+
    private int serverID;
+
    private Controller controller;
+
    private Service service;
+
    public boolean isLoginSuccess;
+
    public boolean isClosed;
 
    public Session(Channel channel, int id) {

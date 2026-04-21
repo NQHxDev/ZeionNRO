@@ -51,7 +51,7 @@ public class Session extends NettySession {
    public boolean isSetClientType;
 
    public long lastTimeLogout;
-   public boolean loginSuccess, joinedGame, dataLoadFailed;
+   public volatile boolean loginSuccess, joinedGame, dataLoadFailed, isClientOk;
 
    public long lastTimeReadMessage;
 
@@ -68,7 +68,7 @@ public class Session extends NettySession {
    public int tong_nap;
 
    @Setter
-   public boolean logging;
+   public volatile boolean logging;
 
    public Session(Channel channel, int id) {
       super(channel, id);
@@ -213,7 +213,7 @@ public class Session extends NettySession {
    }
 
    public void finishUpdate() {
-      if (loginSuccess && !joinedGame) {
+      if (loginSuccess && isClientOk && !joinedGame) {
          player = GodGK.loadPlayer(this);
          if (!dataLoadFailed) {
             if (player != null) {

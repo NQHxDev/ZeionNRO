@@ -838,6 +838,7 @@ public class Controller implements IController {
                      // send current task
                      TaskService.gI().sendInfoCurrentTask(player);
                   } else {
+                     _session.isClientOk = true;
                      _session.finishUpdate();
                   }
                   break;

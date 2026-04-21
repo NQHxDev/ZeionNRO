@@ -103,6 +103,7 @@ public class ServerManager {
          CommonHandler handler = new CommonHandler(controller);
          nettyServer = new NettyServer(PORT, key, handler);
          nettyServer.setPublicConfig(Manager.DOMAIN, PORT);
+         nettyServer.setRedirect(false);
 
          // Cấu hình Session Factory để tạo nro.server.io.Session
          nettyServer.setSessionFactory((channel, id) -> {

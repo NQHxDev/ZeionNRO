@@ -12,15 +12,25 @@ import util.Log;
 public class Config {
 
    private short listen;
+
    private String driver;
+
    private String username;
+
    private String password;
+
    private String dbName;
+
    private String host;
+
    private short port;
+
    private short testmode;
+
    private int secondWaitLogin;
+
    private String gameHost;
+
    private int gamePort;
 
    public Config(String path) {
@@ -152,4 +162,5 @@ public class Config {
    public int getGamePort() {
       return gamePort;
    }
+
 }

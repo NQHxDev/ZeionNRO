@@ -1,9 +1,9 @@
 package db;
 
-import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import java.sql.Connection;
+import com.zaxxer.hikari.HikariConfig;
 import java.sql.SQLException;
+import java.sql.Connection;
 import server.Config;
 import server.Server;
 import util.Log;
@@ -81,4 +81,5 @@ public class DbManager {
          System.out.println("Error when shutting down DB Connection Pool");
       }
    }
+
 }

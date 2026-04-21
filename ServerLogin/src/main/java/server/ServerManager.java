@@ -37,4 +37,5 @@ public class ServerManager {
    public List<Session> getSessions() {
       return this.sessions;
    }
+
 }

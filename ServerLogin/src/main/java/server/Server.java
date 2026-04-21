@@ -11,14 +11,19 @@ import util.LoginScheduler;
 public class Server {
 
    private static final Server instance = new Server();
+
    private NettyServer nettyServer;
+
    private final Config config = new Config("server.ini");
+
    private final ServerManager manager = new ServerManager();
+
    private final ServerService service = new ServerService(this.manager);
+
    private boolean running;
+
    private long startTime;
 
-   // Shared controller for all Netty sessions
    private final Controller controller = new Controller();
 
    public static Server getInstance() {
@@ -36,10 +41,11 @@ public class Server {
       this.running = true;
 
       try {
-         byte[] key = new byte[]{0};
+         byte[] key = new byte[] { 0 };
          CommonHandler handler = new CommonHandler(controller);
          nettyServer = new NettyServer(config.getListen(), key, handler);
          nettyServer.setPublicConfig(config.getGameHost(), config.getGamePort());
+         nettyServer.setRedirect(true);
 
          // Set session factory to create io.Session instead of default NettySession
          nettyServer.setSessionFactory((channel, id) -> new Session(channel, id));

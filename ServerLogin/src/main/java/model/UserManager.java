@@ -32,4 +32,5 @@ public class UserManager {
    public void removeAllUserWithServerID(int serverID) {
       this.users.removeIf(t -> t.getServerID() == serverID);
    }
+
 }

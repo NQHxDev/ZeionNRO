@@ -97,7 +97,7 @@ public class Manager {
    public static int TILE_NCAP = 0;
    public static byte SUKIEN = 6;
    public static int EVENT_SEVER = 6;
-   public static String DOMAIN = "https://zeion.online/";
+   public static String DOMAIN = "127.0.0.1";
    public static String SERVER_NAME = "Ngọc Rồng Zeion";
    public static int EVENT_COUNT_THAN_HUY_DIET = 0;
    public static int EVENT_COUNT_QUY_LAO_KAME = 0;
