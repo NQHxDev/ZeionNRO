@@ -359,6 +359,7 @@ public class Player {
       skillSpecial = new SkillSpecial(this);
       event = new PlayerEvent(this);
       buyLimit = new byte[13];
+      rewardLimit = new byte[10];
       buff = Buff.NONE;
    }
 

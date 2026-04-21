@@ -42,8 +42,16 @@ public class PlayerService {
          player.levelWoodChest = 0;
          player.receivedWoodChest = false;
          player.event.receivedLuckyMoney = false;
-         player.rewardLimit = new byte[player.rewardLimit.length];
-         player.buyLimit = new byte[player.buyLimit.length];
+         if (player.rewardLimit != null) {
+            player.rewardLimit = new byte[player.rewardLimit.length];
+         } else {
+            player.rewardLimit = new byte[10];
+         }
+         if (player.buyLimit != null) {
+            player.buyLimit = new byte[player.buyLimit.length];
+         } else {
+            player.buyLimit = new byte[13];
+         }
          player.bongtai = 0;
          player.thiensu = 0;
          player.diemdanh = 0;

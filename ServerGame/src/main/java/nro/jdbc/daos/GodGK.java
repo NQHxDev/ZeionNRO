@@ -745,10 +745,14 @@ public class GodGK {
       byte[] buyLimit = gson.fromJson(rs.getString("buy_limit"), byte[].class);
       if (buyLimit != null)
          player.buyLimit = buyLimit;
+      else if (player.buyLimit == null)
+         player.buyLimit = new byte[13];
 
       byte[] rewardLimit = gson.fromJson(rs.getString("reward_limit"), byte[].class);
       if (rewardLimit != null)
          player.rewardLimit = rewardLimit;
+      else if (player.rewardLimit == null)
+         player.rewardLimit = new byte[10];
 
       List<Integer> challengeData = gson.fromJson(rs.getString("challenge"), new TypeToken<List<Integer>>() {
       }.getType());

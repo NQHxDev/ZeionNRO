@@ -9,6 +9,7 @@ public class AttributeManager {
 
    @Getter
    public List<Attribute> attributes;
+
    private long lastUpdate;
 
    public AttributeManager() {

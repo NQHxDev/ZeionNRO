@@ -21,6 +21,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -34,6 +35,7 @@ import nro.services.RuongSuuTam;
 public class PlayerDAO {
 
    public static boolean updateTimeLogout;
+
    private static final Gson gson = new Gson();
 
    private static String saveItems(List<Item> items) {
@@ -763,8 +765,12 @@ public class PlayerDAO {
                + "items_bag, items_box, items_box_lucky_round, friends, enemies, data_intrinsic, data_item_time,"
                + "data_task, data_mabu_egg, data_charm, skills, skills_shortcut, pet_info, pet_point, pet_body, pet_skill,"
                + "data_black_ball, thoi_vang, data_side_task, achivements, data_item_time_sieucap, "
-               + "kham_ngoc, ruong_cai_trang, ruong_phu_kien, ruong_pet, ruong_linh_thu, ruong_thu_cuoi, phong_thi_nghiem ) "
-               + "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+               + "kham_ngoc, ruong_cai_trang, ruong_phu_kien, ruong_pet, ruong_linh_thu, ruong_thu_cuoi, phong_thi_nghiem, reward_limit, buy_limit, "
+               + "data_item_noel, challenge, sk_tet, moc_nap, drop_vang_ngoc, tong_nap, danh_hieu, so_may_man, active_phuc_loi, check_online, check_diem_danh, phut_online, weekTimeLogin, "
+               + "power, pet_power, 1sao, 2sao, 3sao, collection_book, event_point, firstTimeLogin, nhan_moc_nap, chuyen_sinh, data_offtrain, reset_ngay, nhan_moc_nap2,"
+               + "kill_boss, diemdanh, chuyencan, hoivien_vip, check_qua_chuyencan, naplandau, tichluynap, nhan_moc_nap3, sukien_2thang9, sukien_trungthu, diem_quay, active_vong_quay,"
+               + "active_kham_ngoc, active_ruong_suu_tam, dan_duoc) "
+               + "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
          ps.setInt(1, userId);
          ps.setString(2, name);
@@ -805,6 +811,49 @@ public class PlayerDAO {
          ps.setString(37, createDefaultRuongSuuTam());
          ps.setString(38, createDefaultRuongSuuTam());
          ps.setString(39, createDefaultPhongThiNghiem());
+         ps.setString(40, "[]");
+         ps.setString(41, "[]");
+         ps.setString(42, "[]"); // data_item_noel
+         ps.setString(43, "[]"); // challenge
+         ps.setString(44, "[0,0,0,0,0]"); // sk_tet
+         ps.setInt(45, 0); // moc_nap
+         ps.setString(46, "[0,0]"); // drop_vang_ngoc
+         ps.setInt(47, 0); // tong_nap
+         ps.setString(48, "[]"); // danh_hieu
+         ps.setString(49, "[]"); // so_may_man
+         ps.setString(50, "[]"); // active_phuc_loi
+         ps.setString(51, "[]"); // check_online
+         ps.setString(52, "[]"); // check_diem_danh
+         ps.setInt(53, 0); // phut_online
+         ps.setTimestamp(54, new Timestamp(System.currentTimeMillis())); // weekTimeLogin
+         ps.setDouble(55, 2000); // power
+         ps.setDouble(56, 0); // pet_power
+         ps.setInt(57, 0); // 1sao
+         ps.setInt(58, 0); // 2sao
+         ps.setInt(59, 0); // 3sao
+         ps.setString(60, "[]"); // collection_book
+         ps.setInt(61, 0); // event_point
+         ps.setTimestamp(62, new Timestamp(System.currentTimeMillis())); // firstTimeLogin
+         ps.setString(63, "[]"); // nhan_moc_nap
+         ps.setString(64, "[]"); // chuyen_sinh
+         ps.setString(65, "[]"); // data_offtrain
+         ps.setString(66, "[]"); // reset_ngay
+         ps.setString(67, "[]"); // nhan_moc_nap2
+         ps.setInt(68, 0); // kill_boss
+         ps.setInt(69, 0); // diemdanh
+         ps.setInt(70, 0); // chuyencan
+         ps.setInt(71, 0); // hoivien_vip
+         ps.setInt(72, 0); // check_qua_chuyencan
+         ps.setInt(73, 0); // naplandau
+         ps.setInt(74, 0); // tichluynap
+         ps.setString(75, "[]"); // nhan_moc_nap3
+         ps.setInt(76, 0); // sukien_2thang9
+         ps.setInt(77, 0); // sukien_trungthu
+         ps.setInt(78, 0); // diem_quay
+         ps.setString(79, "[]"); // active_vong_quay
+         ps.setInt(80, 0); // active_kham_ngoc
+         ps.setInt(81, 0); // active_ruong_suu_tam
+         ps.setString(82, "[]"); // dan_duoc
          ps.executeUpdate();
       } catch (Exception e) {
          Log.error(PlayerDAO.class, e, "Lỗi tạo player mới");
