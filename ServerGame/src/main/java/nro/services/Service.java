@@ -2,6 +2,8 @@ package nro.services;
 
 import com.sun.management.OperatingSystemMXBean;
 import java.io.DataOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import nro.consts.Cmd;
 import nro.consts.ConstNpc;
 import nro.consts.ConstPlayer;
@@ -34,8 +36,6 @@ import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 import nro.models.boss.Boss;
 
@@ -70,15 +70,15 @@ public class Service {
    public void sendMessAllPlayerInMap(Zone zone, Message msg) {
       msg.transformData();
       if (zone != null) {
-         List<Player> players = zone.getPlayers();
-         synchronized (players) {
-            for (Player pl : players) {
-               if (pl != null) {
-                  pl.sendMessage(msg);
-               }
+         List<Player> playersToNotify;
+         synchronized (zone.getPlayers()) {
+            playersToNotify = new ArrayList<>(zone.getPlayers());
+         }
+         for (Player pl : playersToNotify) {
+            if (pl != null) {
+               pl.sendMessage(msg);
             }
          }
-         msg.cleanup();
       }
    }
 
@@ -92,16 +92,15 @@ public class Service {
                player.sendMessage(msg);
             }
          } else {
-            List<Player> players = player.zone.getPlayers();
-            synchronized (players) {
-               for (Player pl : players) {
-                  if (pl != null) {
-                     pl.sendMessage(msg);
-                  }
+            List<Player> playersToNotify;
+            synchronized (player.zone.getPlayers()) {
+               playersToNotify = new ArrayList<>(player.zone.getPlayers());
+            }
+            for (Player pl : playersToNotify) {
+               if (pl != null) {
+                  pl.sendMessage(msg);
                }
             }
-
-            msg.cleanup();
          }
       }
    }

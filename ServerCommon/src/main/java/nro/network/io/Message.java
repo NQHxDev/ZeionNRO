@@ -192,9 +192,12 @@ public class Message {
    }
 
    public void cleanup() {
-      if (buffer != null && buffer.refCnt() > 0) {
-         buffer.release();
-      }
+      // Netty's writeAndFlush is asynchronous. Calling release() immediately after
+      // sending a message can lead to IllegalReferenceCountException or data corruption
+      // if the buffer is unpooled (heap-based). We let the GC handle unpooled buffers.
+      // if (buffer != null && buffer.refCnt() > 0) {
+      //    buffer.release();
+      // }
    }
 
    public void dispose() {

@@ -30,3 +30,4 @@ ServerGame/mob/
 # Obsolete / Source Backup Folders
 sourceServerGame/
 sourceServerLogin/
+sourceServerCommon/

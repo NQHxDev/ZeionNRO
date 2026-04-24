@@ -21,6 +21,7 @@ public class Mob {
    public int tempId;
    public String name;
    public byte level;
+   public boolean isDie;
 
    public MobPoint point;
    public MobEffectSkill effectSkill;
@@ -74,7 +75,7 @@ public class Mob {
    protected long lastTimeAttackPlayer;
 
    public boolean isDie() {
-      return this.point.getHP() <= 0;
+      return this.isDie;
    }
 
    public synchronized void injured(Player plAtt, double damage, boolean dieWhenHpFull) {
@@ -88,7 +89,7 @@ public class Mob {
             damage = this.point.hp;
          }
          if (!dieWhenHpFull) {
-            if (this.point.hp == this.point.maxHp && damage >= this.point.hp) {
+            if (this.point.hp >= this.point.maxHp && damage >= this.point.hp) {
                damage = this.point.hp - 1;
             }
             if (this.tempId == 0 && damage > 10.0) {
@@ -96,11 +97,12 @@ public class Mob {
             }
          }
          this.point.hp -= damage;
-         if (this.isDie()) {
+         if (this.point.hp <= 0) {
             MobService.gI().dropItemTask(plAtt, this);
             MobService.gI().sendMobDieAffterAttacked(this, plAtt, damage);
             TaskService.gI().checkDoneTaskKillMob(plAtt, this);
             TaskService.gI().checkDoneSideTaskKillMob(plAtt, this);
+            this.isDie = true;
             setDie();
          } else {
             MobService.gI().sendMobStillAliveAffterAttacked(this, damage, plAtt != null ? plAtt.nPoint.isCrit : false);
@@ -210,10 +212,13 @@ public class Mob {
    public void update() {
       if (this.isDie()) {
          if (!(zone instanceof ZSnakeRoad)) {
-            if ((zone.map.type == ConstMap.MAP_NORMAL
+            boolean canRespawn = (zone.map.type == ConstMap.MAP_NORMAL
                   || zone.map.type == ConstMap.MAP_OFFLINE
-                  || zone.map.type == ConstMap.MAP_BLACK_BALL_WAR) && (tempId != ConstMob.HIRUDEGARN)
-                  && Util.canDoWithTime(lastTimeDie, 2000)) {
+                  || zone.map.type == ConstMap.MAP_BLACK_BALL_WAR
+                  || (zone.map.mapId >= 0 && zone.map.mapId <= 44) || tempId == 0) // Mộc nhân luôn hồi sinh
+                  && (tempId != ConstMob.HIRUDEGARN);
+
+            if (canRespawn && Util.canDoWithTime(lastTimeDie, 2000)) {
                MobService.gI().hoiSinhMob(this);
             } else if (this.zone.map.type == ConstMap.MAP_DOANH_TRAI && Util.canDoWithTime(lastTimeDie, 10000)) {
                MobService.gI().hoiSinhMobDoanhTrai(this);
