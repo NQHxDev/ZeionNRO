@@ -10,6 +10,7 @@ import nro.network.netty.CommonHandler;
 import nro.network.netty.NettyServer;
 import nro.models.boss.BossFactory;
 import nro.models.boss.BossManager;
+import nro.manager.SieuHangManager;
 import nro.models.map.challenge.MartialCongressManager;
 import nro.models.map.dungeon.DungeonManager;
 import nro.models.map.phoban.BanDoKhoBau;
@@ -90,6 +91,7 @@ public class ServerManager {
       activeCommandLine();
       activeGame();
       activeLogin();
+      SieuHangManager.gI().init();
       autoTask();
       (new AutoMaintenance(23, 58, 59)).start();
       activeNettyServer();

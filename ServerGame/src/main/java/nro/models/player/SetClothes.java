@@ -48,8 +48,8 @@ public class SetClothes {
       setupDHD();
       setupDTL();
       setupLongAn();
-      Item ct = this.player.inventory.itemsBody.get(5);
-      if (ct.isNotNullItem()) {
+      Item ct = this.player.getItemBody(5);
+      if (ct != null && ct.isNotNullItem()) {
          switch (ct.template.id) {
             case 618:
             case 619:
@@ -68,8 +68,8 @@ public class SetClothes {
 
    private void setupSKT() {
       for (int i = 0; i < 5; i++) {
-         Item item = this.player.inventory.itemsBody.get(i);
-         if (item.isNotNullItem()) {
+         Item item = this.player.getItemBody(i);
+         if (item != null && item.isNotNullItem()) {
             boolean isActSet = false;
             for (ItemOption io : item.itemOptions) {
                switch (io.optionTemplate.id) {
@@ -146,8 +146,8 @@ public class SetClothes {
 
    private void setupAN() {
       for (int i = 0; i < 5; i++) {
-         Item item = this.player.inventory.itemsBody.get(i);
-         if (item.isNotNullItem()) {
+         Item item = this.player.getItemBody(i);
+         if (item != null && item.isNotNullItem()) {
             boolean isActSett = false;
             for (ItemOption chisoan : item.itemOptions) {
                switch (chisoan.optionTemplate.id) {
@@ -177,8 +177,8 @@ public class SetClothes {
 
    private void setupLongAn() {
       for (int i = 0; i < 5; i++) {
-         Item item = this.player.inventory.itemsBody.get(i);
-         if (item.isNotNullItem()) {
+         Item item = this.player.getItemBody(i);
+         if (item != null && item.isNotNullItem()) {
             boolean isActSettLongAn = false;
             for (ItemOption chisolonghon : item.itemOptions) {
                switch (chisolonghon.optionTemplate.id) {
@@ -208,8 +208,8 @@ public class SetClothes {
 
    private void setupDTS() {
       for (int i = 0; i < 5; i++) {
-         Item item = this.player.inventory.itemsBody.get(i);
-         if (item.isNotNullItem()) {
+         Item item = this.player.getItemBody(i);
+         if (item != null && item.isNotNullItem()) {
             boolean isActSet = false;
             for (ItemOption io : item.itemOptions) {
                switch (io.optionTemplate.id) {
@@ -232,8 +232,8 @@ public class SetClothes {
 
    private void setupDHD() {
       for (int i = 0; i < 5; i++) {
-         Item item = this.player.inventory.itemsBody.get(i);
-         if (item.isNotNullItem()) {
+         Item item = this.player.getItemBody(i);
+         if (item != null && item.isNotNullItem()) {
             boolean isActSet = false;
             for (ItemOption io : item.itemOptions) {
                switch (io.optionTemplate.id) {
@@ -256,8 +256,8 @@ public class SetClothes {
 
    private void setupDTL() {
       for (int i = 0; i < 5; i++) {
-         Item item = this.player.inventory.itemsBody.get(i);
-         if (item.isNotNullItem()) {
+         Item item = this.player.getItemBody(i);
+         if (item != null && item.isNotNullItem()) {
             boolean isActSet = false;
             switch (item.template.id) {
                case 555:

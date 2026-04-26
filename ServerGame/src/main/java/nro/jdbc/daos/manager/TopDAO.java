@@ -196,26 +196,17 @@ public class TopDAO {
 
    public static List<Player> loadTopSieuHang(Connection con) {
       List<Player> list = new ArrayList<>();
-      String sql = "SELECT * FROM player "
-            + "INNER JOIN account ON account.id = player.account_id "
-            + " ORDER BY "
-            + "CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(rank_sieu_hang, ',', 1), '[', -1) AS UNSIGNED) ASC LIMIT 20";
+      String sql = "SELECT p.id, p.name, p.head, p.gender, p.items_body, sh.point, pp.power "
+            + "FROM sieu_hang sh "
+            + "INNER JOIN player p ON sh.player_id = p.id "
+            + "INNER JOIN player_point pp ON p.id = pp.player_id "
+            + "ORDER BY sh.point DESC, pp.power DESC LIMIT 100";
       try (PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery()) {
          while (rs.next()) {
             Player player = parseBasePlayer(rs);
-
-            // Rank Sieu Hang
-            JsonArray rankData = gson.fromJson(rs.getString("rank_sieu_hang"), JsonArray.class);
-            if (rankData != null && rankData.size() >= 6) {
-               player.rankSieuHang = rankData.get(0).getAsInt();
-               player.timesieuhang = rankData.get(1).getAsLong();
-               player.isnhanthuong1 = (player.rankSieuHang == 1);
-               player.nPoint.hpMax = rankData.get(3).getAsDouble();
-               player.nPoint.mpMax = rankData.get(4).getAsDouble();
-               player.nPoint.dame = rankData.get(5).getAsDouble();
-            }
-
+            player.pointSieuHang = rs.getInt("point");
+            player.nPoint.power = rs.getLong("power");
             loadItemsBody(player, rs.getString("items_body"));
             list.add(player);
          }
@@ -244,7 +235,9 @@ public class TopDAO {
             Item item;
             if (d.temp_id != -1) {
                item = ItemService.gI().createNewItem(d.temp_id, d.quantity);
-               item.itemOptions.addAll(ServiceDataDAO.parseItemOptions(d.option));
+               if (d.option != null) {
+                  item.itemOptions.addAll(ServiceDataDAO.parseItemOptions(d.option.toString()));
+               }
                item.createTime = d.create_time;
                if (ItemService.gI().isOutOfDateTime(item)) {
                   item = ItemService.gI().createItemNull();
@@ -262,7 +255,7 @@ public class TopDAO {
    private static class ItemData {
       short temp_id;
       int quantity;
-      String option;
+      JsonElement option;
       long create_time;
    }
 }

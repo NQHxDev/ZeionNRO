@@ -31,6 +31,10 @@ public class Util {
    private static final SimpleDateFormat dateFormat;
    private static SimpleDateFormat dateFormatDay = new SimpleDateFormat("yyyy-MM-dd");
 
+   public static boolean isAfterDay(long lastTime) {
+      return compareDay(new Date(), new Date(lastTime));
+   }
+
    public static final Locale locale = Locale.of("vi", "VN");
    private static final NumberFormat num = NumberFormat.getInstance(locale);
 

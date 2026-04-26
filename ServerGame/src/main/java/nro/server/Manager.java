@@ -25,6 +25,7 @@ import nro.jdbc.daos.manager.SkillDAO;
 import nro.jdbc.daos.manager.TaskDAO;
 import nro.lib.RandomCollection;
 import nro.manager.NamekBallManager;
+import nro.manager.SieuHangManager;
 import nro.models.clan.Clan;
 import nro.models.intrinsic.Intrinsic;
 import nro.models.item.CaiTrang;
@@ -254,6 +255,7 @@ public class Manager {
       loadDatabase();
       new ConMeo(-1, -1, -1, -1, ConstNpc.CON_MEO, 29028);
       new RongThieng(-1, -1, -1, -1, ConstNpc.RONG_THIENG, -1);
+      SieuHangManager.gI().init();
       // Event.initEvent(gameConfig.getEvent());
       // if (Event.isEvent()) {
       // Event.getInstance().init();

@@ -946,6 +946,16 @@ public class InventoryService {
       return findItem(player.inventory.itemsBag, tempId);
    }
 
+   public boolean findAndRemoveItemBag(Player player, int tempId, int quantity) {
+      Item item = findItemBagByTemp(player, tempId);
+      if (item != null && item.quantity >= quantity) {
+         subQuantityItemsBag(player, item, quantity);
+         sendItemBags(player);
+         return true;
+      }
+      return false;
+   }
+
    public Item findItemBodyByTemp(Player player, int tempId) {
       return findItem(player.inventory.itemsBody, tempId);
    }

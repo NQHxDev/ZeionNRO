@@ -382,19 +382,17 @@ public class NPoint {
             }
          }
       }
-      List<Item> itemsBody = player.inventory.itemsBody;
       if (!player.isBoss && !player.isMiniPet) {
-         if (player.inventory.itemsBody.get(1).isNotNullItem()) {
-            Item pants = itemsBody.get(1);
-            if (pants.isNotNullItem() && pants.id >= 691 && pants.id >= 693) {
-               player.event.setUseQuanHoa(true);
-            }
+         Item pants = player.getItemBody(1);
+         if (pants != null && pants.isNotNullItem() && pants.id >= 691 && pants.id >= 693) {
+            player.event.setUseQuanHoa(true);
          }
       }
       if (Manager.EVENT_SEVER == 3) {
          if (!this.player.isBoss && !this.player.isMiniPet) {
-            if (itemsBody.get(5).isNotNullItem()) {
-               int tempID = itemsBody.get(5).id;
+            Item costume = player.getItemBody(5);
+            if (costume != null && costume.isNotNullItem()) {
+               int tempID = costume.id;
                switch (tempID) {
                   case 386, 389, 392 -> {
                      wearingGrayNoelHat = true;
@@ -585,8 +583,8 @@ public class NPoint {
    private void setDameTrainArmor() {
       if (!this.player.isPet && !this.player.isBoss && !this.player.isMiniPet) {
          try {
-            Item gtl = this.player.inventory.itemsBody.get(6);
-            if (gtl.isNotNullItem()) {
+            Item gtl = this.player.getItemBody(6);
+            if (gtl != null && gtl.isNotNullItem()) {
                this.wearingTrainArmor = true;
                this.wornTrainArmor = true;
                this.player.inventory.trainArmor = gtl;

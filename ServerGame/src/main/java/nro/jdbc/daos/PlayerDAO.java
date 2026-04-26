@@ -611,7 +611,7 @@ public class PlayerDAO {
       dataSkillShortcut.add(gender == 0 ? 0 : gender == 1 ? 2 : 4);
       dataSkillShortcut.add(gender == 0 ? 1 : gender == 1 ? 3 : 5);
       dataSkillShortcut.add(gender == 0 ? 6 : gender == 1 ? 7 : 8);
-      for (int i = 0; i < 7; i++)
+      for (int i = 0; i < 5; i++)
          dataSkillShortcut.add(-1);
       return gson.toJson(dataSkillShortcut);
    }
@@ -859,6 +859,7 @@ public class PlayerDAO {
             int playerId = rs.getInt(1);
             createPlayerPoint(con, playerId, gender);
             createDefaultTask(con, playerId);
+            createSieuHangRecord(con, playerId);
          }
       } catch (Exception e) {
          Log.error(PlayerDAO.class, e, "Lỗi tạo player mới");
@@ -869,6 +870,16 @@ public class PlayerDAO {
             } catch (SQLException e) {
             }
          }
+      }
+   }
+
+   public static void createSieuHangRecord(Connection con, int playerId) {
+      try (PreparedStatement ps = con.prepareStatement("insert into sieu_hang (player_id, point) values (?, ?)")) {
+         ps.setInt(1, playerId);
+         ps.setInt(2, 100);
+         ps.executeUpdate();
+      } catch (SQLException e) {
+         Log.error(PlayerDAO.class, e, "Lỗi tạo bản ghi sieu_hang");
       }
    }
 

@@ -5,7 +5,6 @@ import nro.models.player.Player;
 import nro.network.io.Message;
 import nro.services.Service;
 
-// đổi Timer -> Scheduler dùng chung
 import nro.core.concurrent.GameScheduler;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -59,7 +58,7 @@ public class PlayerSkill {
       return null;
    }
 
-   public byte[] skillShortCut = new byte[99];
+   public byte[] skillShortCut = new byte[8];
 
    public void sendSkillShortCut() {
       Message msg;

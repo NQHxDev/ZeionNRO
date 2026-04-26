@@ -36,6 +36,7 @@ import java.util.List;
 import nro.models.boss.Boss;
 import nro.models.boss.BossManager;
 import nro.models.item.Item;
+import nro.manager.SieuHangManager;
 
 import nro.notification.NotiManager;
 
@@ -361,15 +362,39 @@ public class Controller implements IController {
                if (player != null) {
                   PlayerSkill playerSkill = player.playerSkill;
                   int len = _msg.reader().available();
-                  for (int i = 0; i < len; i++) {
-                     byte b = _msg.reader().readByte();
-                     playerSkill.skillShortCut[i] = b;
+                  if (len > 8) {
+                     len = 8;
                   }
+                  byte[] newShortcuts = new byte[8];
+                  java.util.Arrays.fill(newShortcuts, (byte) -1);
+
+                  for (int i = 0; i < len; i++) {
+                     byte skillId = _msg.reader().readByte();
+                     // Kiểm tra trùng lặp: Nếu kỹ năng đã tồn tại trong mảng mới, xóa ô cũ
+                     if (skillId != -1) {
+                        for (int j = 0; j < i; j++) {
+                           if (newShortcuts[j] == skillId) {
+                              newShortcuts[j] = -1;
+                           }
+                        }
+                     }
+                     newShortcuts[i] = skillId;
+                  }
+                  playerSkill.skillShortCut = newShortcuts;
                   playerSkill.sendSkillShortCut();
                }
                break;
             case -101:
                login2(_session, _msg);
+               break;
+            case -115:
+               if (player != null) {
+                  byte action = _msg.reader().readByte();
+                  if (action == 1) { // Challenge
+                     int opponentId = _msg.reader().readInt();
+                     SieuHangManager.gI().challenge(player, opponentId);
+                  }
+               }
                break;
             case -118:
                if (player != null && player.zone != null && player.zone.map != null && player.zone.map.mapId != 113) {
@@ -1007,10 +1032,11 @@ public class Controller implements IController {
       }
 
       if (!player.isBoss && !player.isMiniPet) {
-         if (player.pet != null && player.inventory.itemsBody.get(5).isNotNullItem()
-               && player.pet.inventory.itemsBody.get(5).isNotNullItem()) {
-            if ((player.inventory.itemsBody.get(5).template.id == 1319
-                  && player.pet.inventory.itemsBody.get(5).template.id == 619)) {
+         Item ctMaster = player.getItemBody(5);
+         Item ctPet = player.pet != null ? player.pet.getItemBody(5) : null;
+         if (player.pet != null && ctMaster != null && ctMaster.isNotNullItem()
+               && ctPet != null && ctPet.isNotNullItem()) {
+            if ((ctMaster.template.id == 1319 && ctPet.template.id == 619)) {
                player.PorataVIP = true;
             } else {
                player.PorataVIP = false;

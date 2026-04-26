@@ -68,6 +68,7 @@ import nro.models.npc.specific.TienHacAm;
 import nro.models.npc.specific.TopRanking;
 import nro.models.npc.specific.ToSuKaio;
 import nro.models.npc.specific.Toribot;
+import nro.models.npc.specific.TrongTai;
 import nro.models.npc.specific.TruongLaoGuru;
 import nro.models.npc.specific.TruongMyLan;
 import nro.models.npc.specific.Uron;
@@ -116,6 +117,7 @@ public class NpcFactory {
       NPC_HANDLERS.put(ConstNpc.LY_TIEU_NUONG, LyTieuNuong.class);
       NPC_HANDLERS.put(ConstNpc.SO_MAY_MAN, SoMayManNpc.class);
       NPC_HANDLERS.put(ConstNpc.TRUONG_LAO_GURU, TruongLaoGuru.class);
+      NPC_HANDLERS.put(ConstNpc.TRONG_TAI, TrongTai.class);
       NPC_HANDLERS.put(ConstNpc.VUA_VEGETA, VuaVegeta.class);
       NPC_HANDLERS.put(ConstNpc.EMI_FUKADA, EmiFukada.class);
       NPC_HANDLERS.put(ConstNpc.ONG_GOHAN, GohanMooriParagus.class);
