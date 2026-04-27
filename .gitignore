@@ -31,3 +31,5 @@ ServerGame/mob/
 sourceServerGame/
 sourceServerLogin/
 sourceServerCommon/
+
+.env.local
