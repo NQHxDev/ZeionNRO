@@ -906,7 +906,7 @@ public class GodGK {
          pet.nPoint.dameg = (Double) petPoint.get("damg");
          pet.nPoint.defg = (Double) petPoint.get("defg");
          pet.nPoint.critg = ((Double) petPoint.get("critg")).intValue();
-         pet.nPoint.power = (Long) petPoint.get("power");
+         pet.nPoint.power = rs.getLong("pet_power");
          pet.nPoint.tiemNang = (Long) petPoint.get("tiem_nang");
          pet.nPoint.limitPower = ((Double) petPoint.get("limit_power")).byteValue();
          pet.nPoint.hp = (Double) petPoint.get("hp");

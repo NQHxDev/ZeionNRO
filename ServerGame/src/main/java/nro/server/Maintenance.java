@@ -1,5 +1,6 @@
 package nro.server;
 
+import lombok.Getter;
 import nro.services.Service;
 import nro.utils.Log;
 
@@ -9,12 +10,14 @@ public class Maintenance extends Thread {
 
    private static Maintenance i;
 
+   @Getter
    private int seconds;
 
    public static Maintenance gI() {
       if (i == null) {
          i = new Maintenance();
       }
+
       return i;
    }
 

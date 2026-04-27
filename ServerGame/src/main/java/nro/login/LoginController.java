@@ -3,10 +3,10 @@ package nro.login;
 import nro.data.DataGame;
 import nro.jdbc.DBService;
 import nro.models.player.Player;
-import nro.resources.Resources;
 import nro.server.Client;
 import nro.server.Manager;
 import nro.network.io.Message;
+import nro.resources.Resources;
 import nro.server.io.Session;
 import nro.services.Service;
 import nro.utils.Log;
@@ -16,6 +16,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -106,18 +107,15 @@ public class LoginController {
          if (session != null) {
             try {
                byte status = ms.reader().readByte();
-
-               // Đăng nhập thất bại
+               // Đăng nhập thành công
                if (status == 0) {
                   int userID = ms.reader().readInt();
-                  boolean isAdmin = ms.reader().readBoolean();
                   boolean actived = ms.reader().readBoolean();
+                  boolean isAdmin = ms.reader().readBoolean();
                   int goldBar = ms.reader().readInt();
-                  long lastTimeLogin = ms.reader().readLong();
-
                   @SuppressWarnings("unused")
+                  long lastTimeLogin = ms.reader().readLong();
                   long lastTimeLogout = ms.reader().readLong();
-
                   String rewards = ms.reader().readUTF();
                   int ruby = ms.reader().readInt();
                   int diemTichNap = ms.reader().readInt();
@@ -125,20 +123,23 @@ public class LoginController {
                   session.userId = userID;
                   Session se = Client.gI().getSession(session);
                   if (se != null) {
+                     Service.getInstance().sendThongBaoOK(session, "Máy chủ tắt hoặc mất sóng");
                      Client.gI().kickSession(se);
                      Client.gI().kickSession(session);
-                     Service.getInstance().sendThongBaoOK(session, "Máy chủ tắt hoặc mất sóng");
-
                      return;
                   }
-                  session.isAdmin = isAdmin;
-                  session.actived = actived;
+                  if (session.player != null) {
+                     return;
+                  }
                   session.goldBar = goldBar;
-                  session.lastTimeLogout = lastTimeLogin;
+                  session.lastTimeLogout = lastTimeLogout;
+                  session.itemsReward = new ArrayList<>();
                   session.dataReward = rewards;
                   session.ruby = ruby;
                   session.diemTichNap = diemTichNap;
                   session.server = server;
+                  session.actived = actived;
+                  session.isAdmin = isAdmin;
                   Resources.gI().sendSmallVersion(session);
                   Resources.gI().sendBGVersion(session);
                   session.timeWait = 0;
@@ -149,8 +150,10 @@ public class LoginController {
                   String text = ms.reader().readUTF();
                   Service.getInstance().sendThongBaoOK(session, text);
                }
+            } catch (Exception e) {
+               e.printStackTrace();
+               Service.getInstance().sendThongBaoOK(session, "Lỗi hệ thống, vui lòng thử lại sau.");
             } finally {
-
                session.logging = false;
             }
          }
