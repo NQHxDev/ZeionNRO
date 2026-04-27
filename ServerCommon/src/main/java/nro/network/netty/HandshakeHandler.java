@@ -16,10 +16,12 @@ public class HandshakeHandler extends ChannelInboundHandlerAdapter {
    // Configuration for Handshake Response (IP/Port)
    private final String host;
    private final int port;
+   private final boolean isRedirect;
 
-   public HandshakeHandler(String host, int port) {
+   public HandshakeHandler(String host, int port, boolean isRedirect) {
       this.host = host;
       this.port = port;
+      this.isRedirect = isRedirect;
    }
 
    @Override
@@ -32,7 +34,7 @@ public class HandshakeHandler extends ChannelInboundHandlerAdapter {
 
       // Check if the message is a trigger byte (usually -27)
       if (msg instanceof Message m && m.command == -27) {
-         logger.info("Received handshake trigger from session {}", session.getId());
+         // logger.info("Received handshake trigger from session {}", session.getId());
 
          sendSessionKey(ctx, session);
 
@@ -56,28 +58,29 @@ public class HandshakeHandler extends ChannelInboundHandlerAdapter {
          ds.writeByte(keys[i] ^ keys[i - 1]);
       }
 
-      // CLIENT Game1 expects: IP (UTF), Port (Int), isConnect2 (Byte)
+      // Restore these to ensure client reads the correct number of bytes
       ds.writeUTF(host != null ? host : "");
       ds.writeInt(port);
-      ds.writeByte(0); // isConnect2 = false
+      ds.writeByte(isRedirect ? 1 : 0); // Trigger redirect if true
 
       ds.flush();
 
-      // Cần lấy Hex trước khi gửi để tránh bị NettyEncoder giải phóng Buffer (refCnt: 0)
-      byte[] fullData = ms.getData();
+      // Set connected BEFORE writing to prevent race conditions with next message
+      session.setConnected(true);
 
       io.netty.channel.ChannelFuture f = ctx.channel().writeAndFlush(ms);
       f.addListener(future -> {
          if (!future.isSuccess()) {
             logger.error("Failed to send session key!", future.cause());
-         } else {
-            logger.info("Session key flushed to socket successfully!");
-            // Chỉ kích hoạt trạng thái connected sau khi đã gửi xong gói unencrypted -27
-            session.setConnected(true);
          }
+         // else {
+         //    logger.info("Session key flushed to socket successfully!");
+         // }
       });
 
-      logger.info("Sent session key to session {}. Hex: {} {}", session.getId(), NettySession.byteToHex((byte) -27), NettySession.bytesToHex(fullData));
+      byte[] fullData = ms.getData();
+      // logger.info("Sent session key to session {}. Redirect: {} Hex: {} {}",
+      //       session.getId(), isRedirect, NettySession.byteToHex((byte) -27), NettySession.bytesToHex(fullData));
    }
 
 }

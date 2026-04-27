@@ -2,6 +2,7 @@ package nro.models.player;
 
 import nro.consts.ConstPlayer;
 import nro.models.item.CaiTrang;
+import nro.models.item.Item;
 import nro.models.mob.Mob;
 import nro.models.skill.Skill;
 import nro.server.Manager;
@@ -749,10 +750,13 @@ public class Pet extends Player {
          return 1717;
       } else if (effectSkill.isBinh) {
          return 1321;
-      } else if (inventory.itemsBody.get(5).isNotNullItem()) {
-         CaiTrang ct = Manager.getCaiTrangByItemId(inventory.itemsBody.get(5).template.id);
-         if (ct != null) {
-            return (short) ((short) ct.getID()[0] != -1 ? ct.getID()[0] : inventory.itemsBody.get(5).template.part);
+      } else {
+         Item ct = getItemBody(5);
+         if (ct != null && ct.isNotNullItem()) {
+            CaiTrang caiTrang = Manager.getCaiTrangByItemId(ct.template.id);
+            if (caiTrang != null) {
+               return (short) ((short) caiTrang.getID()[0] != -1 ? caiTrang.getID()[0] : ct.template.part);
+            }
          }
       }
       if (this.nPoint.power < 1500000) {
@@ -806,14 +810,18 @@ public class Pet extends Player {
          return 1718;
       } else if (effectSkill.isBinh) {
          return 1322;
-      } else if (inventory.itemsBody.get(5).isNotNullItem()) {
-         CaiTrang ct = Manager.getCaiTrangByItemId(inventory.itemsBody.get(5).template.id);
-         if (ct != null && ct.getID()[1] != -1) {
-            return (short) ct.getID()[1];
+      } else {
+         Item ct = getItemBody(5);
+         if (ct != null && ct.isNotNullItem()) {
+            CaiTrang caiTrang = Manager.getCaiTrangByItemId(ct.template.id);
+            if (caiTrang != null && caiTrang.getID()[1] != -1) {
+               return (short) caiTrang.getID()[1];
+            }
          }
       }
-      if (inventory.itemsBody.get(0).isNotNullItem()) {
-         return inventory.itemsBody.get(0).template.part;
+      Item body = getItemBody(0);
+      if (body != null && body.isNotNullItem()) {
+         return body.template.part;
       }
       if (this.nPoint.power < 1500000) {
          return PET_ID[this.gender][1];
@@ -866,14 +874,18 @@ public class Pet extends Player {
          return 1719;
       } else if (effectSkill.isBinh) {
          return 1323;
-      } else if (inventory.itemsBody.get(5).isNotNullItem()) {
-         CaiTrang ct = Manager.getCaiTrangByItemId(inventory.itemsBody.get(5).template.id);
-         if (ct != null && ct.getID()[2] != -1) {
-            return (short) ct.getID()[2];
+      } else {
+         Item ct = getItemBody(5);
+         if (ct != null && ct.isNotNullItem()) {
+            CaiTrang caiTrang = Manager.getCaiTrangByItemId(ct.template.id);
+            if (caiTrang != null && caiTrang.getID()[2] != -1) {
+               return (short) caiTrang.getID()[2];
+            }
          }
       }
-      if (inventory.itemsBody.get(1).isNotNullItem()) {
-         return inventory.itemsBody.get(1).template.part;
+      Item leg = getItemBody(1);
+      if (leg != null && leg.isNotNullItem()) {
+         return leg.template.part;
       }
 
       if (this.nPoint.power < 1500000) {

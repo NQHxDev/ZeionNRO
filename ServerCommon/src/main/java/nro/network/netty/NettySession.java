@@ -50,9 +50,9 @@ public class NettySession implements ISession {
 
    public void setConnected(boolean connected) {
       this.connected = connected;
-      if (connected) {
-         System.out.println(String.format("<<< [SESSION CONNECTED] Session %d | IP: %s", id, getIPString()));
-      }
+      // if (connected) {
+      //    System.out.println(String.format("<<< [SESSION CONNECTED] Session %d | IP: %s", id, getIPString()));
+      // }
    }
 
    public Object getHandler() {

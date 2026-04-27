@@ -25,6 +25,7 @@ import nro.jdbc.daos.manager.SkillDAO;
 import nro.jdbc.daos.manager.TaskDAO;
 import nro.lib.RandomCollection;
 import nro.manager.NamekBallManager;
+import nro.manager.SieuHangManager;
 import nro.models.clan.Clan;
 import nro.models.intrinsic.Intrinsic;
 import nro.models.item.CaiTrang;
@@ -97,7 +98,7 @@ public class Manager {
    public static int TILE_NCAP = 0;
    public static byte SUKIEN = 6;
    public static int EVENT_SEVER = 6;
-   public static String DOMAIN = "https://zeion.online/";
+   public static String DOMAIN = "127.0.0.1";
    public static String SERVER_NAME = "Ngọc Rồng Zeion";
    public static int EVENT_COUNT_THAN_HUY_DIET = 0;
    public static int EVENT_COUNT_QUY_LAO_KAME = 0;
@@ -254,6 +255,7 @@ public class Manager {
       loadDatabase();
       new ConMeo(-1, -1, -1, -1, ConstNpc.CON_MEO, 29028);
       new RongThieng(-1, -1, -1, -1, ConstNpc.RONG_THIENG, -1);
+      SieuHangManager.gI().init();
       // Event.initEvent(gameConfig.getEvent());
       // if (Event.isEvent()) {
       // Event.getInstance().init();
@@ -627,8 +629,6 @@ public class Manager {
             linkServer += String.valueOf(value) + ":0,";
          }
       }
-      // DataGame.LINK_IP_PORT = "FreeAll:14.225.209.128:14445:0";
-      Log.log("Đang gán LINK_IP_PORT...");
       if (!linkServer.isEmpty()) {
          DataGame.LINK_IP_PORT = linkServer.substring(0, linkServer.length() - 1);
       } else {
@@ -659,6 +659,7 @@ public class Manager {
 
    /**
     * @param tileTypeFocus tile type: top, bot, left, right...
+    *
     * @return [tileMapId][tileType]
     */
    private int[][] readTileIndexTileType(int tileTypeFocus) {

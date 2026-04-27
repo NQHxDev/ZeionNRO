@@ -139,17 +139,17 @@ public class MobService {
    }
 
    public void hoiSinhMob(Mob mob) {
-      boolean isDie = mob.isDie();
-      mob.point.hp = mob.point.maxHp;
-      mob.setTiemNang();
-      if (isDie) {
+      if (mob.isDie) {
+         mob.point.hp = mob.point.maxHp;
+         mob.setTiemNang();
+         mob.isDie = false;
          Message msg;
          try {
             msg = Message.create(-13);
             msg.writer().writeByte(mob.id);
             msg.writer().writeByte(mob.tempId);
-            msg.writer().writeByte(0); // level mob
-            msg.writer().writeDouble(mob.point.hp);
+            msg.writer().writeByte(0);
+            msg.writer().writeDouble(mob.point.getHP());
             Service.getInstance().sendMessAllPlayerInMap(mob.zone, msg);
          } catch (Exception e) {
             Log.error(MobService.class, e);

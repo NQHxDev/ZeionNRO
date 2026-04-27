@@ -428,6 +428,9 @@ public class ChangeMapService {
             if (mob.isDie()) {
                msg = Message.create(-12);
                msg.writer().writeByte(mob.id);
+               msg.writer().writeDouble(0);
+               msg.writer().writeBoolean(false);
+               msg.writer().writeByte(0);
                player.sendMessage(msg);
                msg.cleanup();
             }

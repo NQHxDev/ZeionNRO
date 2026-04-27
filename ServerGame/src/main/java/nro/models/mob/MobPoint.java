@@ -32,7 +32,7 @@ public class MobPoint {
    }
 
    public void setHP(double hp) {
-      if (this.hp < 0) {
+      if (hp < 0) {
          this.hp = 0;
       } else {
          this.hp = hp;

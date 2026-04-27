@@ -8,9 +8,13 @@ import lombok.Getter;
 public class Attribute {
 
    public int id;
+
    public int value;
+
    public int time;
+
    public AttributeTemplate template;
+
    private transient boolean changed;
 
    @Builder

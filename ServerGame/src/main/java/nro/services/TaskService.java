@@ -56,37 +56,9 @@ public class TaskService {
     * Làm cùng số người trong bang
     */
    private static final byte NMEMBER_DO_TASK_TOGETHER = 0;
-   // id vật phẩm nhận thưởng nhiệm vụ
-   private static final short ID_THUONG_NHIEMVU = 457;
+
    // id vật phẩm nhận thưởng thành tựu
    private static final short ID_THUONG_THANHTUU = 1567;
-   // Số lượng phần thưởng nhiệm vụ
-   private static final int THUONG_NV_15 = 1000;
-   private static final int THUONG_NV_16 = 1000;
-   private static final int THUONG_NV_17 = 1000;
-   private static final int THUONG_NV_18 = 1000;
-   private static final int THUONG_NV_19 = 2000;
-   private static final int THUONG_NV_20 = 3000;
-   private static final int THUONG_NV_21 = 4000;
-   private static final int THUONG_NV_22 = 5000;
-   private static final int THUONG_NV_23 = 6000;
-   private static final int THUONG_NV_24 = 7000;
-   private static final int THUONG_NV_25 = 8000;
-   private static final int THUONG_NV_26 = 9000;
-   private static final int THUONG_NV_27 = 10000;
-   private static final int THUONG_NV_28 = 15000;
-   private static final int THUONG_NV_29 = 17500;
-   private static final int THUONG_NV_30 = 20000;
-   private static final int THUONG_NV_31 = 25000;
-   private static final int THUONG_NV_32 = 30000;
-   private static final int THUONG_NV_33 = 35000;
-   private static final int THUONG_NV_34 = 40000;
-   private static final int THUONG_NV_35 = 45000;
-   private static final int THUONG_NV_36 = 50000;
-   private static final int THUONG_NV_37 = 60000;
-   private static final int THUONG_NV_38 = 70000;
-   private static final int THUONG_NV_39 = 80000;
-   private static final int THUONG_NV_40 = 100000;
 
    private static TaskService i;
 
@@ -157,6 +129,9 @@ public class TaskService {
    public void sendUpdateCountSubTask(Player player) {
       Message msg;
       try {
+         if (player.playerTask.taskMain == null) {
+            return;
+         }
          msg = Message.create(43);
          msg.writer().writeShort(player.playerTask.taskMain.subTasks.get(player.playerTask.taskMain.index).count);
          player.sendMessage(msg);
@@ -178,6 +153,9 @@ public class TaskService {
 
    // gửi thông tin nhiệm vụ hiện tại
    public void sendInfoCurrentTask(Player player) {
+      if (player.playerTask.taskMain == null) {
+         return;
+      }
       Service.getInstance().sendThongBao(player, "Nhiệm vụ hiện tại của bạn là "
             + player.playerTask.taskMain.subTasks.get(player.playerTask.taskMain.index).name);
    }
@@ -1221,117 +1199,141 @@ public class TaskService {
 
    // Thưởng nhiệm vụ
    private void rewardDoneTask(Player player) {
-      short idvatpham = ID_THUONG_NHIEMVU;
-      int soLuong = 0;
-      Item qua = ItemService.gI().createNewItem(idvatpham);
+      long rewardSMTN = 0;
       switch (player.playerTask.taskMain.id) {
          case 0:
-            Service.getInstance().addSMTN(player, (byte) 0, 5000000, false);
-            Service.getInstance().addSMTN(player, (byte) 1, 5000000, false);
+            rewardSMTN = 500;
             break;
          case 1:
-            Service.getInstance().addSMTN(player, (byte) 0, 5000000, false);
-            Service.getInstance().addSMTN(player, (byte) 1, 5000000, false);
+            rewardSMTN = 1000;
             break;
          case 2:
-            Service.getInstance().addSMTN(player, (byte) 0, 50000000, false);
-            Service.getInstance().addSMTN(player, (byte) 1, 50000000, false);
+            rewardSMTN = 2000;
             break;
          case 3:
-            Service.getInstance().addSMTN(player, (byte) 0, 50000000, false);
-            Service.getInstance().addSMTN(player, (byte) 1, 50000000, false);
+            rewardSMTN = 5000;
             break;
          case 4:
-            Service.getInstance().addSMTN(player, (byte) 0, 50000000, false);
-            Service.getInstance().addSMTN(player, (byte) 1, 50000000, false);
+            rewardSMTN = 10000;
             break;
          case 5:
-            Service.getInstance().addSMTN(player, (byte) 0, 50000000, false);
-            Service.getInstance().addSMTN(player, (byte) 1, 50000000, false);
+            rewardSMTN = 20000;
+            break;
+         case 6:
+            rewardSMTN = 30000;
+            break;
+         case 7:
+            rewardSMTN = 40000;
+            break;
+         case 8:
+            rewardSMTN = 50000;
+            break;
+         case 9:
+            rewardSMTN = 60000;
+            break;
+         case 10:
+            rewardSMTN = 80000;
+            break;
+         case 11:
+            rewardSMTN = 100000;
+            break;
+         case 12:
+            rewardSMTN = 150000;
+            break;
+         case 13:
+            rewardSMTN = 200000;
+            break;
+         case 14:
+            rewardSMTN = 300000;
             break;
          case 15:
-            soLuong += THUONG_NV_15;
+            rewardSMTN = 500000;
             break;
          case 16:
-            soLuong += THUONG_NV_16;
+            rewardSMTN = 700000;
             break;
          case 17:
-            soLuong += THUONG_NV_17;
+            rewardSMTN = 1000000;
             break;
          case 18:
-            soLuong += THUONG_NV_18;
+            rewardSMTN = 1500000;
             break;
          case 19:
-            soLuong += THUONG_NV_19;
+            rewardSMTN = 2000000;
             break;
          case 20:
-            soLuong += THUONG_NV_20;
+            rewardSMTN = 3000000;
             break;
          case 21:
-            soLuong += THUONG_NV_21;
+            rewardSMTN = 4000000;
             break;
          case 22:
-            soLuong += THUONG_NV_22;
+            rewardSMTN = 5000000;
             break;
          case 23:
-            soLuong += THUONG_NV_23;
+            rewardSMTN = 7000000;
             break;
          case 24:
-            soLuong += THUONG_NV_24;
+            rewardSMTN = 9000000;
             break;
          case 25:
-            soLuong += THUONG_NV_25;
+            rewardSMTN = 12000000;
             break;
          case 26:
-            soLuong += THUONG_NV_26;
+            rewardSMTN = 15000000;
             break;
          case 27:
-            soLuong += THUONG_NV_27;
+            rewardSMTN = 18000000;
             break;
          case 28:
-            soLuong += THUONG_NV_28;
+            rewardSMTN = 20000000;
             break;
          case 29:
-            soLuong += THUONG_NV_29;
+            rewardSMTN = 25000000;
             break;
          case 30:
-            soLuong += THUONG_NV_30;
+            rewardSMTN = 30000000;
             break;
          case 31:
-            soLuong += THUONG_NV_31;
+            rewardSMTN = 35000000;
             break;
          case 32:
-            soLuong += THUONG_NV_32;
+            rewardSMTN = 40000000;
             break;
          case 33:
-            soLuong += THUONG_NV_33;
+            rewardSMTN = 45000000;
             break;
          case 34:
-            soLuong += THUONG_NV_34;
+            rewardSMTN = 50000000;
             break;
          case 35:
-            soLuong += THUONG_NV_35;
+            rewardSMTN = 55000000;
             break;
          case 36:
-            soLuong += THUONG_NV_36;
+            rewardSMTN = 60000000;
             break;
          case 37:
-            soLuong += THUONG_NV_37;
+            rewardSMTN = 65000000;
             break;
          case 38:
-            soLuong += THUONG_NV_38;
+            rewardSMTN = 70000000;
             break;
          case 39:
-            soLuong += THUONG_NV_39;
+            rewardSMTN = 75000000;
             break;
          case 40:
-            soLuong += THUONG_NV_40;
+            rewardSMTN = 80000000;
+            break;
+         default:
+            rewardSMTN = 0;
             break;
       }
-      qua.quantity = soLuong;
-      InventoryService.gI().addItemBag(player, qua, 99999999);
-      InventoryService.gI().sendItemBags(player);
-      Service.getInstance().sendThongBaoOK(player, "Phần thưởng từ nv: " + soLuong + " " + qua.template.name);
+
+      if (rewardSMTN > 0) {
+         Service.getInstance().addSMTN(player, (byte) 2, rewardSMTN, false);
+         Service.getInstance().sendThongBao(player,
+               "Phần thưởng nhiệm vụ: " + Util.numberToMoney(rewardSMTN) + " Sức mạnh & Tiềm năng");
+      }
    }
 
    // vd: pem đc 1 mộc nhân -> +1 mộc nhân vào nv hiện tại

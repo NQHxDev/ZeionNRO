@@ -21,6 +21,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -34,6 +36,7 @@ import nro.services.RuongSuuTam;
 public class PlayerDAO {
 
    public static boolean updateTimeLogout;
+
    private static final Gson gson = new Gson();
 
    private static String saveItems(List<Item> items) {
@@ -95,24 +98,6 @@ public class PlayerDAO {
       dataLocation.add(y);
       dataLocation.add(mapId);
       return gson.toJson(dataLocation);
-   }
-
-   private static String savePoint(Player player) {
-      JsonArray dataPoint = new JsonArray();
-      dataPoint.add(player.nPoint.limitPower);
-      dataPoint.add(player.nPoint.power);
-      dataPoint.add(player.nPoint.tiemNang);
-      dataPoint.add(player.nPoint.stamina);
-      dataPoint.add(player.nPoint.maxStamina);
-      dataPoint.add(player.nPoint.hpg);
-      dataPoint.add(player.nPoint.mpg);
-      dataPoint.add(player.nPoint.dameg);
-      dataPoint.add(player.nPoint.defg);
-      dataPoint.add(player.nPoint.critg);
-      dataPoint.add(0);
-      dataPoint.add(player.nPoint.hp);
-      dataPoint.add(player.nPoint.mp);
-      return gson.toJson(dataPoint);
    }
 
    private static String saveMagicTree(Player player) {
@@ -223,12 +208,33 @@ public class PlayerDAO {
       return gson.toJson(dataItemTimeSC);
    }
 
-   private static String saveTask(Player player) {
-      JsonArray dataTask = new JsonArray();
-      dataTask.add(player.playerTask.taskMain.subTasks.get(player.playerTask.taskMain.index).count);
-      dataTask.add(player.playerTask.taskMain.id);
-      dataTask.add(player.playerTask.taskMain.index);
-      return gson.toJson(dataTask);
+   public static void saveTask(Player player, Connection con) {
+      if (player.playerTask == null || player.playerTask.taskMain == null) {
+         return;
+      }
+      PreparedStatement ps = null;
+      try {
+         ps = con
+               .prepareStatement("INSERT INTO player_task (player_id, task_id, sub_id, task_count) VALUES (?, ?, ?, ?) "
+                     + "ON DUPLICATE KEY UPDATE task_id = ?, sub_id = ?, task_count = ?");
+         ps.setInt(1, (int) player.id);
+         ps.setInt(2, player.playerTask.taskMain.id);
+         ps.setInt(3, player.playerTask.taskMain.index);
+         ps.setInt(4, player.playerTask.taskMain.subTasks.get(player.playerTask.taskMain.index).count);
+         ps.setInt(5, player.playerTask.taskMain.id);
+         ps.setInt(6, player.playerTask.taskMain.index);
+         ps.setInt(7, player.playerTask.taskMain.subTasks.get(player.playerTask.taskMain.index).count);
+         ps.executeUpdate();
+      } catch (Exception e) {
+         Log.error(PlayerDAO.class, e, "Lỗi save task player " + player.name);
+      } finally {
+         if (ps != null) {
+            try {
+               ps.close();
+            } catch (SQLException e) {
+            }
+         }
+      }
    }
 
    private static String saveSideTask(Player player) {
@@ -407,24 +413,6 @@ public class PlayerDAO {
       return gson.toJson(dataLocation);
    }
 
-   private static String createDefaultPoint(byte gender) {
-      JsonArray dataPoint = new JsonArray();
-      dataPoint.add(0); // giới hạn sức mạnh
-      dataPoint.add(15000000); // sức mạnh
-      dataPoint.add(150000000); // tiềm năng
-      dataPoint.add(1000); // thể lực
-      dataPoint.add(1000); // thể lực đầy
-      dataPoint.add(2000); // hp gốc
-      dataPoint.add(2000); // ki gốc
-      dataPoint.add(333); // sức đánh gốc
-      dataPoint.add(0); // giáp gốc
-      dataPoint.add(0); // chí mạng gốc
-      dataPoint.add(0); // năng động
-      dataPoint.add(2000); // hp hiện tại
-      dataPoint.add(2000); // ki hiện tại
-      return gson.toJson(dataPoint);
-   }
-
    private static String createDefaultMagicTree() {
       JsonArray dataMagicTree = new JsonArray();
       dataMagicTree.add(0); // isUpgrade
@@ -561,12 +549,26 @@ public class PlayerDAO {
       return gson.toJson(dataItemTimeSC);
    }
 
-   private static String createDefaultTask() {
-      JsonArray dataTask = new JsonArray();
-      dataTask.add(0);
-      dataTask.add(15);
-      dataTask.add(0);
-      return gson.toJson(dataTask);
+   private static void createDefaultTask(Connection con, int playerId) {
+      PreparedStatement ps = null;
+      try {
+         ps = con.prepareStatement(
+               "INSERT INTO player_task (player_id, task_id, sub_id, task_count) VALUES (?, ?, ?, ?)");
+         ps.setInt(1, playerId);
+         ps.setInt(2, 0); // Task ID
+         ps.setInt(3, 0); // Task Sub
+         ps.setInt(4, 0); // Task Count
+         ps.executeUpdate();
+      } catch (Exception e) {
+         Log.error(PlayerDAO.class, e, "Lỗi tạo default task cho player id " + playerId);
+      } finally {
+         if (ps != null) {
+            try {
+               ps.close();
+            } catch (SQLException e) {
+            }
+         }
+      }
    }
 
    private static String createDefaultAchivements() {
@@ -609,7 +611,7 @@ public class PlayerDAO {
       dataSkillShortcut.add(gender == 0 ? 0 : gender == 1 ? 2 : 4);
       dataSkillShortcut.add(gender == 0 ? 1 : gender == 1 ? 3 : 5);
       dataSkillShortcut.add(gender == 0 ? 6 : gender == 1 ? 7 : 8);
-      for (int i = 0; i < 7; i++)
+      for (int i = 0; i < 5; i++)
          dataSkillShortcut.add(-1);
       return gson.toJson(dataSkillShortcut);
    }
@@ -759,12 +761,17 @@ public class PlayerDAO {
       try {
          ps = con.prepareStatement("insert into player"
                + "(account_id, name, head, gender, have_tennis_space_ship, clan_id_sv" + Manager.SERVER + ", "
-               + "data_inventory, data_location, data_point, data_magic_tree, items_body, "
+               + "data_inventory, data_location, data_magic_tree, items_body, "
                + "items_bag, items_box, items_box_lucky_round, friends, enemies, data_intrinsic, data_item_time,"
-               + "data_task, data_mabu_egg, data_charm, skills, skills_shortcut, pet_info, pet_point, pet_body, pet_skill,"
+               + "data_mabu_egg, data_charm, skills, skills_shortcut, pet_info, pet_power, pet_point, pet_body, pet_skill,"
                + "data_black_ball, thoi_vang, data_side_task, achivements, data_item_time_sieucap, "
-               + "kham_ngoc, ruong_cai_trang, ruong_phu_kien, ruong_pet, ruong_linh_thu, ruong_thu_cuoi, phong_thi_nghiem ) "
-               + "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+               + "kham_ngoc, ruong_cai_trang, ruong_phu_kien, ruong_pet, ruong_linh_thu, ruong_thu_cuoi, phong_thi_nghiem, reward_limit, buy_limit, "
+               + "data_item_noel, challenge, sk_tet, moc_nap, drop_vang_ngoc, tong_nap, danh_hieu, so_may_man, active_phuc_loi, check_online, check_diem_danh, phut_online, weekTimeLogin, "
+               + "1sao, 2sao, 3sao, collection_book, event_point, firstTimeLogin, nhan_moc_nap, chuyen_sinh, data_offtrain, reset_ngay, nhan_moc_nap2,"
+               + "kill_boss, diemdanh, chuyencan, hoivien_vip, check_qua_chuyencan, naplandau, tichluynap, nhan_moc_nap3, sukien_2thang9, sukien_trungthu, diem_quay, active_vong_quay,"
+               + "active_kham_ngoc, active_ruong_suu_tam, dan_duoc) "
+               + "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+               Statement.RETURN_GENERATED_KEYS);
 
          ps.setInt(1, userId);
          ps.setString(2, name);
@@ -774,38 +781,85 @@ public class PlayerDAO {
          ps.setInt(6, -1);
          ps.setString(7, createDefaultInventory());
          ps.setString(8, createDefaultLocation(gender));
-         ps.setString(9, createDefaultPoint(gender));
-         ps.setString(10, createDefaultMagicTree());
-         ps.setString(11, createDefaultBody(gender));
-         ps.setString(12, createDefaultBag());
-         ps.setString(13, createDefaultBox());
-         ps.setString(14, createDefaultLuckyRound());
-         ps.setString(15, "[]"); // friends
-         ps.setString(16, "[]"); // enemies
-         ps.setString(17, createDefaultIntrinsic());
-         ps.setString(18, createDefaultItemTime());
-         ps.setString(19, createDefaultTask());
-         ps.setString(20, "{}"); // mabu egg
-         ps.setString(21, createDefaultCharms());
-         ps.setString(22, createDefaultSkills(gender));
-         ps.setString(23, createDefaultSkillShortcut(gender));
-         ps.setString(24, "{}"); // pet info
-         ps.setString(25, "{}"); // pet point
-         ps.setString(26, "[]"); // pet body
-         ps.setString(27, "[]"); // pet skill
-         ps.setString(28, createDefaultBlackBall());
-         ps.setInt(29, 10); // gold bar
-         ps.setString(30, "{}"); // side task
-         ps.setString(31, createDefaultAchivements());
-         ps.setString(32, createDefaultItemTimeSC());
-         ps.setString(33, createDefaultKhamNgoc());
-         ps.setString(34, createDefaultRuongSuuTam());
-         ps.setString(35, createDefaultRuongSuuTam());
-         ps.setString(36, createDefaultRuongSuuTam());
-         ps.setString(37, createDefaultRuongSuuTam());
-         ps.setString(38, createDefaultRuongSuuTam());
-         ps.setString(39, createDefaultPhongThiNghiem());
+         ps.setString(9, createDefaultMagicTree());
+         ps.setString(10, createDefaultBody(gender)); // items_body
+         ps.setString(11, createDefaultBag()); // items_bag
+         ps.setString(12, createDefaultBox()); // items_box
+         ps.setString(13, createDefaultLuckyRound()); // items_box_lucky_round
+         ps.setString(14, "[]"); // friends
+         ps.setString(15, "[]"); // enemies
+         ps.setString(16, createDefaultIntrinsic()); // data_intrinsic
+         ps.setString(17, createDefaultItemTime()); // data_item_time
+         ps.setString(18, "{}"); // data_mabu_egg
+         ps.setString(19, createDefaultCharms()); // data_charm
+         ps.setString(20, createDefaultSkills(gender)); // skills
+         ps.setString(21, createDefaultSkillShortcut(gender)); // skills_shortcut
+         ps.setString(22, "{}"); // pet info
+         ps.setLong(23, 0); // pet power
+         ps.setString(24, "{}"); // pet point
+         ps.setString(25, "[]"); // pet body
+         ps.setString(26, "[]"); // pet skill
+         ps.setString(27, createDefaultBlackBall()); // data_black_ball
+         ps.setInt(28, 10); // gold bar
+         ps.setString(29, "{}"); // side task
+         ps.setString(30, createDefaultAchivements()); // achivements
+         ps.setString(31, createDefaultItemTimeSC()); // data_item_time_sieucap
+         ps.setString(32, createDefaultKhamNgoc()); // kham_ngoc
+         ps.setString(33, createDefaultRuongSuuTam()); // ruong_cai_trang
+         ps.setString(34, createDefaultRuongSuuTam()); // ruong_phu_kien
+         ps.setString(35, createDefaultRuongSuuTam()); // ruong_pet
+         ps.setString(36, createDefaultRuongSuuTam()); // ruong_linh_thu
+         ps.setString(37, createDefaultRuongSuuTam()); // ruong_thu_cuoi
+         ps.setString(38, createDefaultPhongThiNghiem()); // phong_thi_nghiem
+         ps.setString(39, "[]"); // reward_limit
+         ps.setString(40, "[]"); // buy_limit
+         ps.setString(41, "[]"); // data_item_noel
+         ps.setString(42, "[]"); // challenge
+         ps.setString(43, "[0,0,0,0,0]"); // sk_tet
+         ps.setInt(44, 0); // moc_nap
+         ps.setString(45, "[0,0]"); // drop_vang_ngoc
+         ps.setInt(46, 0); // tong_nap
+         ps.setString(47, "[]"); // danh_hieu
+         ps.setString(48, "[]"); // so_may_man
+         ps.setString(49, "[]"); // active_phuc_loi
+         ps.setString(50, "[]"); // check_online
+         ps.setString(51, "[]"); // check_diem_danh
+         ps.setInt(52, 0); // phut_online
+         ps.setTimestamp(53, new Timestamp(System.currentTimeMillis())); // weekTimeLogin
+         ps.setInt(54, 0); // 1sao
+         ps.setInt(55, 0); // 2sao
+         ps.setInt(56, 0); // 3sao
+         ps.setString(57, "[]"); // collection_book
+         ps.setInt(58, 0); // event_point
+         ps.setTimestamp(59, new Timestamp(System.currentTimeMillis())); // firstTimeLogin
+         ps.setString(60, "[]"); // nhan_moc_nap
+         ps.setString(61, "[]"); // chuyen_sinh
+         ps.setString(62, "[]"); // data_offtrain
+         ps.setString(63, "[]"); // reset_ngay
+         ps.setString(64, "[]"); // nhan_moc_nap2
+         ps.setInt(65, 0); // kill_boss
+         ps.setInt(66, 0); // diemdanh
+         ps.setInt(67, 0); // chuyencan
+         ps.setInt(68, 0); // hoivien_vip
+         ps.setInt(69, 0); // check_qua_chuyencan
+         ps.setInt(70, 0); // naplandau
+         ps.setInt(71, 0); // tichluynap
+         ps.setString(72, "[]"); // nhan_moc_nap3
+         ps.setInt(73, 0); // sukien_2thang9
+         ps.setInt(74, 0); // sukien_trungthu
+         ps.setInt(75, 0); // diem_quay
+         ps.setString(76, "[]"); // active_vong_quay
+         ps.setInt(77, 0); // active_kham_ngoc
+         ps.setInt(78, 0); // active_ruong_suu_tam
+         ps.setString(79, "[]"); // dan_duoc
          ps.executeUpdate();
+         ResultSet rs = ps.getGeneratedKeys();
+         if (rs.next()) {
+            int playerId = rs.getInt(1);
+            createPlayerPoint(con, playerId, gender);
+            createDefaultTask(con, playerId);
+            createSieuHangRecord(con, playerId);
+         }
       } catch (Exception e) {
          Log.error(PlayerDAO.class, e, "Lỗi tạo player mới");
       } finally {
@@ -815,6 +869,16 @@ public class PlayerDAO {
             } catch (SQLException e) {
             }
          }
+      }
+   }
+
+   public static void createSieuHangRecord(Connection con, int playerId) {
+      try (PreparedStatement ps = con.prepareStatement("insert into sieu_hang (player_id, point) values (?, ?)")) {
+         ps.setInt(1, playerId);
+         ps.setInt(2, 100);
+         ps.executeUpdate();
+      } catch (SQLException e) {
+         Log.error(PlayerDAO.class, e, "Lỗi tạo bản ghi sieu_hang");
       }
    }
 
@@ -831,10 +895,10 @@ public class PlayerDAO {
          try {
             ps = connection.prepareStatement("update player set head = ?, gender = ?, have_tennis_space_ship = ?,"
                   + "clan_id_sv" + Manager.SERVER
-                  + " = ?, data_inventory = ?, data_location = ?, data_point = ?, data_magic_tree = ?,"
+                  + " = ?, data_inventory = ?, data_location = ?, data_magic_tree = ?,"
                   + "items_body = ?, items_bag = ?, items_box = ?, items_box_lucky_round = ?, friends = ?,"
-                  + "enemies = ?, data_intrinsic = ?, data_item_time = ?, data_task = ?, data_mabu_egg = ?,"
-                  + "pet_info = ?, pet_point = ?, pet_body = ?, pet_skill = ? , power = ?, pet_power = ?, "
+                  + "enemies = ?, data_intrinsic = ?, data_item_time = ?, data_mabu_egg = ?,"
+                  + "pet_info = ?, pet_power = ?, pet_point = ?, pet_body = ?, pet_skill = ?,"
                   + "data_black_ball = ?, data_side_task = ?, data_charm = ?, skills = ?, skills_shortcut = ?,"
                   + "thoi_vang = ?, 1sao = ?, 2sao = ?, 3sao = ?, collection_book = ?, event_point = ?, firstTimeLogin = ?,"
                   + " challenge = ?, sk_tet = ?, buy_limit = ?, moc_nap = ?,achivements = ? , reward_limit = ?, drop_vang_ngoc = ?"
@@ -854,82 +918,81 @@ public class PlayerDAO {
             ps.setShort(4, (short) (player.clan != null ? player.clan.id : -1));
             ps.setString(5, saveInventory(player));
             ps.setString(6, saveLocation(player));
-            ps.setString(7, savePoint(player));
-            ps.setString(8, saveMagicTree(player));
-            ps.setString(9, saveItems(player.inventory.itemsBody));
-            ps.setString(10, saveItems(player.inventory.itemsBag));
-            ps.setString(11, saveItems(player.inventory.itemsBox));
-            ps.setString(12, saveItems(player.inventory.itemsBoxCrackBall));
-            ps.setString(13, saveFriends(player.friends));
-            ps.setString(14, saveFriends(player.enemies));
-            ps.setString(15, saveIntrinsic(player));
-            ps.setString(16, saveItemTime(player));
-            ps.setString(17, saveTask(player));
-            ps.setString(18, saveMabuEgg(player));
-            ps.setString(19, savePetInfo(player));
-            ps.setString(20, savePetPoint(player));
-            ps.setString(21, player.pet != null ? saveItems(player.pet.inventory.itemsBody) : "[]");
-            ps.setString(22, savePetSkills(player));
-            ps.setDouble(23, player.nPoint.power);
-            ps.setDouble(24, player.pet != null ? player.pet.nPoint.power : 0);
-            ps.setString(25, saveBlackBall(player));
-            ps.setString(26, saveSideTask(player));
-            ps.setString(27, saveCharms(player));
-            ps.setString(28, saveSkills(player));
-            ps.setString(29, saveSkillShortcut(player));
-            ps.setInt(30, tv);
-            ps.setInt(31, n1s);
-            ps.setInt(32, n2s);
-            ps.setInt(33, n3s);
-            ps.setString(34, gson.toJson(player.collectionBook.cards));
-            ps.setInt(35, player.evenpoint);
-            ps.setString(36, Util.toDateString(player.firstTimeLogin));
-            ps.setString(37, saveChallenge(player));
-            ps.setString(38, saveSkTet(player));
-            ps.setString(39, saveBuyLimit(player));
-            ps.setInt(40, player.event.mocNapDaNhan);
-            ps.setString(41, saveAchivements(player));
-            ps.setString(42, saveRewardLimit(player));
-            ps.setString(43, saveVangNgoc(player));
-            ps.setString(44, saveMocNap(player.mot, player.hai, player.ba, player.bon, player.nam));
-            ps.setString(45, saveItemTimeSC(player));
-            ps.setString(46, saveMocNap(player.chuyensinh, player.MaxGoldTradeDay, player.chuaco2, player.chuaco3,
+            ps.setString(7, saveMagicTree(player));
+            ps.setString(8, saveItems(player.inventory.itemsBody));
+            ps.setString(9, saveItems(player.inventory.itemsBag));
+            ps.setString(10, saveItems(player.inventory.itemsBox));
+            ps.setString(11, saveItems(player.inventory.itemsBoxCrackBall));
+            ps.setString(12, saveFriends(player.friends));
+            ps.setString(13, saveFriends(player.enemies));
+            ps.setString(14, saveIntrinsic(player));
+            ps.setString(15, saveItemTime(player));
+            ps.setString(16, saveMabuEgg(player));
+            ps.setString(17, savePetInfo(player));
+            ps.setLong(18, player.pet != null ? player.pet.nPoint.power : 0);
+            ps.setString(19, savePetPoint(player));
+            ps.setString(20, player.pet != null ? saveItems(player.pet.inventory.itemsBody) : "[]");
+            ps.setString(21, savePetSkills(player));
+            ps.setString(22, saveBlackBall(player));
+            ps.setString(23, saveSideTask(player));
+            ps.setString(24, saveCharms(player));
+            ps.setString(25, saveSkills(player));
+            ps.setString(26, saveSkillShortcut(player));
+            ps.setInt(27, tv);
+            ps.setInt(28, n1s);
+            ps.setInt(29, n2s);
+            ps.setInt(30, n3s);
+            ps.setString(31, gson.toJson(player.collectionBook.cards));
+            ps.setInt(32, player.evenpoint);
+            ps.setString(33, Util.toDateString(player.firstTimeLogin));
+            ps.setString(34, saveChallenge(player));
+            ps.setString(35, saveSkTet(player));
+            ps.setString(36, saveBuyLimit(player));
+            ps.setInt(37, player.event.mocNapDaNhan);
+            ps.setString(38, saveAchivements(player));
+            ps.setString(39, saveRewardLimit(player));
+            ps.setString(40, saveVangNgoc(player));
+            ps.setString(41, saveMocNap(player.mot, player.hai, player.ba, player.bon, player.nam));
+            ps.setString(42, saveItemTimeSC(player));
+            ps.setString(43, saveMocNap(player.chuyensinh, player.MaxGoldTradeDay, player.chuaco2, player.chuaco3,
                   player.chuaco4));
-            ps.setInt(47, player.tongnap);
-            ps.setString(48, saveDanhHieu(player));
-            ps.setString(49, gson.toJson(player.soMayMan));
-            ps.setString(50, saveLuyentap(player));
-            ps.setString(51, saveResetDay(player));
-            ps.setString(52, saveMocNap(player.sau, player.bay, player.tam, player.chin, player.muoi));
-            ps.setString(53, saveMocNap(player.listNhan.stream().mapToInt(Integer::intValue).toArray()));
-            ps.setInt(54, player.killboss);
-            ps.setInt(55, player.diemdanh);
-            ps.setInt(56, player.chuyencan);
-            ps.setInt(57, player.hoivienvip);
-            ps.setInt(58, player.checkquachuyencan);
-            ps.setInt(59, player.naplandau);
-            ps.setInt(60, player.tichluynap);
-            ps.setString(61, saveMocNap(player.muoiMot, player.muoiHai, player.muoiBa, player.muoiBon, player.muoiLam));
-            ps.setInt(62, player.even2thang9);
-            ps.setInt(63, player.evenTrungThu);
-            ps.setInt(64, player.diem_quay);
-            ps.setString(65, saveMocNap(player.listNhan_TamBao.stream().mapToInt(Integer::intValue).toArray()));
-            ps.setString(66, saveKhamNgoc(player));
-            ps.setInt(67, player.active_kham_ngoc);
-            ps.setString(68, saveItems(player.ruongSuuTam.RuongCaiTrang));
-            ps.setString(69, saveItems(player.ruongSuuTam.RuongPhuKien));
-            ps.setString(70, saveItems(player.ruongSuuTam.RuongPet));
-            ps.setString(71, saveItems(player.ruongSuuTam.RuongLinhThu));
-            ps.setString(72, saveItems(player.ruongSuuTam.RuongThuCuoi));
-            ps.setInt(73, player.active_ruong_suu_tam);
-            ps.setString(74, saveOnline(player));
-            ps.setInt(75, player.phutOnline);
-            ps.setString(76, saveDiemDanh(player));
-            ps.setString(77, Util.toDateString(player.weekTimeLogin));
-            ps.setString(78, saveMocNap(player.bohuyetdan, player.tangnguyendan, player.bokhidan));
-            ps.setString(79, savePhongThiNghiem(player));
-            ps.setInt(80, (int) player.id);
+            ps.setInt(44, player.tongnap);
+            ps.setString(45, saveDanhHieu(player));
+            ps.setString(46, gson.toJson(player.soMayMan));
+            ps.setString(47, saveLuyentap(player));
+            ps.setString(48, saveResetDay(player));
+            ps.setString(49, saveMocNap(player.sau, player.bay, player.tam, player.chin, player.muoi));
+            ps.setString(50, saveMocNap(player.listNhan.stream().mapToInt(Integer::intValue).toArray()));
+            ps.setInt(51, player.killboss);
+            ps.setInt(52, player.diemdanh);
+            ps.setInt(53, player.chuyencan);
+            ps.setInt(54, player.hoivienvip);
+            ps.setInt(55, player.checkquachuyencan);
+            ps.setInt(56, player.naplandau);
+            ps.setInt(57, player.tichluynap);
+            ps.setString(58, saveMocNap(player.muoiMot, player.muoiHai, player.muoiBa, player.muoiBon, player.muoiLam));
+            ps.setInt(59, player.even2thang9);
+            ps.setInt(60, player.evenTrungThu);
+            ps.setInt(61, player.diem_quay);
+            ps.setString(62, saveMocNap(player.listNhan_TamBao.stream().mapToInt(Integer::intValue).toArray()));
+            ps.setString(63, saveKhamNgoc(player));
+            ps.setInt(64, player.active_kham_ngoc);
+            ps.setString(65, saveItems(player.ruongSuuTam.RuongCaiTrang));
+            ps.setString(66, saveItems(player.ruongSuuTam.RuongPhuKien));
+            ps.setString(67, saveItems(player.ruongSuuTam.RuongPet));
+            ps.setString(68, saveItems(player.ruongSuuTam.RuongLinhThu));
+            ps.setString(69, saveItems(player.ruongSuuTam.RuongThuCuoi));
+            ps.setInt(70, player.active_ruong_suu_tam);
+            ps.setString(71, saveOnline(player));
+            ps.setInt(72, player.phutOnline);
+            ps.setString(73, saveDiemDanh(player));
+            ps.setString(74, Util.toDateString(player.weekTimeLogin));
+            ps.setString(75, saveMocNap(player.bohuyetdan, player.tangnguyendan, player.bokhidan));
+            ps.setString(76, savePhongThiNghiem(player));
+            ps.setInt(77, (int) player.id);
             ps.executeUpdate();
+            updatePlayerPoint(player, connection);
+            saveTask(player, connection);
             if (updateTimeLogout) {
                AccountDAO.updateAccoutLogout(player.getSession());
             }
@@ -1537,4 +1600,63 @@ public class PlayerDAO {
       }
    }
 
+   private static void createPlayerPoint(Connection con, int playerId, byte gender) {
+      PreparedStatement ps = null;
+      try {
+         ps = con.prepareStatement("INSERT INTO player_point(player_id, power, tiem_nang, hp_goc, mp_goc, dame_goc, def_goc, crit_goc, hp, mp, stamina, max_stamina, limit_power) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+         ps.setInt(1, playerId);
+         ps.setLong(2, 2000); // power
+         ps.setLong(3, 2000); // tiem_nang
+         ps.setDouble(4, gender == 0 ? 100 : gender == 1 ? 150 : 200); // hp_goc
+         ps.setDouble(5, gender == 0 ? 100 : gender == 1 ? 150 : 100); // mp_goc
+         ps.setDouble(6, gender == 0 ? 15 : gender == 1 ? 7 : 12); // dame_goc
+         ps.setDouble(7, 0); // def_goc
+         ps.setDouble(8, 0); // crit_goc
+         ps.setDouble(9, gender == 0 ? 100 : gender == 1 ? 150 : 200); // hp
+         ps.setDouble(10, gender == 0 ? 100 : gender == 1 ? 150 : 100); // mp
+         ps.setInt(11, 1000); // stamina
+         ps.setInt(12, 1000); // max_stamina
+         ps.setInt(13, 0); // limit_power
+         ps.executeUpdate();
+      } catch (Exception e) {
+         Log.error(PlayerDAO.class, e, "Lỗi tạo player_point cho id " + playerId);
+      } finally {
+         if (ps != null) {
+            try {
+               ps.close();
+            } catch (SQLException e) {
+            }
+         }
+      }
+   }
+
+   private static void updatePlayerPoint(Player player, Connection con) {
+      PreparedStatement ps = null;
+      try {
+         ps = con.prepareStatement("UPDATE player_point SET power = ?, tiem_nang = ?, hp_goc = ?, mp_goc = ?, dame_goc = ?, def_goc = ?, crit_goc = ?, hp = ?, mp = ?, stamina = ?, max_stamina = ?, limit_power = ? WHERE player_id = ?");
+         ps.setLong(1, player.nPoint.power);
+         ps.setLong(2, player.nPoint.tiemNang);
+         ps.setDouble(3, player.nPoint.hpg);
+         ps.setDouble(4, player.nPoint.mpg);
+         ps.setDouble(5, player.nPoint.dameg);
+         ps.setDouble(6, player.nPoint.defg);
+         ps.setInt(7, player.nPoint.critg);
+         ps.setDouble(8, player.nPoint.hp);
+         ps.setDouble(9, player.nPoint.mp);
+         ps.setInt(10, player.nPoint.stamina);
+         ps.setInt(11, player.nPoint.maxStamina);
+         ps.setInt(12, player.nPoint.limitPower);
+         ps.setInt(13, (int) player.id);
+         ps.executeUpdate();
+      } catch (Exception e) {
+         Log.error(PlayerDAO.class, e, "Lỗi update player_point cho id " + player.id);
+      } finally {
+         if (ps != null) {
+            try {
+               ps.close();
+            } catch (SQLException e) {
+            }
+         }
+      }
+   }
 }

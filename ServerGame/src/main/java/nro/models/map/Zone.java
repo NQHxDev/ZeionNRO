@@ -134,7 +134,8 @@ public class Zone {
    public double getTotalHP() {
       double total = 0;
       synchronized (mobs) {
-         for (Mob mob : mobs) {
+         for (int i = 0; i < mobs.size(); i++) {
+            Mob mob = mobs.get(i);
             if (!mob.isDie()) {
                total += mob.point.hp;
             }
@@ -592,7 +593,16 @@ public class Zone {
                   if (ItemService.gI().isItemNoLimitQuantity(item.template.id)) {
                      maxQuantity = 99999;
                   }
-                  boolean picked = InventoryService.gI().addItemBag(player, item, maxQuantity);
+                  boolean isEatChicken = item.template.id == 73
+                        && TaskService.gI().getIdTask(player) != ConstTask.TASK_2_0;
+                  boolean picked = false;
+                  if (isEatChicken) {
+                     player.nPoint.setFullHpMp();
+                     PlayerService.gI().sendInfoHpMp(player);
+                     picked = true;
+                  } else {
+                     picked = InventoryService.gI().addItemBag(player, item, maxQuantity);
+                  }
                   if (picked) {
                      if (itemMap.itemTemplate.id != 74 && itemMap.itemTemplate.id != 78) {
                         itemMap.isPickedUp = true;
@@ -619,19 +629,17 @@ public class Zone {
                            default:
                               switch (item.template.id) {
                                  case 73:
-                                    msg.writer().writeUTF("");
-                                    msg.writer().writeShort(item.quantity);
-                                    player.sendMessage(msg);
-                                    msg.cleanup();
+                                    if (isEatChicken) {
+                                       msg.writer().writeUTF("Bạn vừa ăn " + item.template.name);
+                                    } else {
+                                       msg.writer().writeUTF("Bạn nhặt được " + item.template.name);
+                                    }
                                     break;
                                  case 74:
                                     msg.writer().writeUTF("Bạn vừa ăn " + item.template.name);
                                     break;
                                  case 78:
                                     msg.writer().writeUTF("Wow, một cậu bé dễ thương!");
-                                    msg.writer().writeShort(item.quantity);
-                                    player.sendMessage(msg);
-                                    msg.cleanup();
                                     break;
                                  case 516:
                                     player.nPoint.setFullHpMp();
@@ -644,9 +652,10 @@ public class Zone {
                                     InventoryService.gI().sendItemBags(player);
                                     break;
                               }
-
                         }
-                        msg.writer().writeShort(item.quantity);
+                        if (itemType != 9 && itemType != 10 && itemType != 34) {
+                           msg.writer().writeShort(item.quantity);
+                        }
                         player.sendMessage(msg);
                         msg.cleanup();
                         Service.getInstance().sendToAntherMePickItem(player, itemMapId);
@@ -867,14 +876,15 @@ public class Zone {
          // mob
          List<Mob> mobs = this.mobs;
          msg.writer().writeByte(mobs.size());
-         for (Mob mob : mobs) {
+         for (int i = 0; i < mobs.size(); i++) {
+            Mob mob = mobs.get(i);
             msg.writer().writeBoolean(false); // is disable
             msg.writer().writeBoolean(false); // is dont move
             msg.writer().writeBoolean(false); // is fire
             msg.writer().writeBoolean(false); // is ice
             msg.writer().writeBoolean(false); // is wind
             msg.writer().writeByte(mob.tempId);
-            msg.writer().writeByte(mob.getSys());
+            msg.writer().writeByte(mob.id);
             msg.writer().writeDouble(mob.point.getHP());
             msg.writer().writeByte(mob.level);
             msg.writer().writeDouble(mob.point.getHpFull());
@@ -882,14 +892,16 @@ public class Zone {
             msg.writer().writeShort(mob.location.y);
             if (mob.isDie()) {
                msg.writer().writeByte(ConstMob.MA_INHELL); // status
+               msg.writer().writeByte(0); // level boss
+               msg.writer().writeBoolean(false);
             } else {
-               msg.writer().writeByte(ConstMob.MA_WALK); // status
+               msg.writer().writeByte(5); // status
+               msg.writer().writeByte(0); // level boss
+               msg.writer().writeBoolean(false);
             }
-            msg.writer().writeByte(0); // level boss
-            msg.writer().writeBoolean(false);
          }
 
-         msg.writer().writeByte(0);
+         msg.writer().writeByte(0); // placeholder for ghostPadding
 
          // npc
          List<Npc> npcs = NpcManager.getNpcsByMapPlayer(pl);
@@ -900,8 +912,6 @@ public class Zone {
             msg.writer().writeShort(npc.cy);
             msg.writer().writeByte(npc.tempId);
             msg.writer().writeShort(npc.avartar);
-
-            // NEW: 0 = bình thường, 1 = khoá hướng
             msg.writer().writeByte(npc.lockDir ? 1 : 0);
          }
 

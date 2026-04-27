@@ -29,22 +29,20 @@ public class TopDAO {
 
    public static List<Player> loadTopPower(Connection con) {
       List<Player> list = new ArrayList<>();
-      String sql = "SELECT * FROM player "
-            + "INNER JOIN account ON account.id = player.account_id "
+      String sql = "SELECT p.*, pp.power FROM player p "
+            + "INNER JOIN account ON account.id = p.account_id "
+            + "INNER JOIN player_point pp ON p.id = pp.player_id "
             + "WHERE account.is_admin = 0 AND account.ban = 0"
             + " ORDER BY "
             + "CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(chuyen_sinh, ',', 1), '[', -1) AS UNSIGNED) DESC,"
-            + "player.power DESC LIMIT 20";
+            + "pp.power DESC LIMIT 20";
       try (PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery()) {
          while (rs.next()) {
             Player player = parseBasePlayer(rs);
 
-            // Power from data_point
-            JsonArray dataPoint = gson.fromJson(rs.getString("data_point"), JsonArray.class);
-            if (dataPoint != null && dataPoint.size() > 1) {
-               player.nPoint.power = dataPoint.get(1).getAsLong();
-            }
+            // Power from player_point
+            player.nPoint.power = rs.getLong("power");
 
             // Chuyen sinh data
             JsonArray chuyenSinh = gson.fromJson(rs.getString("chuyen_sinh"), JsonArray.class);
@@ -101,8 +99,8 @@ public class TopDAO {
                   pet.nPoint.dameg = petPoint.get("damg").getAsDouble();
                   pet.nPoint.defg = petPoint.get("defg").getAsDouble();
                   pet.nPoint.critg = petPoint.get("critg").getAsInt();
-                  pet.nPoint.power = petPoint.get("power").getAsDouble();
-                  pet.nPoint.tiemNang = petPoint.get("tiem_nang").getAsDouble();
+                  pet.nPoint.power = petPoint.get("power").getAsLong();
+                  pet.nPoint.tiemNang = petPoint.get("tiem_nang").getAsLong();
                   pet.nPoint.limitPower = petPoint.get("limit_power").getAsByte();
                   pet.nPoint.hp = petPoint.get("hp").getAsInt();
                   pet.nPoint.mp = petPoint.get("mp").getAsInt();
@@ -141,32 +139,31 @@ public class TopDAO {
 
    public static List<Player> loadTopTask(Connection con) {
       List<Player> list = new ArrayList<>();
-      String sql = "SELECT * FROM player "
-            + "INNER JOIN account ON account.id = player.account_id "
-            + "WHERE account.is_admin = 0 AND account.ban = 0"
-            + " ORDER BY "
-            + " CAST(SUBSTRING_INDEX (SUBSTRING_INDEX (data_task, ',', 1), '[', 2) AS UNSIGNED) DESC,"
-            + " CAST(SUBSTRING_INDEX (data_task, ',', 2) AS UNSIGNED) DESC,"
-            + " CAST(SUBSTRING_INDEX (data_point, ',', 2) AS UNSIGNED) DESC LIMIT 20";
+      String sql = "SELECT p.*, pp.power, a.*, pt.task_id, pt.sub_id, pt.task_count FROM player p "
+            + "INNER JOIN account a ON a.id = p.account_id "
+            + "INNER JOIN player_task pt ON pt.player_id = p.id "
+            + "INNER JOIN player_point pp ON pp.player_id = p.id "
+            + "WHERE a.is_admin = 0 AND a.ban = 0 "
+            + "ORDER BY pt.task_id DESC, pt.sub_id DESC, pt.task_count DESC, "
+            + "pp.power DESC LIMIT 20";
       try (PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery()) {
          while (rs.next()) {
             Player player = parseBasePlayer(rs);
 
-            // Task Data
-            JsonArray taskData = gson.fromJson(rs.getString("data_task"), JsonArray.class);
-            if (taskData != null && taskData.size() >= 3) {
-               TaskMain taskMain = TaskService.gI().getTaskMainById(player, taskData.get(1).getAsByte());
-               taskMain.subTasks.get(taskData.get(2).getAsInt()).count = taskData.get(0).getAsShort();
-               taskMain.index = taskData.get(2).getAsByte();
+            int taskId = rs.getInt("task_id");
+            int subId = rs.getInt("sub_id");
+            int count = rs.getInt("task_count");
+
+            TaskMain taskMain = TaskService.gI().getTaskMainById(player, (byte) taskId);
+            if (taskMain != null) {
+               taskMain.subTasks.get(subId).count = (short) count;
+               taskMain.index = (byte) subId;
                player.playerTask.taskMain = taskMain;
             }
 
-            // Power
-            JsonArray dataPoint = gson.fromJson(rs.getString("data_point"), JsonArray.class);
-            if (dataPoint != null && dataPoint.size() > 1) {
-               player.nPoint.power = dataPoint.get(1).getAsDouble();
-            }
+            // Power from player_point
+            player.nPoint.power = rs.getLong("power");
 
             loadItemsBody(player, rs.getString("items_body"));
             list.add(player);
@@ -199,26 +196,17 @@ public class TopDAO {
 
    public static List<Player> loadTopSieuHang(Connection con) {
       List<Player> list = new ArrayList<>();
-      String sql = "SELECT * FROM player "
-            + "INNER JOIN account ON account.id = player.account_id "
-            + " ORDER BY "
-            + "CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(rank_sieu_hang, ',', 1), '[', -1) AS UNSIGNED) ASC LIMIT 20";
+      String sql = "SELECT p.id, p.name, p.head, p.gender, p.items_body, sh.point, pp.power "
+            + "FROM sieu_hang sh "
+            + "INNER JOIN player p ON sh.player_id = p.id "
+            + "INNER JOIN player_point pp ON p.id = pp.player_id "
+            + "ORDER BY sh.point DESC, pp.power DESC LIMIT 100";
       try (PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery()) {
          while (rs.next()) {
             Player player = parseBasePlayer(rs);
-
-            // Rank Sieu Hang
-            JsonArray rankData = gson.fromJson(rs.getString("rank_sieu_hang"), JsonArray.class);
-            if (rankData != null && rankData.size() >= 6) {
-               player.rankSieuHang = rankData.get(0).getAsInt();
-               player.timesieuhang = rankData.get(1).getAsLong();
-               player.isnhanthuong1 = (player.rankSieuHang == 1);
-               player.nPoint.hpMax = rankData.get(3).getAsDouble();
-               player.nPoint.mpMax = rankData.get(4).getAsDouble();
-               player.nPoint.dame = rankData.get(5).getAsDouble();
-            }
-
+            player.pointSieuHang = rs.getInt("point");
+            player.nPoint.power = rs.getLong("power");
             loadItemsBody(player, rs.getString("items_body"));
             list.add(player);
          }
@@ -247,7 +235,9 @@ public class TopDAO {
             Item item;
             if (d.temp_id != -1) {
                item = ItemService.gI().createNewItem(d.temp_id, d.quantity);
-               item.itemOptions.addAll(ServiceDataDAO.parseItemOptions(d.option));
+               if (d.option != null) {
+                  item.itemOptions.addAll(ServiceDataDAO.parseItemOptions(d.option.toString()));
+               }
                item.createTime = d.create_time;
                if (ItemService.gI().isOutOfDateTime(item)) {
                   item = ItemService.gI().createItemNull();
@@ -265,7 +255,7 @@ public class TopDAO {
    private static class ItemData {
       short temp_id;
       int quantity;
-      String option;
+      JsonElement option;
       long create_time;
    }
 }

@@ -56,6 +56,8 @@ setup:
 build:
 	@printf "$(BLUE)>>>$(RESET) Building ServerCommon...\n"
 	@cd ServerCommon && "$(MVN)" clean install -DskipTests
+	@printf "$(BLUE)>>>$(RESET) Building ServerData...\n"
+	@cd ServerData && "$(MVN)" clean install -DskipTests
 	@printf "$(BLUE)>>>$(RESET) Building ServerLogin...\n"
 	@cd ServerLogin && $(MAKE) build MVN="$(MVN)"
 	@printf "$(BLUE)>>>$(RESET) Building ServerGame...\n"

@@ -94,7 +94,7 @@ public class BotManager {
          pl.gender = (byte) Util.nextInt(0, 2);
          pl.isBot = true;
 
-         pl.nPoint.power = Util.nextdameDouble(5_000_000_000D, 60_000_000_000D);
+         pl.nPoint.power = Util.nextLong(5_000_000_000L, 60_000_000_000L);
          pl.nPoint.hpg = Util.nextInt(1_000_000, 30_000_000);
          pl.nPoint.hpMax = Util.nextInt(1_000_000, 30_000_000);
          pl.nPoint.hp = pl.nPoint.hpMax / 2;

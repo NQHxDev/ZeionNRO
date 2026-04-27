@@ -1,24 +1,33 @@
+# Build & Binaries
 target/
-
+*.jar
 ServerGame.jar
 ServerLogin.jar
+ServerGame/build_output.txt
 
+# Local Configurations
 ServerGame/config/server.properties
 ServerLogin/server.ini
 
-.DS_Store
+# Logs
+log/
+logs/
+*.log
+ServerGame/logs/
+ServerLogin/logs/
+antiddos-rs/logs/
 
+# IDE & OS Specific
+.DS_Store
+.gemini/
+
+# Large Assets/Data
 ServerGame/resources/
 ServerGame/data/
 ServerGame/Eff/
 ServerGame/mob/
 
-.gemini/
-
-log/
-*.log
-ServerGame/build_output.txt
-antiddos-rs/logs/
-
+# Obsolete / Source Backup Folders
 sourceServerGame/
 sourceServerLogin/
+sourceServerCommon/

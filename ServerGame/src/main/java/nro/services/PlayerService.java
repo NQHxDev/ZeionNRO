@@ -42,8 +42,16 @@ public class PlayerService {
          player.levelWoodChest = 0;
          player.receivedWoodChest = false;
          player.event.receivedLuckyMoney = false;
-         player.rewardLimit = new byte[player.rewardLimit.length];
-         player.buyLimit = new byte[player.buyLimit.length];
+         if (player.rewardLimit != null) {
+            player.rewardLimit = new byte[player.rewardLimit.length];
+         } else {
+            player.rewardLimit = new byte[10];
+         }
+         if (player.buyLimit != null) {
+            player.buyLimit = new byte[player.buyLimit.length];
+         } else {
+            player.buyLimit = new byte[13];
+         }
          player.bongtai = 0;
          player.thiensu = 0;
          player.diemdanh = 0;
@@ -71,13 +79,13 @@ public class PlayerService {
       }
    }
 
-   public void sendTNSM(Player player, byte type, double param) {
+   public void sendTNSM(Player player, byte type, long param) {
       if (param > 0) {
          Message msg;
          try {
             msg = Message.create(-3);
             msg.writer().writeByte(type);// 0 là cộng sm, 1 cộng tn, 2 là cộng cả 2
-            msg.writer().writeDouble(param);// số tn cần cộng
+            msg.writer().writeLong(param);// số tn cần cộng
             player.sendMessage(msg);
             msg.cleanup();
          } catch (Exception e) {

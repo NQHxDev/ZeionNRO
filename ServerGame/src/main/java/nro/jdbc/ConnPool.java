@@ -9,8 +9,11 @@ import java.util.Vector;
 public class ConnPool {
 
    public String url;
+
    public String user;
+
    public String password;
+
    public static ConnPool i;
 
    public static ConnPool gI() {

@@ -148,7 +148,7 @@ public class Clan {
       return false;
    }
 
-   public void addSMTNClan(Player plOri, double param) {
+   public void addSMTNClan(Player plOri, long param) {
       for (Player pl : this.membersInGame) {
          if (!plOri.equals(pl) && plOri.zone.equals(pl.zone)) {
             Service.getInstance().addSMTN(pl, (byte) 1, param, false);

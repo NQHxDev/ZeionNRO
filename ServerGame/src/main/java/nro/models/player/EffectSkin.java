@@ -353,8 +353,8 @@ public class EffectSkin {
             }
          }
          for (Player pl : players) {
-            Item ct = pl.inventory.itemsBody.get(5);
-            if (ct.isNotNullItem() && ct.template.id >= 618 && ct.template.id <= 626) {
+            Item ct = pl.getItemBody(5);
+            if (ct != null && ct.isNotNullItem() && ct.template.id >= 618 && ct.template.id <= 626) {
                for (ItemOption io : ct.itemOptions) {
                   if (io.optionTemplate.id == 147
                         || io.optionTemplate.id == 77

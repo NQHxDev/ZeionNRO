@@ -44,8 +44,8 @@ public class NPoint {
    public short stamina, maxStamina;
 
    public byte limitPower;
-   public double power;
-   public double tiemNang;
+   public long power;
+   public long tiemNang;
    public double mpg, hpg;
    public double dameg;
 
@@ -382,19 +382,17 @@ public class NPoint {
             }
          }
       }
-      List<Item> itemsBody = player.inventory.itemsBody;
       if (!player.isBoss && !player.isMiniPet) {
-         if (player.inventory.itemsBody.get(1).isNotNullItem()) {
-            Item pants = itemsBody.get(1);
-            if (pants.isNotNullItem() && pants.id >= 691 && pants.id >= 693) {
-               player.event.setUseQuanHoa(true);
-            }
+         Item pants = player.getItemBody(1);
+         if (pants != null && pants.isNotNullItem() && pants.id >= 691 && pants.id >= 693) {
+            player.event.setUseQuanHoa(true);
          }
       }
       if (Manager.EVENT_SEVER == 3) {
          if (!this.player.isBoss && !this.player.isMiniPet) {
-            if (itemsBody.get(5).isNotNullItem()) {
-               int tempID = itemsBody.get(5).id;
+            Item costume = player.getItemBody(5);
+            if (costume != null && costume.isNotNullItem()) {
+               int tempID = costume.id;
                switch (tempID) {
                   case 386, 389, 392 -> {
                      wearingGrayNoelHat = true;
@@ -585,8 +583,8 @@ public class NPoint {
    private void setDameTrainArmor() {
       if (!this.player.isPet && !this.player.isBoss && !this.player.isMiniPet) {
          try {
-            Item gtl = this.player.inventory.itemsBody.get(6);
-            if (gtl.isNotNullItem()) {
+            Item gtl = this.player.getItemBody(6);
+            if (gtl != null && gtl.isNotNullItem()) {
                this.wearingTrainArmor = true;
                this.wornTrainArmor = true;
                this.player.inventory.trainArmor = gtl;
@@ -1723,7 +1721,7 @@ public class NPoint {
       }
    }
 
-   public double calSucManhTiemNang(double tiemNang) {
+   public long calSucManhTiemNang(long tiemNang) {
       if (power < getPowerLimit()) {
          for (Integer tl : this.tlTNSM) {
             tiemNang += calPercent(tiemNang, tl);
@@ -1750,7 +1748,7 @@ public class NPoint {
                tiemNang += calPercent(tiemNang, tltnsm);
             }
          }
-         double tn = tiemNang;
+         long tn = tiemNang;
          if (this.player.charms.tdTriTue > System.currentTimeMillis()) {
             tiemNang += tn;
          }
@@ -1771,15 +1769,13 @@ public class NPoint {
          if (this.intrinsic != null && this.intrinsic.id == 24) {
             tiemNang += calPercent(tiemNang, this.intrinsic.param1);
          }
-         if (this.power >= 60000000000L) {
-            tiemNang -= calPercent(tiemNang, 50);
-         }
          if (this.player.isPet) {
             if (((Pet) this.player).master.charms.tdDeTu > System.currentTimeMillis()) {
                tiemNang += tn * 2.0;
             }
          }
-         tiemNang *= (double) Manager.RATE_EXP_SERVER;
+
+         tiemNang *= Manager.RATE_EXP_SERVER;
          tiemNang = calSubTNSM(tiemNang);
          if (tiemNang <= 0) {
             tiemNang = 1;
@@ -1790,23 +1786,21 @@ public class NPoint {
       return tiemNang;
    }
 
-   public double calSubTNSM(double tiemNang) {
-      if (power >= 350000000000L) {
-         tiemNang -= calPercent(tiemNang, 80);
-      } else if (power >= 210000000000L) {
-         tiemNang -= calPercent(tiemNang, 75);
-      } else if (power >= 110000000000L) {
+   public long calSubTNSM(long tiemNang) {
+      if (power >= 1500000000000L) { // 1.5 Trillion
+         tiemNang -= calPercent(tiemNang, 99);
+      } else if (power >= 150000000000L) { // 150 Billion
+         tiemNang -= calPercent(tiemNang, 90);
+      } else if (power >= 15000000000L) { // 15 Billion
          tiemNang -= calPercent(tiemNang, 70);
-      } else if (power >= 100000000000L) {
-         tiemNang -= calPercent(tiemNang, 65);
-      } else if (power >= 90000000000L) {
-         tiemNang -= calPercent(tiemNang, 60);
-      } else if (power >= 80000000000L) {
-         tiemNang -= calPercent(tiemNang, 55);
+      } else if (power >= 1500000000L) { // 1.5 Billion
+         tiemNang -= calPercent(tiemNang, 40);
+      } else if (power >= 150000000L) { // 150 Million
+         tiemNang -= calPercent(tiemNang, 20);
+      } else if (power >= 15000000L) { // 15 Million
+         tiemNang -= calPercent(tiemNang, 10);
       }
-      if (tiemNang > 20000000000L) {
-         tiemNang = 20000000000L;
-      }
+
       return tiemNang;
    }
 
@@ -1859,7 +1853,7 @@ public class NPoint {
 
    // **************************************************************************
    // POWER - TIEM NANG
-   public void powerUp(double power) {
+   public void powerUp(long power) {
       if (power >= 9_000_000_000_000_000L) {
          this.power += 9_000_000_000_000_000L;
       } else {
@@ -1868,7 +1862,7 @@ public class NPoint {
       TaskService.gI().checkDoneTaskPower(player, this.power);
    }
 
-   public void tiemNangUp(double tiemNang) {
+   public void tiemNangUp(long tiemNang) {
       this.tiemNang += tiemNang;
    }
 

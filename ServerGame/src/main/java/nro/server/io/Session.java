@@ -51,7 +51,7 @@ public class Session extends NettySession {
    public boolean isSetClientType;
 
    public long lastTimeLogout;
-   public boolean loginSuccess, joinedGame, dataLoadFailed;
+   public volatile boolean loginSuccess, joinedGame, dataLoadFailed, isClientOk;
 
    public long lastTimeReadMessage;
 
@@ -68,7 +68,7 @@ public class Session extends NettySession {
    public int tong_nap;
 
    @Setter
-   public boolean logging;
+   public volatile boolean logging;
 
    public Session(Channel channel, int id) {
       super(channel, id);
@@ -142,8 +142,10 @@ public class Session extends NettySession {
          if (!isSetClientType) {
             this.typeClient = (msg.reader().readByte());
             byte zoom = msg.reader().readByte();
-            if (zoom < 1) zoom = 1;
-            if (zoom > 4) zoom = 4;
+            if (zoom < 1)
+               zoom = 1;
+            if (zoom > 4)
+               zoom = 4;
             this.zoomLevel = zoom;
             msg.reader().readBoolean();
             msg.reader().readInt();
@@ -178,7 +180,14 @@ public class Session extends NettySession {
 
    public void login(String username, String password) {
       if (Maintenance.isRuning || !ServerManager.gI().getLogin().isConnected()) {
-         Service.getInstance().sendThongBaoOK(this, "Máy chủ đang tiến hành bảo trì, vui lòng thử lại sau!");
+         logging = false;
+         String msg = "Máy chủ đang tiến hành bảo trì, vui lòng quay lại sau!";
+         if (Maintenance.isRuning && Maintenance.gI().getSeconds() > 0) {
+            msg = "Máy chủ đang tiến hành bảo trì, vui lòng quay lại sau!";
+         } else if (!ServerManager.gI().getLogin().isConnected()) {
+            msg = "Không thể kết nối tới máy chủ đăng nhập, vui lòng quay lại sau!";
+         }
+         Service.getInstance().sendThongBaoOK(this, msg);
          return;
       }
       if (!isSetClientType || logging || loginSuccess) {
@@ -191,6 +200,7 @@ public class Session extends NettySession {
          ANTILOGIN.put(this.ipAddress, al);
       }
       if (!al.canLogin()) {
+         logging = false;
          Service.getInstance().sendThongBaoOK(this, al.getNotifyCannotLogin());
          return;
       }
@@ -213,7 +223,7 @@ public class Session extends NettySession {
    }
 
    public void finishUpdate() {
-      if (loginSuccess && !joinedGame) {
+      if (loginSuccess && isClientOk && !joinedGame) {
          player = GodGK.loadPlayer(this);
          if (!dataLoadFailed) {
             if (player != null) {

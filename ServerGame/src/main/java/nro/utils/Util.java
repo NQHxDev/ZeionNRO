@@ -31,12 +31,24 @@ public class Util {
    private static final SimpleDateFormat dateFormat;
    private static SimpleDateFormat dateFormatDay = new SimpleDateFormat("yyyy-MM-dd");
 
+   public static boolean isAfterDay(long lastTime) {
+      return compareDay(new Date(), new Date(lastTime));
+   }
+
    public static final Locale locale = Locale.of("vi", "VN");
    private static final NumberFormat num = NumberFormat.getInstance(locale);
 
    static {
       rand = new Random();
       dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+   }
+
+   public static <T> long parseLong(T value) {
+      if (value instanceof Number) {
+         return ((Number) value).longValue();
+      }
+
+      return Long.parseLong(String.valueOf(value));
    }
 
    public static int randomBossId() {
@@ -49,6 +61,7 @@ public class Util {
 
    public static int highlightsItem(boolean highlights, int value) {
       double highlightsNumber = 1.1;
+
       return highlights ? (int) (value * highlightsNumber) : value;
    }
 
@@ -114,6 +127,7 @@ public class Util {
          value /= 1000;
          index++;
       }
+
       return String.format("%.2f%s", value, suffixes[index]);
    }
 
@@ -253,6 +267,10 @@ public class Util {
       return rand.nextInt(max);
    }
 
+   public static long nextLong(long from, long to) {
+      return from + rand.nextLong(to - from + 1);
+   }
+
    public static int nextInt(int[] percen) {
       int next = nextInt(1000), i;
       for (i = 0; i < percen.length; i++) {
@@ -281,14 +299,6 @@ public class Util {
          System.err.println(message);
       } catch (Exception e) {
          System.out.println(message);
-      }
-   }
-
-   public static void main(String[] args) {
-      for (int i = 0; i < 1008; i++) {
-         if (!isTrue(104, 100)) {
-            System.out.println("xxx");
-         }
       }
    }
 

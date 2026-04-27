@@ -77,6 +77,9 @@ public class Player {
    public int rankSieuHang;
    public long timesieuhang;
    public boolean isnhanthuong1;
+   public int pointSieuHang = 100;
+   public int usedTicketSieuHang;
+   public long lastTimeReceivedTicket;
 
    public boolean DH1 = false;
    public boolean DH2 = false;
@@ -230,6 +233,8 @@ public class Player {
    public byte gender;
    public boolean isNewMember = true;
    public short head;
+   public short body;
+   public short leg;
 
    public byte typePk;
 
@@ -359,6 +364,7 @@ public class Player {
       skillSpecial = new SkillSpecial(this);
       event = new PlayerEvent(this);
       buyLimit = new byte[13];
+      rewardLimit = new byte[10];
       buff = Buff.NONE;
    }
 
@@ -548,10 +554,10 @@ public class Player {
                   TranhNgoc.gI().update(this);
                }
                if (!this.isBoss && !this.isMiniPet) {
-                  if (pet != null && this.inventory.itemsBody.get(5).isNotNullItem()
-                        && this.pet.inventory.itemsBody.get(5).isNotNullItem()) {
-                     if ((this.inventory.itemsBody.get(5).template.id == 1319
-                           && this.pet.inventory.itemsBody.get(5).template.id == 619)) {
+                  if (pet != null && this.getItemBody(5) != null && this.getItemBody(5).isNotNullItem()
+                        && this.pet.getItemBody(5) != null && this.pet.getItemBody(5).isNotNullItem()) {
+                     if ((this.getItemBody(5).template.id == 1319
+                           && this.pet.getItemBody(5).template.id == 619)) {
                         this.PorataVIP = true;
                      } else {
                         this.PorataVIP = false;
@@ -665,11 +671,8 @@ public class Player {
    };
 
    public byte getAura() {
-      // if (this.itemTimesieucap.isChoido) {
-      // return 13;
-      // }
-      Item item = this.inventory.itemsBody.get(16);
-      if (!item.isNotNullItem()) {
+      Item item = getItemBody(16);
+      if (item == null || !item.isNotNullItem()) {
          return -1;
       }
       switch (item.template.id) {
@@ -682,8 +685,8 @@ public class Player {
          case 1801:
             return 54;
       }
-      Item caitrang = this.inventory.itemsBody.get(5);
-      if (!caitrang.isNotNullItem()) {
+      Item caitrang = getItemBody(5);
+      if (caitrang == null || !caitrang.isNotNullItem()) {
          return -1;
       }
       switch (caitrang.template.id) {
@@ -705,13 +708,21 @@ public class Player {
    }
 
    public boolean checkSkinFusion() {
-      if (inventory != null && inventory.itemsBody.get(5).isNotNullItem()) {
-         Short idct = inventory.itemsBody.get(5).template.id;
+      Item ct = getItemBody(5);
+      if (ct != null && ct.isNotNullItem()) {
+         Short idct = ct.template.id;
          if (idct == 601 || idct == 603 || idct == 602) {
             return true;
          }
       }
       return false;
+   }
+
+   public Item getItemBody(int index) {
+      if (inventory != null && inventory.itemsBody != null && index >= 0 && index < inventory.itemsBody.size()) {
+         return inventory.itemsBody.get(index);
+      }
+      return null;
    }
 
    public short getHead() {
@@ -728,7 +739,7 @@ public class Player {
       // Fusion
       if (fusion != null && fusion.typeFusion != ConstPlayer.NON_FUSION) {
          if (checkSkinFusion()) {
-            Item ctItem = inventory != null ? inventory.itemsBody.get(5) : null;
+            Item ctItem = getItemBody(5);
             if (ctItem != null && ctItem.template != null) {
                CaiTrang ct = Manager.getCaiTrangByItemId(ctItem.template.id);
                if (ct != null && ct.getID()[0] != -1) {
@@ -758,7 +769,7 @@ public class Player {
       }
 
       // Costume
-      Item ctItem = inventory != null ? inventory.itemsBody.get(5) : null;
+      Item ctItem = getItemBody(5);
       if (ctItem != null && ctItem.template != null) {
          CaiTrang ct = Manager.getCaiTrangByItemId(ctItem.template.id);
          if (!checkSkinFusion() && ct != null && ct.getID()[0] != -1) {
@@ -783,7 +794,7 @@ public class Player {
       // Fusion
       if (fusion != null && fusion.typeFusion != ConstPlayer.NON_FUSION) {
          if (checkSkinFusion()) {
-            Item ctItem = inventory != null ? inventory.itemsBody.get(5) : null;
+            Item ctItem = getItemBody(5);
             if (ctItem != null && ctItem.template != null) {
                CaiTrang ct = Manager.getCaiTrangByItemId(ctItem.template.id);
                if (ct != null && ct.getID()[1] != -1) {
@@ -813,7 +824,7 @@ public class Player {
       }
 
       // Costume
-      Item ctItem = inventory != null ? inventory.itemsBody.get(5) : null;
+      Item ctItem = getItemBody(5);
       if (ctItem != null && ctItem.template != null && !checkSkinFusion()) {
          CaiTrang ct = Manager.getCaiTrangByItemId(ctItem.template.id);
          if (ct != null && ct.getID()[1] != -1) {
@@ -822,11 +833,14 @@ public class Player {
       }
 
       // Normal armor slot 0
-      Item body = inventory != null ? inventory.itemsBody.get(0) : null;
+      Item body = getItemBody(0);
       if (body != null && body.template != null) {
          return body.template.part;
       }
 
+      if (this.body != 0) {
+         return this.body;
+      }
       return (short) (gender == ConstPlayer.NAMEC ? 59 : 57);
    }
 
@@ -844,7 +858,7 @@ public class Player {
       // Fusion
       if (fusion != null && fusion.typeFusion != ConstPlayer.NON_FUSION) {
          if (checkSkinFusion()) {
-            Item ctItem = inventory != null ? inventory.itemsBody.get(5) : null;
+            Item ctItem = getItemBody(5);
             if (ctItem != null && ctItem.template != null) {
                CaiTrang ct = Manager.getCaiTrangByItemId(ctItem.template.id);
                if (ct != null && ct.getID()[2] != -1) {
@@ -874,7 +888,7 @@ public class Player {
       }
 
       // Costume
-      Item ctItem = inventory != null ? inventory.itemsBody.get(5) : null;
+      Item ctItem = getItemBody(5);
       if (ctItem != null && ctItem.template != null && !checkSkinFusion()) {
          CaiTrang ct = Manager.getCaiTrangByItemId(ctItem.template.id);
          if (ct != null && ct.getID()[2] != -1) {
@@ -883,11 +897,14 @@ public class Player {
       }
 
       // Normal leg slot 1
-      Item leg = inventory != null ? inventory.itemsBody.get(1) : null;
+      Item leg = getItemBody(1);
       if (leg != null && leg.template != null) {
          return leg.template.part;
       }
 
+      if (this.leg != 0) {
+         return this.leg;
+      }
       return (short) (gender == ConstPlayer.NAMEC ? 60 : 58);
    }
 
@@ -897,17 +914,17 @@ public class Player {
       } else if (this.isHoldNamecBall) {
          return 30;
       }
-      if (this.inventory.itemsBody.size() > 10) {
-         if (this.inventory.itemsBody.get(14).isNotNullItem()) {
-            FlagBag f = FlagBagService.gI().getFlagBagByName(this.inventory.itemsBody.get(14).template.name);
-            if (f != null) {
-               return (short) f.id;
-            }
+      Item flagBag = getItemBody(14);
+      if (flagBag != null && flagBag.isNotNullItem()) {
+         FlagBag f = FlagBagService.gI().getFlagBagByName(flagBag.template.name);
+         if (f != null) {
+            return (short) f.id;
          }
       }
       if (this.isPet) {
-         if (this.inventory.itemsBody.get(7).isNotNullItem()) {
-            FlagBag ff = FlagBagService.gI().getFlagBagByName(this.inventory.itemsBody.get(7).template.name);
+         Item petFlag = getItemBody(7);
+         if (petFlag != null && petFlag.isNotNullItem()) {
+            FlagBag ff = FlagBagService.gI().getFlagBagByName(petFlag.template.name);
             if (ff != null) {
                return (short) ff.id;
             }

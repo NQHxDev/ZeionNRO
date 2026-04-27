@@ -33,6 +33,7 @@ public class NettyServer {
 
    private String publicHost;
    private int publicPort;
+   private boolean isRedirect;
 
    private EventLoopGroup bossGroup;
    private EventLoopGroup workerGroup;
@@ -49,6 +50,10 @@ public class NettyServer {
    public void setPublicConfig(String host, int port) {
       this.publicHost = host;
       this.publicPort = port;
+   }
+
+   public void setRedirect(boolean isRedirect) {
+      this.isRedirect = isRedirect;
    }
 
    public void setBusinessGroup(EventExecutorGroup businessGroup) {
@@ -96,7 +101,7 @@ public class NettyServer {
                   p.addLast(new IdleStateHandler(idleTimeSeconds, 0, 0, TimeUnit.SECONDS));
                   p.addLast(new NettyDecoder());
                   p.addLast(new NettyEncoder());
-                  p.addLast(new HandshakeHandler(publicHost, publicPort));
+                  p.addLast(new HandshakeHandler(publicHost, publicPort, isRedirect));
 
                   if (businessGroup != null) {
                         p.addLast(businessGroup, businessHandler);

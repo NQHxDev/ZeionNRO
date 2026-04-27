@@ -2,21 +2,16 @@ package nro.models.boss.iboss;
 
 import nro.models.player.Player;
 
-/**
- *
- * @author Tuỳ Chỉnh Bởi Văn Tuấn 0337766460
- * @copyright 💖 GirlkuN 💖
- *
- */
 public interface IBossStatus extends IBossInit {
 
-    void attack(); //attack
+   void attack();
 
-    void idle(); //trong lúc attack có thể đứng nghỉ
+   void idle();
 
-    void checkPlayerDie(Player pl); //attack player nào đó rồi kiểm tra
+   void checkPlayerDie(Player pl);
 
-    void die();
+   void die();
 
-    void respawn();
+   void respawn();
+
 }
