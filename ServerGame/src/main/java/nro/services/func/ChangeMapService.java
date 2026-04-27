@@ -723,7 +723,7 @@ public class ChangeMapService {
             case 24: // trạm tàu vũ trụ trái đất
             case 25: // trạm tàu vũ trụ namếc
             case 26: // trạm tàu vũ trụ xayda
-               if (TaskService.gI().getIdTask(player) < ConstTask.TASK_6_0) {
+               if (TaskService.gI().getIdTask(player) < ConstTask.TASK_4_0) {
                   Service.getInstance().sendThongBao(player, "Vui lòng hoàn thành nhiệm vụ trước khi tới đây!");
                   return null;
                }
@@ -731,7 +731,7 @@ public class ChangeMapService {
             case 3: // rừng nấm
             case 11: // thung lũng maima
             case 17: // rừng nguyên sinh
-               if (TaskService.gI().getIdTask(player) < ConstTask.TASK_7_0) {
+               if (TaskService.gI().getIdTask(player) < ConstTask.TASK_4_0) {
                   Service.getInstance().sendThongBao(player, "Vui lòng hoàn thành nhiệm vụ trước khi tới đây!");
                   return null;
                }

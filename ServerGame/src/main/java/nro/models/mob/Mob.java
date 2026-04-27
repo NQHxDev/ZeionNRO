@@ -66,12 +66,11 @@ public class Mob {
    }
 
    public void setTiemNang() {
-      this.maxTiemNang = this.point.getHpFull() / 100.0 * (double) (this.pTiemNang + Util.nextInt(-2, 2));
+      this.maxTiemNang = (this.point.getHpFull() * (1.0 + (this.level * 0.15))) / 10.0;
    }
 
    public byte status;
 
-   // private List<Player> playerAttack = new LinkedList<>();
    protected long lastTimeAttackPlayer;
 
    public boolean isDie() {
@@ -137,76 +136,47 @@ public class Mob {
 
    public long getTiemNangForPlayer(Player pl, double dame) {
       if (this.tempId == 0) { // Mộc nhân
-         return 10; // Cố định 10 tiềm năng mỗi lần đánh cho mộc nhân
+         return 10;
       }
       int levelPlayer = CaptionManager.getInstance().getLevel(pl);
       int levelDiff = levelPlayer - this.level;
 
       double ratio = dame / point.getHpFull();
       if (ratio > 1.0) {
-         ratio = 1.0 + (ratio - 1.0) / 10.0; // Diminishing returns for over-damage
+         ratio = 1.0 + (ratio - 1.0) / 10.0;
       }
 
-      long tiemNang = Util.parseLong(ratio * maxTiemNang * 0.5);
+      // Tăng hệ số nhân cơ bản từ 5.0 lên 6.5
+      long tiemNang = (long) (ratio * maxTiemNang * 6.5);
 
+      // Xử lý chênh lệch Level bằng công thức lũy thừa cho Clean code
       if (levelDiff > 0) {
-         for (int i = 0; i < levelDiff; i++) {
-            tiemNang -= (tiemNang * 15 / 100); // 15% reduction per level diff
+         tiemNang = (long) (tiemNang * Math.pow(0.95, levelDiff)); // Giảm 5% mỗi cấp khi mạnh hơn quái
+         if (levelDiff > 15) {
+            tiemNang = 1;
          }
+      } else if (levelDiff < 0) {
+         tiemNang = (long) (tiemNang * Math.pow(1.15, -levelDiff)); // Tăng 15% mỗi cấp khi đánh quái vượt cấp
       }
 
-      if (levelDiff > 10) {
-         tiemNang = 1;
-      }
+      tiemNang = Math.max(1, tiemNang);
 
-      if (tiemNang <= 0) {
-         tiemNang = 1;
-      }
-
-      if (levelDiff < 0) {
-         for (int i = 0; i < -levelDiff; i++) {
-            double add = tiemNang * 10 / 100;
-            if (add <= 0) {
-               add = 1;
-            }
-            tiemNang += add;
-         }
-      }
-      if (tiemNang <= 0) {
-         tiemNang = 1;
-      }
+      // Thưởng TN/SM theo Map
       if (pl.nPoint.power < 100_000_000_000L && MapService.gI().isMapNguHanhSon(pl.zone.map.mapId)) {
-         tiemNang *= 2.0;
-      }
-      if (pl.zone.map.mapId == 53
-            || pl.zone.map.mapId == 54
-            || pl.zone.map.mapId == 55
-            || pl.zone.map.mapId == 56
-            || pl.zone.map.mapId == 57
-            || pl.zone.map.mapId == 58
-            || pl.zone.map.mapId == 59
-            || pl.zone.map.mapId == 60
-            || pl.zone.map.mapId == 141
-            || pl.zone.map.mapId == 142
-            || pl.zone.map.mapId == 143
-            || pl.zone.map.mapId == 61
-            || pl.zone.map.mapId == 62
-            || pl.zone.map.mapId == 135
-            || pl.zone.map.mapId == 136
-            || pl.zone.map.mapId == 137
-            || pl.zone.map.mapId == 138
-            || pl.zone.map.mapId == 216
-            || pl.zone.map.mapId == 217
-            || pl.zone.map.mapId == 218) {
-         tiemNang *= 4.0;
-      }
-      if (MapService.gI().isMapBanDoKhoBau(pl.zone.map.mapId)) {
-         tiemNang *= 4.0;
+         tiemNang *= 2;
       }
 
-      tiemNang = pl.nPoint.calSucManhTiemNang(tiemNang);
+      // Gom nhóm các Map thưởng x4
+      int mapId = pl.zone.map.mapId;
+      boolean isBonusMap = (mapId >= 53 && mapId <= 62) || (mapId >= 135 && mapId <= 138)
+            || (mapId >= 141 && mapId <= 143) || (mapId >= 216 && mapId <= 218)
+            || MapService.gI().isMapBanDoKhoBau(mapId);
 
-      return tiemNang;
+      if (isBonusMap) {
+         tiemNang *= 4;
+      }
+
+      return pl.nPoint.calSucManhTiemNang(tiemNang);
    }
 
    public void update() {

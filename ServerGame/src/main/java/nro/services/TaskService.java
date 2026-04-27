@@ -181,7 +181,7 @@ public class TaskService {
                   || doneTask(player, ConstTask.TASK_1_1)
                   || doneTask(player, ConstTask.TASK_2_1)
                   || doneTask(player, ConstTask.TASK_3_2)
-                  || doneTask(player, ConstTask.TASK_4_1)
+                  || doneTask(player, ConstTask.TASK_4_3)
                   || doneTask(player, ConstTask.TASK_5_3)
                   || doneTask(player, ConstTask.TASK_8_2)
                   || doneTask(player, ConstTask.TASK_12_1));
@@ -530,9 +530,39 @@ public class TaskService {
                doneTask(player, ConstTask.TASK_1_0);
                break;
             case ConstMob.KHUNG_LONG_ME:
+               if (player.gender == ConstPlayer.TRAI_DAT) {
+                  doneTask(player, ConstTask.TASK_4_0);
+               } else if (player.gender == ConstPlayer.XAYDA) {
+                  doneTask(player, ConstTask.TASK_4_1);
+               } else if (player.gender == ConstPlayer.NAMEC) {
+                  doneTask(player, ConstTask.TASK_4_2);
+               }
+               break;
             case ConstMob.LON_LOI_ME:
+               if (player.gender == ConstPlayer.NAMEC) {
+                  doneTask(player, ConstTask.TASK_4_0);
+               } else if (player.gender == ConstPlayer.TRAI_DAT) {
+                  doneTask(player, ConstTask.TASK_4_1);
+               } else if (player.gender == ConstPlayer.XAYDA) {
+                  doneTask(player, ConstTask.TASK_4_2);
+               }
+               break;
             case ConstMob.QUY_DAT_ME:
-               doneTask(player, ConstTask.TASK_4_0);
+               if (player.gender == ConstPlayer.XAYDA) {
+                  doneTask(player, ConstTask.TASK_4_0);
+               } else if (player.gender == ConstPlayer.NAMEC) {
+                  doneTask(player, ConstTask.TASK_4_1);
+               } else if (player.gender == ConstPlayer.TRAI_DAT) {
+                  doneTask(player, ConstTask.TASK_4_2);
+               }
+               break;
+            case ConstMob.PHI_LONG_ME:
+            case ConstMob.HEO_RUNG_ME:
+               doneTask(player, ConstTask.TASK_4_1);
+               break;
+            case ConstMob.QUY_BAY_ME:
+            case ConstMob.HEO_XANH_ME:
+               doneTask(player, ConstTask.TASK_4_2);
                break;
             case ConstMob.THAN_LAN_BAY:
             case ConstMob.PHI_LONG:
@@ -774,6 +804,22 @@ public class TaskService {
                }
                break;
             case ConstTask.TASK_4_1:
+               if (isCurrentTask(player, idTaskCustom)) {
+                  Service.getInstance().sendThongBao(player, "Bạn đánh được "
+                        + player.playerTask.taskMain.subTasks.get(player.playerTask.taskMain.index).count + "/"
+                        + player.playerTask.taskMain.subTasks.get(player.playerTask.taskMain.index).maxCount
+                        + transformName(player, " %13 mẹ"));
+               }
+               break;
+            case ConstTask.TASK_4_2:
+               if (isCurrentTask(player, idTaskCustom)) {
+                  Service.getInstance().sendThongBao(player, "Bạn đánh được "
+                        + player.playerTask.taskMain.subTasks.get(player.playerTask.taskMain.index).count + "/"
+                        + player.playerTask.taskMain.subTasks.get(player.playerTask.taskMain.index).maxCount
+                        + transformName(player, " %14 mẹ"));
+               }
+               break;
+            case ConstTask.TASK_4_3:
                npcSay(player, ConstTask.NPC_NHA,
                      "Ông rất tự hào về con\n"
                            + "Ông cho con cuốn bí kíp này để nâng cao võ học\n"
@@ -1433,6 +1479,16 @@ public class TaskService {
 
    // replate %1 %2 -> chữ
    private String transformName(Player player, String text) {
+      text = text.replaceAll(ConstTask.TEN_QUAI_200_1, player.gender == ConstPlayer.TRAI_DAT
+            ? "lợn lòi"
+            : (player.gender == ConstPlayer.NAMEC
+                  ? "quỷ đất"
+                  : "khủng long"));
+      text = text.replaceAll(ConstTask.TEN_QUAI_200_2, player.gender == ConstPlayer.TRAI_DAT
+            ? "quỷ đất"
+            : (player.gender == ConstPlayer.NAMEC
+                  ? "khủng long"
+                  : "lợn lòi"));
       text = text.replaceAll(ConstTask.TEN_NPC_QUY_LAO, player.gender == ConstPlayer.TRAI_DAT
             ? "Quy Lão Kame"
             : (player.gender == ConstPlayer.NAMEC
@@ -1478,7 +1534,7 @@ public class TaskService {
             ? "Thung lũng tre"
             : (player.gender == ConstPlayer.NAMEC
                   ? "Thị trấn Moori"
-                  : "Làng Plane"));
+                  : "Làng Plant"));
       text = text.replaceAll(ConstTask.TEN_NPC_TTVT, player.gender == ConstPlayer.TRAI_DAT
             ? "Dr. Brief"
             : (player.gender == ConstPlayer.NAMEC

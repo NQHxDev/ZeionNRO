@@ -55,6 +55,8 @@ public class ConstTask {
    public static final String TEN_NPC_QUY_LAO = "%10";
    public static final String TEN_MAP_QUY_LAO = "%11";
    public static final String TEN_QUAI_3000 = "%12";
+   public static final String TEN_QUAI_200_1 = "%13";
+   public static final String TEN_QUAI_200_2 = "%14";
 
    // id task custom
    public static final int TASK_0_0 = 0;

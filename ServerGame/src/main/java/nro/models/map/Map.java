@@ -139,7 +139,7 @@ public class Map {
             Mob mob = new Mob();
             mob.tempId = mobTemp[i];
             mob.level = mobLevel[i];
-            mob.point.setHpFull(mobHp[i]);
+            mob.point.setHpFull(temp.hp);
             mob.location.x = mobX[i];
             mob.location.y = mobY[i];
             mob.point.setHP(mob.point.getHpFull());
