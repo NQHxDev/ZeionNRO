@@ -970,7 +970,7 @@ public class ClanService {
    private void removeClan(int clId) {
       PreparedStatement ps = null;
       PreparedStatement ps2 = null;
-      try (Connection con = DBService.gI().getConnectionForClan();) {
+      try (Connection con = DBService.gI().getConnection();) {
          ps = con.prepareStatement("DELETE FROM clan_sv"
                + Manager.SERVER + " where id = " + clId);
          ps.executeUpdate();
@@ -995,7 +995,7 @@ public class ClanService {
 
    private void removeClanPlayer(int plId) {
       PreparedStatement ps = null;
-      try (Connection con = DBService.gI().getConnectionForClan();) {
+      try (Connection con = DBService.gI().getConnection();) {
          ps = con.prepareStatement("update player set clan_id_sv"
                + Manager.SERVER + " = -1 where id = " + plId);
          ps.executeUpdate();
@@ -1097,7 +1097,7 @@ public class ClanService {
       PreparedStatement ps = null;
 
       try {
-         Connection con = DBService.gI().getConnectionForClan();
+         Connection con = DBService.gI().getConnection();
          ps = con.prepareStatement("update clan_sv" + Manager.SERVER
                + " set slogan = ?, img_id = ?, power_point = ?, max_member = ?, clan_point = ?, "
                + "level = ?, members = ? where id = ? limit 1");

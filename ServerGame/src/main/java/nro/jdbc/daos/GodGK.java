@@ -50,7 +50,6 @@ import nro.utils.TimeUtil;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -63,75 +62,59 @@ import nro.utils.Util;
 public class GodGK {
 
    public static boolean login(Session session, AntiLogin al) {
-      PreparedStatement ps = null;
-      ResultSet rs = null;
-      try {
-         Connection conn = DBService.gI().getConnectionForLogin();
-         String query = "select * from account where username = ? and password = ? limit 1";
-         ps = conn.prepareStatement(query);
+      String query = "select * from account where username = ? and password = ? limit 1";
+      try (Connection conn = DBService.gI().getConnection();
+            PreparedStatement ps = conn.prepareStatement(query)) {
          ps.setString(1, session.uu);
          ps.setString(2, session.pp);
-         rs = ps.executeQuery();
-         if (rs.next()) {
-            session.userId = rs.getInt("account.id");
-            Session plInGame = Client.gI().getSession(session);
-            if (plInGame != null) {
-               Service.getInstance().sendThongBaoOK(plInGame, "Máy chủ tắt hoặc mất sóng!");
-               Client.gI().kickSession(plInGame);
-               Service.getInstance().sendThongBaoOK(session, "Máy chủ tắt hoặc mất sóng!");
-               return false;
-            }
-
-            session.isAdmin = rs.getBoolean("is_admin");
-            session.lastTimeLogout = rs.getTimestamp("last_time_logout").getTime();
-            session.actived = rs.getBoolean("active");
-            session.goldBar = rs.getInt("account.thoi_vang");
-            session.vnd = rs.getInt("account.vnd");
-            session.dataReward = rs.getString("reward");
-            session.tong_nap = rs.getInt("account.tongnap");
-            if (rs.getTimestamp("last_time_login").getTime() > session.lastTimeLogout) {
-               Service.getInstance().sendThongBaoOK(session, "Tài khoản đang đăng nhập máy chủ khác!");
-               return false;
-            }
-            if (rs.getBoolean("ban")) {
-               Service.getInstance().sendThongBaoOK(session, "Tài khoản đã bị khóa do vi phạm điều khoản!");
-            } else {
-               long lastTimeLogout = rs.getTimestamp("last_time_logout").getTime();
-               int secondsPass = (int) ((System.currentTimeMillis() - lastTimeLogout) / 1000);
-               if (secondsPass < Manager.SECOND_WAIT_LOGIN && !session.isAdmin) {
-                  Service.getInstance().sendThongBaoOK(session,
-                        "Vui lòng chờ " + (Manager.SECOND_WAIT_LOGIN - secondsPass) + " giây để đăng nhập lại.");
+         try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+               session.userId = rs.getInt("account.id");
+               Session plInGame = Client.gI().getSession(session);
+               if (plInGame != null) {
+                  Service.getInstance().sendThongBaoOK(plInGame, "Máy chủ tắt hoặc mất sóng!");
+                  Client.gI().kickSession(plInGame);
+                  Service.getInstance().sendThongBaoOK(session, "Máy chủ tắt hoặc mất sóng!");
+                  return false;
                }
+
+               session.isAdmin = rs.getBoolean("is_admin");
+               session.lastTimeLogout = rs.getTimestamp("last_time_logout").getTime();
+               session.actived = rs.getBoolean("active");
+               session.goldBar = rs.getInt("account.thoi_vang");
+               session.vnd = rs.getInt("account.vnd");
+               session.dataReward = rs.getString("reward");
+               session.tong_nap = rs.getInt("account.tongnap");
+               if (rs.getTimestamp("last_time_login").getTime() > session.lastTimeLogout) {
+                  Service.getInstance().sendThongBaoOK(session, "Tài khoản đang đăng nhập máy chủ khác!");
+                  return false;
+               }
+               if (rs.getBoolean("ban")) {
+                  Service.getInstance().sendThongBaoOK(session, "Tài khoản đã bị khóa do vi phạm điều khoản!");
+               } else {
+                  long lastTimeLogout = rs.getTimestamp("last_time_logout").getTime();
+                  int secondsPass = (int) ((System.currentTimeMillis() - lastTimeLogout) / 1000);
+                  if (secondsPass < Manager.SECOND_WAIT_LOGIN && !session.isAdmin) {
+                     Service.getInstance().sendThongBaoOK(session,
+                           "Vui lòng chờ " + (Manager.SECOND_WAIT_LOGIN - secondsPass) + " giây để đăng nhập lại.");
+                  }
+               }
+               al.reset();
+               return true;
+            } else {
+               Service.getInstance().sendThongBaoOK(session, "Thông tin tài khoản hoặc mật khẩu không chính xác");
+               al.wrong();
+               // Anti login
             }
-            al.reset();
-            return true;
-         } else {
-            Service.getInstance().sendThongBaoOK(session, "Thông tin tài khoản hoặc mật khẩu không chính xác");
-            al.wrong();
-            // Anti login
          }
       } catch (Exception e) {
          e.printStackTrace();
-      } finally {
-         if (rs != null) {
-            try {
-               rs.close();
-            } catch (SQLException ex) {
-            }
-         }
-         if (ps != null) {
-            try {
-               ps.close();
-            } catch (SQLException ex) {
-            }
-         }
       }
       return false;
    }
 
    public static Player loadPlayer(Session session) {
-      try {
-         Connection conn = DBService.gI().getConnectionForLogin();
+      try (Connection conn = DBService.gI().getConnection()) {
          String query = "select * from account where username = ? and password = ? limit 1";
          try (PreparedStatement pss = conn.prepareStatement(query)) {
             pss.setString(1, session.uu);
@@ -153,9 +136,10 @@ public class GodGK {
             }
          }
 
-         try (PreparedStatement ps = conn.prepareStatement("SELECT p.*, pp.*, sh.point AS point_sh, sh.used_ticket AS used_ticket_sh, sh.last_time_ticket AS last_time_sh "
-               + "FROM player p INNER JOIN player_point pp ON p.id = pp.player_id "
-               + "LEFT JOIN sieu_hang sh ON p.id = sh.player_id WHERE p.account_id = ? LIMIT 1")) {
+         try (PreparedStatement ps = conn.prepareStatement(
+               "SELECT p.*, pp.*, sh.point AS point_sh, sh.used_ticket AS used_ticket_sh, sh.last_time_ticket AS last_time_sh "
+                     + "FROM player p INNER JOIN player_point pp ON p.id = pp.player_id "
+                     + "LEFT JOIN sieu_hang sh ON p.id = sh.player_id WHERE p.account_id = ? LIMIT 1")) {
             ps.setInt(1, session.userId);
             try (ResultSet rs = ps.executeQuery()) {
                if (rs.next()) {
@@ -197,9 +181,9 @@ public class GodGK {
    }
 
    public static Player loadPlayerbyId(int id) {
-      try {
-         Connection connection = DBService.gI().getConnectionForLogin();
-         try (PreparedStatement ps = connection.prepareStatement("SELECT p.*, pp.* FROM player p INNER JOIN player_point pp ON p.id = pp.player_id WHERE p.id = ? LIMIT 1")) {
+      try (Connection connection = DBService.gI().getConnection()) {
+         try (PreparedStatement ps = connection.prepareStatement(
+               "SELECT p.*, pp.* FROM player p INNER JOIN player_point pp ON p.id = pp.player_id WHERE p.id = ? LIMIT 1")) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                if (rs.next()) {

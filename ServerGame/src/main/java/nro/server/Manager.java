@@ -64,11 +64,11 @@ import java.sql.SQLException;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -82,7 +82,8 @@ import java.util.concurrent.Executors;
 import nro.services.GameDuDoan;
 import nro.services.AutoBotChatService;
 import nro.services.BossFollowerService;
-import nro.core.concurrent.GameScheduler;
+import nro.core.GameLoop;
+import nro.core.GameScheduler;
 
 public class Manager {
 
@@ -139,37 +140,59 @@ public class Manager {
       threadPool.shutdown();
    }
 
-   public static final List<String> TOP_PLAYERS = new ArrayList<>();
+   public static final List<String> TOP_PLAYERS = new CopyOnWriteArrayList<>();
 
-   public static Map<Integer, MapTemplate> MAP_TEMPLATES = new HashMap<>();
-   public static final List<nro.models.map.Map> MAPS = new ArrayList<>();
-   public static final Map<Integer, ItemOptionTemplate> ITEM_OPTION_TEMPLATES = new HashMap<>();
-   public static final List<MobReward> MOB_REWARDS = new ArrayList<>();
+   public static Map<Integer, MapTemplate> MAP_TEMPLATES = new ConcurrentHashMap<>();
+
+   public static final List<nro.models.map.Map> MAPS = new CopyOnWriteArrayList<>();
+
+   public static final Map<Integer, ItemOptionTemplate> ITEM_OPTION_TEMPLATES = new ConcurrentHashMap<>();
+
+   public static final List<MobReward> MOB_REWARDS = new CopyOnWriteArrayList<>();
+
    public static final RandomCollection<ItemLuckyRound> LUCKY_ROUND_REWARDS = new RandomCollection<>();
-   public static final Map<Integer, ItemTemplate> ITEM_TEMPLATES = new HashMap<>();
-   public static final Map<Integer, MobTemplate> MOB_TEMPLATES = new HashMap<>();
-   public static final Map<Integer, NpcTemplate> NPC_TEMPLATES = new HashMap<>();
-   public static final List<String> CAPTIONS = new ArrayList<>();
-   public static final List<TaskMain> TASKS = new ArrayList<>();
-   public static final List<SideTaskTemplate> SIDE_TASKS_TEMPLATE = new ArrayList<>();
-   public static final List<Intrinsic> INTRINSICS = new ArrayList<>();
-   public static final List<Intrinsic> INTRINSIC_TD = new ArrayList<>();
-   public static final List<Intrinsic> INTRINSIC_NM = new ArrayList<>();
-   public static final List<Intrinsic> INTRINSIC_XD = new ArrayList<>();
-   public static final Map<Integer, HeadAvatar> HEAD_AVATARS = new HashMap<>();
-   public static final List<FlagBag> FLAGS_BAGS = new ArrayList<>();
-   public static final Map<Integer, CaiTrang> CAI_TRANGS = new HashMap<>();
-   public static final List<NClass> NCLASS = new ArrayList<>();
-   public static final List<Npc> NPCS = new ArrayList<>();
-   public static List<Shop> SHOPS = new ArrayList<>();
-   public static final List<Clan> CLANS = new ArrayList<>();
+
+   public static final Map<Integer, ItemTemplate> ITEM_TEMPLATES = new ConcurrentHashMap<>();
+
+   public static final Map<Integer, MobTemplate> MOB_TEMPLATES = new ConcurrentHashMap<>();
+
+   public static final Map<Integer, NpcTemplate> NPC_TEMPLATES = new ConcurrentHashMap<>();
+
+   public static final List<String> CAPTIONS = new CopyOnWriteArrayList<>();
+
+   public static final List<TaskMain> TASKS = new CopyOnWriteArrayList<>();
+
+   public static final List<SideTaskTemplate> SIDE_TASKS_TEMPLATE = new CopyOnWriteArrayList<>();
+
+   public static final List<Intrinsic> INTRINSICS = new CopyOnWriteArrayList<>();
+
+   public static final List<Intrinsic> INTRINSIC_TD = new CopyOnWriteArrayList<>();
+
+   public static final List<Intrinsic> INTRINSIC_NM = new CopyOnWriteArrayList<>();
+
+   public static final List<Intrinsic> INTRINSIC_XD = new CopyOnWriteArrayList<>();
+
+   public static final Map<Integer, HeadAvatar> HEAD_AVATARS = new ConcurrentHashMap<>();
+
+   public static final List<FlagBag> FLAGS_BAGS = new CopyOnWriteArrayList<>();
+
+   public static final Map<Integer, CaiTrang> CAI_TRANGS = new ConcurrentHashMap<>();
+
+   public static final List<NClass> NCLASS = new CopyOnWriteArrayList<>();
+
+   public static final List<Npc> NPCS = new CopyOnWriteArrayList<>();
+
+   public static List<Shop> SHOPS = new CopyOnWriteArrayList<>();
+
+   public static final List<Clan> CLANS = new CopyOnWriteArrayList<>();
    public static final ByteArrayOutputStream[] cache = new ByteArrayOutputStream[4];
    public static final RandomCollection<Integer> HONG_DAO_CHIN = new RandomCollection<>();
    public static final RandomCollection<Integer> HOP_QUA_TET = new RandomCollection<>();
-   public static final List<PhucLoiManager> PHUCLOI_MANAGER = new ArrayList<>();
+   public static final List<PhucLoiManager> PHUCLOI_MANAGER = new CopyOnWriteArrayList<>();
 
-   public static final List<Item> CT = new ArrayList<>();
-   public static final List<Item> FLAG = new ArrayList<>();
+   public static final List<Item> CT = new CopyOnWriteArrayList<>();
+
+   public static final List<Item> FLAG = new CopyOnWriteArrayList<>();
 
    public static final short[] daCuongHoa = { 1791, 1792, 1793, 1794, 1795, 1796, 1563, 1564, 1565, 1559, 1560, 1561,
          1562, 1797, 1419, 1420, 1421, 1422, 1423 };
@@ -315,44 +338,15 @@ public class Manager {
             MAPS.add(map);
             map.initMob(mapTemp.mobTemp, mapTemp.mobLevel, mapTemp.mobHp, mapTemp.mobX, mapTemp.mobY);
             map.initNpc(mapTemp.npcId, mapTemp.npcX, mapTemp.npcY, mapTemp.npcAvatar);
+            GameLoop.gI().register(map);
          }
-         // new Thread(()-> {
-         // try {
-         // while (!Maintenance.isRuning){
-         // long st = System.currentTimeMillis();
-         // for (nro.models.map.Map maps : MAPS){
-         // for (Zone zone : maps.zones){
-         // try {
-         // zone.update();
-         // } catch (Exception e) {
-         // }
-         // }
-         // }
-         // long timeDo = System.currentTimeMillis() - st;
-         // if (1000 - timeDo > 0){
-         // Thread.sleep(1000 - timeDo);
-         // }
-         // }
-         // } catch (Exception e) {
-         // }
-         // }).start();
       }
+
       Referee r = new Referee();
       r.initReferee();
 
       TestDame r2 = new TestDame();
       r2.initTestDame();
-
-      // Update all maps in a single task
-      GameScheduler.SCHED.scheduleAtFixedRate(() -> {
-         for (nro.models.map.Map map : MAPS) {
-            try {
-               map.update();
-            } catch (Exception e) {
-               // Log.error(Manager.class, e);
-            }
-         }
-      }, 0, 1000, TimeUnit.MILLISECONDS);
 
       Log.success("Initialization of map successful!");
    }
@@ -360,7 +354,7 @@ public class Manager {
    private void loadDatabase() {
       long st = System.currentTimeMillis();
 
-      try (Connection con = DBService.gI().getConnectionForGame();) {
+      try (Connection con = DBService.gI().getConnection();) {
          // Load Part
          PartDAO.load(con);
 
@@ -455,19 +449,17 @@ public class Manager {
    }
 
    public static void loadEventCount() {
-      try {
-         PreparedStatement ps = DBService.gI().getConnectionForGame()
-               .prepareStatement("select * from event where server =" + SERVER);
-         ResultSet rs = ps.executeQuery();
-         if (rs.next()) {
-            EVENT_COUNT_QUY_LAO_KAME = rs.getInt("kame");
-            EVENT_COUNT_THAN_HUY_DIET = rs.getInt("bill");
-            EVENT_COUNT_THAN_MEO = rs.getInt("karin");
-            EVENT_COUNT_THUONG_DE = rs.getInt("thuongde");
-            EVENT_COUNT_THAN_VU_TRU = rs.getInt("thanvutru");
+      try (Connection con = DBService.gI().getConnection();
+            PreparedStatement ps = con.prepareStatement("select * from event where server =" + SERVER)) {
+         try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+               EVENT_COUNT_QUY_LAO_KAME = rs.getInt("kame");
+               EVENT_COUNT_THAN_HUY_DIET = rs.getInt("bill");
+               EVENT_COUNT_THAN_MEO = rs.getInt("karin");
+               EVENT_COUNT_THUONG_DE = rs.getInt("thuongde");
+               EVENT_COUNT_THAN_VU_TRU = rs.getInt("thanvutru");
+            }
          }
-         rs.close();
-         ps.close();
       } catch (Exception e) {
          Logger.getLogger(Manager.class
                .getName()).log(Level.SEVERE, null, e);
@@ -475,9 +467,9 @@ public class Manager {
    }
 
    public void updateEventCount() {
-      try {
-         PreparedStatement ps = DBService.gI().getConnectionForGame().prepareStatement(
-               "UPDATE event SET kame = ?, bill = ?, karin = ?, thuongde = ?, thanvutru = ? WHERE `server` = ?");
+      try (Connection con = DBService.gI().getConnection();
+            PreparedStatement ps = con.prepareStatement(
+                  "UPDATE event SET kame = ?, bill = ?, karin = ?, thuongde = ?, thanvutru = ? WHERE `server` = ?")) {
          ps.setInt(1, EVENT_COUNT_QUY_LAO_KAME);
          ps.setInt(3, EVENT_COUNT_THAN_HUY_DIET);
          ps.setInt(2, EVENT_COUNT_THAN_MEO);
@@ -485,7 +477,6 @@ public class Manager {
          ps.setInt(5, EVENT_COUNT_THAN_VU_TRU);
          ps.setInt(6, SERVER);
          ps.executeUpdate();
-         ps.close();
       } catch (SQLException ex) {
          Logger.getLogger(Manager.class
                .getName()).log(Level.SEVERE, null, ex);
@@ -497,11 +488,11 @@ public class Manager {
    }
 
    public void updateAttributeServer() {
-      try {
-         AttributeManager am = ServerManager.gI().getAttributeManager();
-         List<Attribute> attributes = am.getAttributes();
-         PreparedStatement ps = DBService.gI().getConnectionForAutoSave().prepareStatement(
-               "UPDATE `attribute_server` SET `attribute_template_id` = ?, `value` = ?, `time` = ? WHERE `id` = ?;");
+      AttributeManager am = ServerManager.gI().getAttributeManager();
+      List<Attribute> attributes = am.getAttributes();
+      try (Connection con = DBService.gI().getConnection();
+            PreparedStatement ps = con.prepareStatement(
+                  "UPDATE `attribute_server` SET `attribute_template_id` = ?, `value` = ?, `time` = ? WHERE `id` = ?;")) {
          synchronized (attributes) {
             for (Attribute at : attributes) {
                try {
@@ -518,7 +509,6 @@ public class Manager {
             }
          }
          ps.executeBatch();
-         ps.close();
       } catch (SQLException ex) {
          Logger.getLogger(Manager.class
                .getName()).log(Level.SEVERE, null, ex);

@@ -20,38 +20,45 @@ import nro.server.io.Session;
 import nro.services.ClanService;
 import nro.utils.Log;
 import nro.utils.TimeUtil;
-import nro.utils.Util;
-import nro.core.concurrent.GameScheduler;
+import nro.core.GameLoop;
+import nro.core.GameScheduler;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 public class ServerManager {
 
    public static String timeStart;
-   public static final Map<String, Integer> CLIENTS = new HashMap<>();
+
+   public static final Map<String, Integer> CLIENTS = new ConcurrentHashMap<>();
+
    public static String NAME = "";
+
    public static int PORT = 14445;
 
    private Controller controller;
+
    private static ServerManager instance;
+
    private NettyServer nettyServer;
+
    public static boolean isRunning;
 
    @Getter
    public LoginSession login;
+
    public static boolean updateTimeLogin;
+
    @Getter
    @Setter
    public AttributeManager attributeManager;
-   private long lastUpdateAttribute;
+
    @Getter
    public DungeonManager dungeonManager;
 
@@ -89,6 +96,7 @@ public class ServerManager {
       isRunning = true;
 
       activeCommandLine();
+      GameLoop.gI().start();
       activeGame();
       activeLogin();
       SieuHangManager.gI().init();
@@ -120,7 +128,7 @@ public class ServerManager {
             }
          });
 
-         Log.success("Netty Server (Game) đang lắng nghe tại cổng: " + PORT);
+         Log.success("Netty ServerGame đang lắng nghe tại cổng: " + PORT);
          nettyServer.start();
       } catch (Exception e) {
          Log.error(ServerManager.class, e, "Lỗi khi khởi động Netty Server tại port " + PORT);
@@ -190,13 +198,13 @@ public class ServerManager {
    }
 
    private void activeGame() {
-      GameScheduler.SCHED.scheduleAtFixedRate(() -> {
-         try {
-            BossManager.gI().updateAllBoss();
-         } catch (Exception e) {
-            e.printStackTrace();
-         }
-      }, 0, 500, TimeUnit.MILLISECONDS);
+      GameLoop.gI().register(BossManager.gI());
+      if (attributeManager != null) {
+         GameLoop.gI().register(attributeManager);
+      }
+      dungeonManager = new DungeonManager();
+      GameLoop.gI().register(dungeonManager);
+      GameLoop.gI().register(MartialCongressManager.gI());
 
       GameScheduler.SCHED.scheduleAtFixedRate(() -> {
          try {
@@ -206,37 +214,6 @@ public class ServerManager {
             for (BanDoKhoBau bdkb : BanDoKhoBau.BAN_DO_KHO_BAUS) {
                bdkb.update();
             }
-         } catch (Exception e) {
-            e.printStackTrace();
-         }
-      }, 0, 500, TimeUnit.MILLISECONDS);
-
-      GameScheduler.SCHED.scheduleAtFixedRate(() -> {
-         try {
-            if (attributeManager != null) {
-               attributeManager.update();
-               if (Util.canDoWithTime(lastUpdateAttribute, 600000)) {
-                  Manager.gI().updateAttributeServer();
-                  lastUpdateAttribute = System.currentTimeMillis();
-               }
-            }
-         } catch (Exception e) {
-            e.printStackTrace();
-         }
-      }, 0, 500, TimeUnit.MILLISECONDS);
-
-      dungeonManager = new DungeonManager();
-      GameScheduler.SCHED.scheduleAtFixedRate(() -> {
-         try {
-            dungeonManager.update();
-         } catch (Exception e) {
-            e.printStackTrace();
-         }
-      }, 0, 1000, TimeUnit.MILLISECONDS);
-
-      GameScheduler.SCHED.scheduleAtFixedRate(() -> {
-         try {
-            MartialCongressManager.gI().update();
          } catch (Exception e) {
             e.printStackTrace();
          }
@@ -274,27 +251,22 @@ public class ServerManager {
          nettyServer.stop();
       }
 
-      Log.success("----------------------------------------------------");
-      Log.success("      >>> MAINTENANCE COMPLETED SUCCESSFULLY <<<    ");
-      Log.success("----------------------------------------------------");
+      Log.success("-----------------------------------------------------");
+      Log.success("     >>> MAINTENANCE COMPLETED SUCCESSFULLY <<<      ");
+      Log.success("-----------------------------------------------------");
       System.exit(0);
    }
 
    public void saveAll(boolean updateTimeLogout) {
-      try {
-         List<Player> list = Client.gI().getPlayers();
-         Connection conn = DBService.gI().getConnectionForAutoSave();
-         for (Player player : list) {
-            try {
-               PlayerDAO.updateTimeLogout = updateTimeLogout;
-               PlayerDAO.updatePlayer(player, conn);
-            } catch (Exception e) {
-               e.printStackTrace();
-            }
+      List<Player> list = Client.gI().getPlayers();
+      // Tối ưu hóa: Lưu song song sử dụng Parallel Stream và Connection Pool
+      list.parallelStream().forEach(player -> {
+         try (Connection conn = DBService.gI().getConnection()) {
+            PlayerDAO.updatePlayer(player, conn, updateTimeLogout);
+         } catch (Exception e) {
+            Log.error(ServerManager.class, e, "Lỗi khi lưu người chơi: " + player.name);
          }
-      } catch (SQLException ex) {
-         ex.printStackTrace();
-      }
+      });
    }
 
    public void autoTask() {

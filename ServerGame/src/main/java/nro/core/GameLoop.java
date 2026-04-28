@@ -1,6 +1,6 @@
-package nro.core.loop;
+package nro.core;
 
-import nro.core.concurrent.GameScheduler;
+
 import java.util.Queue;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -9,6 +9,9 @@ public final class GameLoop implements Runnable {
 
    /** tick khung: 50ms (20 FPS) */
    private static final int FRAME_MS = 50;
+
+   /** Thời gian hiện tại được cache để các class khác dùng chung, tránh gọi System.currentTimeMillis() quá nhiều */
+   public static volatile long currentMillis = System.currentTimeMillis();
 
    private static final class Entry {
       final Tickable t;

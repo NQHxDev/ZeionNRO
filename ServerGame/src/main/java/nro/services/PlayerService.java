@@ -279,9 +279,8 @@ public class PlayerService {
    }
 
    public boolean savePlayer(Player player) {
-      try {
-         PlayerDAO.updateTimeLogout = true;
-         PlayerDAO.updatePlayer(player, DBService.gI().getConnectionForLogout());
+      try (Connection con = DBService.gI().getConnection()) {
+         PlayerDAO.updatePlayer(player, con, true);
          return true;
       } catch (SQLException ex) {
          ex.printStackTrace();

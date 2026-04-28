@@ -15,12 +15,12 @@ import nro.services.func.PVPServcice;
 import nro.services.func.SummonDragon;
 import nro.services.func.TransactionService;
 import nro.utils.Log;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import java.util.stream.Collectors;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import lombok.Getter;
 
 import nro.consts.ConstPlayer;
@@ -40,14 +40,21 @@ public class Client implements Runnable {
    private static Client i;
 
    @Getter
-   public final List<Session> sessions = new ArrayList<>();
-   private final Map<Integer, Session> sessions_id = new HashMap<Integer, Session>();
-   private final Map<Long, Player> players_id = new HashMap<Long, Player>();
-   private final Map<Integer, Player> players_userId = new HashMap<Integer, Player>();
-   private final Map<String, Player> players_name = new HashMap<String, Player>();
-   private final List<Player> players = new ArrayList<>();
-   public final List<Player> bots = new ArrayList<>();
-   public final List<Pet> pets = new ArrayList<>();
+   public final List<Session> sessions = new CopyOnWriteArrayList<>();
+
+   private final Map<Integer, Session> sessions_id = new ConcurrentHashMap<>();
+
+   private final Map<Long, Player> players_id = new ConcurrentHashMap<>();
+
+   private final Map<Integer, Player> players_userId = new ConcurrentHashMap<>();
+
+   private final Map<String, Player> players_name = new ConcurrentHashMap<>();
+
+   private final List<Player> players = new CopyOnWriteArrayList<>();
+
+   public final List<Player> bots = new CopyOnWriteArrayList<>();
+
+   public final List<Pet> pets = new CopyOnWriteArrayList<>();
 
    private final String[] TenDau = { "asap", "ashy", "asks", "atom", "aunt", "auto", "avid", "away", "awry", "axis",
          "babe", "baby", "back", "bail", "bake", "bald", "ball",
@@ -97,9 +104,7 @@ public class Client implements Runnable {
    }
 
    public List<Player> getPlayers() {
-      synchronized (players) {
-         return this.players.stream().collect(Collectors.toList());
-      }
+      return new ArrayList<>(this.players);
    }
 
    public static Client gI() {
@@ -110,13 +115,11 @@ public class Client implements Runnable {
    }
 
    public void put(Session session) {
-      synchronized (sessions) {
-         if (!sessions_id.containsValue(session)) {
-            this.sessions_id.put(session.getId(), session);
-         }
-         if (!sessions.contains(session)) {
-            this.sessions.add(session);
-         }
+      if (!sessions_id.containsValue(session)) {
+         this.sessions_id.put(session.getId(), session);
+      }
+      if (!sessions.contains(session)) {
+         this.sessions.add(session);
       }
    }
 
@@ -137,24 +140,22 @@ public class Client implements Runnable {
    }
 
    public void remove(Session session) {
-      synchronized (sessions) {
-         this.sessions_id.remove(session.getId());
-         this.sessions.remove(session);
-         LoginSession login = ServerManager.gI().login;
-         if (login != null && login.connected) {
-            login.service.logout(session.userId);
-         }
-         if (session.player != null) {
-            this.remove(session.player);
-            session.player.dispose();
-         }
-         if (session.loginSuccess && session.joinedGame) {
-            session.loginSuccess = false;
-            session.joinedGame = false;
-            // AccountDAO.updateAccoutLogout(session);
-         }
-         ServerManager.gI().disconnect(session);
+      this.sessions_id.remove(session.getId());
+      this.sessions.remove(session);
+      LoginSession login = ServerManager.gI().login;
+      if (login != null && login.connected) {
+         login.service.logout(session.userId);
       }
+      if (session.player != null) {
+         this.remove(session.player);
+         session.player.dispose();
+      }
+      if (session.loginSuccess && session.joinedGame) {
+         session.loginSuccess = false;
+         session.joinedGame = false;
+         // AccountDAO.updateAccoutLogout(session);
+      }
+      ServerManager.gI().disconnect(session);
    }
 
    public void clear() {
@@ -310,11 +311,9 @@ public class Client implements Runnable {
    }
 
    public Session getSession(Session session) {
-      synchronized (sessions) {
-         for (Session se : sessions) {
-            if (se != session && se.userId == session.userId) {
-               return se;
-            }
+      for (Session se : sessions) {
+         if (se != session && se.userId == session.userId) {
+            return se;
          }
       }
       return null;
@@ -330,22 +329,17 @@ public class Client implements Runnable {
 
    public void close() {
       Log.log("Cleaning up sessions ...");
-      synchronized (sessions) {
-         while (!this.sessions.isEmpty()) {
-            Log.log("LEFT PLAYER: " + this.players.size() + ".........................");
-            this.kickSession(this.sessions.remove(0));
-         }
+      while (!this.sessions.isEmpty()) {
+         this.kickSession(this.sessions.remove(0));
       }
    }
 
    private void update() {
-      synchronized (sessions) {
-         for (Session session : sessions) {
-            if (session.timeWait > 0) {
-               session.timeWait--;
-               if (session.timeWait == 0) {
-                  kickSession(session);
-               }
+      for (Session session : sessions) {
+         if (session.timeWait > 0) {
+            session.timeWait--;
+            if (session.timeWait == 0) {
+               kickSession(session);
             }
          }
       }
@@ -357,8 +351,12 @@ public class Client implements Runnable {
          try {
             long st = System.currentTimeMillis();
             update();
-            Thread.sleep(800 - (System.currentTimeMillis() - st));
+            long delay = 800 - (System.currentTimeMillis() - st);
+            if (delay > 0) {
+               Thread.sleep(delay);
+            }
          } catch (Exception e) {
+            e.printStackTrace();
          }
       }
    }

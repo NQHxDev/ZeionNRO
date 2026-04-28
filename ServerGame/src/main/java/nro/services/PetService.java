@@ -1,7 +1,7 @@
 package nro.services;
 
 import nro.consts.ConstPlayer;
-import nro.core.concurrent.GameScheduler;
+import nro.core.GameScheduler;
 import nro.models.player.Pet;
 import nro.models.player.Player;
 

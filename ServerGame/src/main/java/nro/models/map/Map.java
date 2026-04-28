@@ -1,5 +1,7 @@
 package nro.models.map;
 
+import nro.core.Tickable;
+
 import nro.consts.ConstMap;
 import nro.models.mob.MobTemplate;
 import nro.models.map.war.BlackBallWar;
@@ -19,7 +21,7 @@ import nro.utils.Util;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Map {
+public class Map implements Tickable {
 
    public static final byte T_EMPTY = 0;
    public static final byte T_TOP = 2;
@@ -280,5 +282,24 @@ public class Map {
 
    public void removeZone(Zone z) {
       zones.remove(z);
+   }
+   @Override
+   public void tick(long nowMillis) throws Exception {
+      update();
+   }
+
+   @Override
+   public int periodMs() {
+      return 1000;
+   }
+
+   @Override
+   public boolean isActive() {
+      for (Zone zone : zones) {
+         if (!zone.getPlayers().isEmpty()) {
+            return true;
+         }
+      }
+      return false;
    }
 }

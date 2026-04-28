@@ -23,7 +23,7 @@ public class HistoryTransactionDAO {
          List<Item> bag2After,
          long gold1Before, long gold2Before, long gold1After, long gold2After) {
       PreparedStatement ps = null;
-      try (Connection con = DBService.gI().getConnectionForSaveHistory();) {
+      try (Connection con = DBService.gI().getConnection();) {
          String itemsTrade1 = "Gold: " + goldP1;
          String itemsTrade2 = "Gold: " + goldP2;
          for (Item item : itemP1) {
@@ -110,7 +110,7 @@ public class HistoryTransactionDAO {
 
    public static void deleteHistory() {
       PreparedStatement ps = null;
-      try (Connection con = DBService.gI().getConnectionForAutoSave();) {
+      try (Connection con = DBService.gI().getConnection();) {
          ps = con.prepareStatement("delete from history_transaction where time_tran < '"
                + TimeUtil.getTimeBeforeCurrent(3 * 24 * 60 * 60 * 1000, "yyyy-MM-dd") + "'");
          ps.executeUpdate();

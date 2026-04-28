@@ -326,7 +326,7 @@ public class Clan {
       int clanLevel = this.level;
 
       Manager.run(() -> {
-         try (Connection con = DBService.gI().getConnectionForClan();
+         try (Connection con = DBService.gI().getConnection();
                PreparedStatement ps = con.prepareStatement("insert into clan_sv" + Manager.SERVER
                      + "(id, name, slogan, img_id, power_point, max_member, clan_point, level, members) "
                      + "values (?,?,?,?,?,?,?,?,?)")) {
@@ -360,7 +360,7 @@ public class Clan {
          Connection con = null;
          PreparedStatement ps = null;
          try {
-            con = DBService.gI().getConnectionForClan();
+            con = DBService.gI().getConnection();
             ps = con.prepareStatement("update clan_sv" + Manager.SERVER
                   + " set slogan = ?, img_id = ?, power_point = ?, max_member = ?, clan_point = ?, "
                   + "level = ?, members = ? where id = ? limit 1");

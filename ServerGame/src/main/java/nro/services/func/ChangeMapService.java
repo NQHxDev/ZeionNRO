@@ -21,7 +21,7 @@ import nro.services.*;
 import nro.utils.Log;
 import nro.utils.TimeUtil;
 import nro.utils.Util;
-import nro.core.concurrent.GameScheduler;
+import nro.core.GameScheduler;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;

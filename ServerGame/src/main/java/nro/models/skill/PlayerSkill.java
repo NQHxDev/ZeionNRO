@@ -5,7 +5,7 @@ import nro.models.player.Player;
 import nro.network.io.Message;
 import nro.services.Service;
 
-import nro.core.concurrent.GameScheduler;
+import nro.core.GameScheduler;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 

@@ -35,8 +35,6 @@ import nro.services.RuongSuuTam;
 
 public class PlayerDAO {
 
-   public static boolean updateTimeLogout;
-
    private static final Gson gson = new Gson();
 
    private static String saveItems(List<Item> items) {
@@ -882,7 +880,7 @@ public class PlayerDAO {
       }
    }
 
-   public static void updatePlayer(Player player, Connection connection) {
+   public static void updatePlayer(Player player, Connection connection, boolean updateTimeLogout) {
       if (player.isDisposed || player.isSaving || !player.loaded) {
          return;
       }
@@ -1013,7 +1011,7 @@ public class PlayerDAO {
 
    public static void saveName(Player player) {
       PreparedStatement ps = null;
-      try (Connection con = DBService.gI().getConnectionForSaveData();) {
+      try (Connection con = DBService.gI().getConnection();) {
          ps = con.prepareStatement("update player set name = ? where id = ?");
          ps.setString(1, player.name);
          ps.setInt(2, (int) player.id);
@@ -1031,7 +1029,7 @@ public class PlayerDAO {
       boolean exist = false;
       PreparedStatement ps = null;
       ResultSet rs = null;
-      try (Connection con = DBService.gI().getConnectionForGame();) {
+      try (Connection con = DBService.gI().getConnection();) {
          ps = con.prepareStatement("select * from player where name = ?");
          ps.setString(1, name);
          rs = ps.executeQuery();
@@ -1057,7 +1055,7 @@ public class PlayerDAO {
       }
       PreparedStatement ps = null;
       ResultSet rs = null;
-      try (Connection con = DBService.gI().getConnectionForGame();) {
+      try (Connection con = DBService.gI().getConnection();) {
          ps = con.prepareStatement("select vnd from account where id = ?");
          ps.setInt(1, player.getSession().userId);
          rs = ps.executeQuery();
@@ -1087,7 +1085,7 @@ public class PlayerDAO {
          return false; // Giá trị `num` không hợp lệ.
       }
       PreparedStatement ps = null;
-      try (Connection con = DBService.gI().getConnectionForSaveData();) {
+      try (Connection con = DBService.gI().getConnection();) {
          ps = con.prepareStatement("update account set vnd = (vnd - ?) where id = ?");
          ps.setInt(1, vnd);
          ps.setInt(2, player.getSession().userId);
@@ -1117,7 +1115,7 @@ public class PlayerDAO {
          return false; // Giá trị `num` không hợp lệ.
       }
       PreparedStatement ps = null;
-      try (Connection con = DBService.gI().getConnectionForSaveData();) {
+      try (Connection con = DBService.gI().getConnection();) {
          ps = con.prepareStatement("update account set vnd = (vnd + ?) where id = ?");
          ps.setInt(1, vnd);
          ps.setInt(2, player.getSession().userId);
@@ -1147,7 +1145,7 @@ public class PlayerDAO {
          return false; // Giá trị `num` không hợp lệ.
       }
       PreparedStatement ps = null;
-      try (Connection con = DBService.gI().getConnectionForSaveData();) {
+      try (Connection con = DBService.gI().getConnection();) {
          ps = con.prepareStatement("update player set kill_boss = (kill_boss + ?) where id = ?");
          ps.setInt(1, kill);
          ps.setLong(2, player.id);
@@ -1177,7 +1175,7 @@ public class PlayerDAO {
          return false; // Giá trị `num` không hợp lệ.
       }
       PreparedStatement ps = null;
-      try (Connection con = DBService.gI().getConnectionForSaveData();) {
+      try (Connection con = DBService.gI().getConnection();) {
          ps = con.prepareStatement("update player set sukien_2thang9 = (sukien_2thang9 + ?) where id = ?");
          ps.setInt(1, diem);
          ps.setLong(2, player.id);
@@ -1207,7 +1205,7 @@ public class PlayerDAO {
          return false; // Giá trị `num` không hợp lệ.
       }
       PreparedStatement ps = null;
-      try (Connection con = DBService.gI().getConnectionForSaveData();) {
+      try (Connection con = DBService.gI().getConnection();) {
          ps = con.prepareStatement("update player set event_point = (event_point + ?) where id = ?");
          ps.setInt(1, kill);
          ps.setLong(2, player.id);
@@ -1237,7 +1235,7 @@ public class PlayerDAO {
          return false; // Giá trị `num` không hợp lệ.
       }
       PreparedStatement ps = null;
-      try (Connection con = DBService.gI().getConnectionForSaveData();) {
+      try (Connection con = DBService.gI().getConnection();) {
          ps = con.prepareStatement("update player set kill_boss = (kill_boss + ?) where id = ?");
          ps.setInt(1, coin);
          ps.setLong(2, player.id);
@@ -1267,7 +1265,7 @@ public class PlayerDAO {
          return false; // Giá trị `num` không hợp lệ.
       }
       PreparedStatement ps = null;
-      try (Connection con = DBService.gI().getConnectionForSaveData();) {
+      try (Connection con = DBService.gI().getConnection();) {
          ps = con.prepareStatement("update player set hoivien_vip = (hoivien_vip + ?) where id = ?");
          ps.setInt(1, capdo);
          ps.setLong(2, player.id);
@@ -1297,7 +1295,7 @@ public class PlayerDAO {
          return false; // Giá trị `num` không hợp lệ.
       }
       PreparedStatement ps = null;
-      try (Connection con = DBService.gI().getConnectionForSaveData();) {
+      try (Connection con = DBService.gI().getConnection();) {
          ps = con.prepareStatement("update player set chuyencan = (chuyencan + ?) where id = ?");
          ps.setInt(1, day);
          ps.setLong(2, player.id);
@@ -1327,7 +1325,7 @@ public class PlayerDAO {
          return false; // Giá trị `num` không hợp lệ.
       }
       PreparedStatement ps = null;
-      try (Connection con = DBService.gI().getConnectionForSaveData();) {
+      try (Connection con = DBService.gI().getConnection();) {
          ps = con.prepareStatement("update player set check_qua_chuyencan = (check_qua_chuyencan + ?) where id = ?");
          ps.setInt(1, daNhan);
          ps.setLong(2, player.id);
@@ -1357,7 +1355,7 @@ public class PlayerDAO {
          return false; // Giá trị `num` không hợp lệ.
       }
       PreparedStatement ps = null;
-      try (Connection con = DBService.gI().getConnectionForSaveData();) {
+      try (Connection con = DBService.gI().getConnection();) {
          ps = con.prepareStatement("update player set diemdanh = (diemdanh + ?) where id = ?");
          ps.setInt(1, point);
          ps.setLong(2, player.id);
@@ -1387,7 +1385,7 @@ public class PlayerDAO {
          return false; // Giá trị `num` không hợp lệ.
       }
       PreparedStatement ps = null;
-      try (Connection con = DBService.gI().getConnectionForSaveData();) {
+      try (Connection con = DBService.gI().getConnection();) {
          ps = con.prepareStatement("update player set naplandau = (naplandau + ?) where id = ?");
          ps.setInt(1, danhan);
          ps.setLong(2, player.id);
@@ -1417,7 +1415,7 @@ public class PlayerDAO {
          return false; // Giá trị `num` không hợp lệ.
       }
       PreparedStatement ps = null;
-      try (Connection con = DBService.gI().getConnectionForSaveData();) {
+      try (Connection con = DBService.gI().getConnection();) {
          ps = con.prepareStatement(
                "UPDATE player SET data_inventory = JSON_REPLACE(data_inventory, '$[2]', ?) WHERE id = ?");
          ps.setInt(1, player.inventory.ruby + ngoc);
@@ -1444,7 +1442,7 @@ public class PlayerDAO {
 
    public static boolean XoaSoMayMan(Player player) {
       PreparedStatement ps = null;
-      try (Connection con = DBService.gI().getConnectionForSaveData();) {
+      try (Connection con = DBService.gI().getConnection();) {
          ps = con.prepareStatement("UPDATE player SET so_may_man = ? WHERE id = ?");
          ps.setString(1, "[]");
          ps.setInt(2, (int) player.id);
@@ -1470,7 +1468,7 @@ public class PlayerDAO {
 
    public static void subRuby(Player player, int userId, int ruby) {
       PreparedStatement ps = null;
-      try (Connection con = DBService.gI().getConnectionForSaveData();) {
+      try (Connection con = DBService.gI().getConnection();) {
          ps = con.prepareStatement("update account set ruby = ruby - ? where id = ?");
          ps.setInt(1, ruby);
          ps.setInt(2, userId);
@@ -1488,7 +1486,7 @@ public class PlayerDAO {
 
    public static void subGoldBar(Player player, int num) {
       PreparedStatement ps = null;
-      try (Connection con = DBService.gI().getConnectionForSaveData();) {
+      try (Connection con = DBService.gI().getConnection();) {
          ps = con.prepareStatement("update account set thoi_vang = (thoi_vang - ?) where id = ?");
          ps.setInt(1, num);
          ps.setInt(2, player.getSession().userId);
@@ -1506,7 +1504,7 @@ public class PlayerDAO {
 
    public static void subActive(Player player, int num) {
       PreparedStatement ps = null;
-      try (Connection con = DBService.gI().getConnectionForSaveData();) {
+      try (Connection con = DBService.gI().getConnection();) {
          ps = con.prepareStatement("update account set active = ? where id = ?");
          ps.setInt(1, num);
          ps.setInt(2, player.getSession().userId);
@@ -1525,7 +1523,7 @@ public class PlayerDAO {
    public static void addHistoryReceiveGoldBar(Player player, int goldBefore, int goldAfter,
          int goldBagBefore, int goldBagAfter, int goldBoxBefore, int goldBoxAfter) {
       PreparedStatement ps = null;
-      try (Connection con = DBService.gI().getConnectionForSaveData();) {
+      try (Connection con = DBService.gI().getConnection();) {
          ps = con.prepareStatement("insert into history_receive_goldbar(player_id,player_name,gold_before_receive,"
                + "gold_after_receive,gold_bag_before,gold_bag_after,gold_box_before,gold_box_after) values (?,?,?,?,?,?,?,?)");
          ps.setInt(1, (int) player.id);
@@ -1562,7 +1560,7 @@ public class PlayerDAO {
          }
       }
       PreparedStatement ps = null;
-      try (Connection con = DBService.gI().getConnectionForGetPlayer();) {
+      try (Connection con = DBService.gI().getConnection();) {
          ps = con.prepareStatement("update account set reward = ? where id = ?");
          ps.setString(1, dataItemReward);
          ps.setInt(2, player.getSession().userId);

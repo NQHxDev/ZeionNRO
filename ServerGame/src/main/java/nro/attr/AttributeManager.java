@@ -1,11 +1,12 @@
 package nro.attr;
 
+import nro.core.Tickable;
 import nro.utils.Util;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 
-public class AttributeManager {
+public class AttributeManager implements Tickable {
 
    @Getter
    public List<Attribute> attributes;
@@ -62,6 +63,21 @@ public class AttributeManager {
          attr.setTime(time);
       }
       return false;
+   }
+
+   @Override
+   public void tick(long nowMillis) throws Exception {
+      update();
+   }
+
+   @Override
+   public int periodMs() {
+      return 1000;
+   }
+
+   @Override
+   public boolean isActive() {
+      return true;
    }
 
 }

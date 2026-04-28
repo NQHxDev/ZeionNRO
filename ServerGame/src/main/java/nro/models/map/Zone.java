@@ -24,6 +24,7 @@ import nro.utils.Util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 import nro.consts.ConstItem;
 import nro.consts.ConstTranhNgocNamek;
@@ -99,17 +100,17 @@ public class Zone {
       this.map = map;
       this.zoneId = zoneId;
       this.maxPlayer = maxPlayer;
-      this.humanoids = new ArrayList<>();
-      this.notBosses = new ArrayList<>();
-      this.players = new ArrayList<>();
-      this.bosses = new ArrayList<>();
-      this.pets = new ArrayList<>();
-      this.minipets = new ArrayList<>();
-      this.mobs = new ArrayList<>();
-      this.items = new ArrayList<>();
-      this.trapMaps = new ArrayList<>();
-      this.playersFide = new ArrayList<>();
-      this.playersCadic = new ArrayList<>();
+      this.humanoids = new CopyOnWriteArrayList<>();
+      this.notBosses = new CopyOnWriteArrayList<>();
+      this.players = new CopyOnWriteArrayList<>();
+      this.bosses = new CopyOnWriteArrayList<>();
+      this.pets = new CopyOnWriteArrayList<>();
+      this.minipets = new CopyOnWriteArrayList<>();
+      this.mobs = new CopyOnWriteArrayList<>();
+      this.items = new CopyOnWriteArrayList<>();
+      this.trapMaps = new CopyOnWriteArrayList<>();
+      this.playersFide = new CopyOnWriteArrayList<>();
+      this.playersCadic = new CopyOnWriteArrayList<>();
    }
 
    private static boolean isExcludedId(int id) {
@@ -133,26 +134,19 @@ public class Zone {
 
    public double getTotalHP() {
       double total = 0;
-      synchronized (mobs) {
-         for (int i = 0; i < mobs.size(); i++) {
-            Mob mob = mobs.get(i);
-            if (!mob.isDie()) {
-               total += mob.point.hp;
-            }
+      for (Mob mob : mobs) {
+         if (!mob.isDie()) {
+            total += mob.point.hp;
          }
       }
-      synchronized (players) {
-         for (Player pl : players) {
-            if (pl.nPoint != null && !pl.isDie() && !(pl instanceof TestDame)) {
-               total += pl.nPoint.hp;
-            }
+      for (Player pl : players) {
+         if (pl.nPoint != null && !pl.isDie() && !(pl instanceof TestDame)) {
+            total += pl.nPoint.hp;
          }
       }
-      synchronized (pets) {
-         for (Player pl : pets) {
-            if (pl.nPoint != null && !pl.isDie()) {
-               total += pl.nPoint.hp;
-            }
+      for (Player pl : pets) {
+         if (pl.nPoint != null && !pl.isDie()) {
+            total += pl.nPoint.hp;
          }
       }
       return total;

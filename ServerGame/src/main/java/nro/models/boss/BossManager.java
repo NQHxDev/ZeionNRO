@@ -1,5 +1,6 @@
 package nro.models.boss;
 
+import nro.core.Tickable;
 import nro.utils.Log;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +37,7 @@ import nro.network.io.Message;
 
 import nro.utils.Util;
 
-public class BossManager {
+public class BossManager implements Tickable {
 
    public static final List<Boss> BOSSES_IN_GAME;
    private static BossManager intance;
@@ -105,7 +106,21 @@ public class BossManager {
             Log.error(BossManager.class, e);
          }
       }
+   }
 
+   @Override
+   public void tick(long nowMillis) throws Exception {
+      updateAllBoss();
+   }
+
+   @Override
+   public int periodMs() {
+      return 500; // Cập nhật Boss mỗi 500ms
+   }
+
+   @Override
+   public boolean isActive() {
+      return !BOSSES_IN_GAME.isEmpty();
    }
 
    private BossManager() {

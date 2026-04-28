@@ -13,7 +13,7 @@ public class ConsignManager {
    }
 
    public void load() {
-      try (Connection con = DBService.gI().getConnectionForGame()) {
+      try (Connection con = DBService.gI().getConnection()) {
          ServiceDataDAO.loadConsignmentItems(con);
       } catch (Exception e) {
          e.printStackTrace();
@@ -21,7 +21,7 @@ public class ConsignManager {
    }
 
    public void close() {
-      try (Connection con = DBService.gI().getConnectionForGame()) {
+      try (Connection con = DBService.gI().getConnection()) {
          ServiceDataDAO.saveConsignmentItems(con);
       } catch (Exception e) {
          e.printStackTrace();

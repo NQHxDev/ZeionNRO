@@ -29,7 +29,7 @@ public class TopManager {
    }
 
    public void load() {
-      try (Connection con = DBService.gI().getConnectionForGetPlayer()) {
+      try (Connection con = DBService.gI().getConnection()) {
          listSm = TopDAO.loadTopPower(con);
       } catch (Exception e) {
          e.printStackTrace();
@@ -37,7 +37,7 @@ public class TopManager {
    }
 
    public void load1() {
-      try (Connection con = DBService.gI().getConnectionForGetPlayer()) {
+      try (Connection con = DBService.gI().getConnection()) {
          listDetu = TopDAO.loadTopPet(con);
       } catch (Exception e) {
          e.printStackTrace();
@@ -45,7 +45,7 @@ public class TopManager {
    }
 
    public void load2() {
-      try (Connection con = DBService.gI().getConnectionForGetPlayer()) {
+      try (Connection con = DBService.gI().getConnection()) {
          listNvu = TopDAO.loadTopTask(con);
       } catch (Exception e) {
          e.printStackTrace();
@@ -53,7 +53,7 @@ public class TopManager {
    }
 
    public void load3() {
-      try (Connection con = DBService.gI().getConnectionForGetPlayer()) {
+      try (Connection con = DBService.gI().getConnection()) {
          listNap = TopDAO.loadTopDonate(con);
       } catch (Exception e) {
          e.printStackTrace();
@@ -61,7 +61,7 @@ public class TopManager {
    }
 
    public void loadSieuHang() {
-      try (Connection con = DBService.gI().getConnectionForGetPlayer()) {
+      try (Connection con = DBService.gI().getConnection()) {
          listSieuHang = TopDAO.loadTopSieuHang(con);
       } catch (Exception e) {
          e.printStackTrace();

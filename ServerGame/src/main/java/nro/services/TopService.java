@@ -237,7 +237,7 @@ public final class TopService {
     * online, ngược lại offline
     */
    public synchronized void showTopNhiemVu(Player viewer) {
-      try (Connection con = DBService.gI().getConnectionForGame();
+      try (Connection con = DBService.gI().getConnection();
             PreparedStatement ps = con.prepareStatement(QUERY_TOP_NV);
             ResultSet rs = ps.executeQuery()) {
 
@@ -307,7 +307,7 @@ public final class TopService {
     * offline
     */
    public synchronized void showTopVnd(Player viewer) {
-      try (Connection con = DBService.gI().getConnectionForGame();
+      try (Connection con = DBService.gI().getConnection();
             PreparedStatement ps = con.prepareStatement(QUERY_TOP_VND)) {
 
          ps.setInt(1, LIMIT_VND);

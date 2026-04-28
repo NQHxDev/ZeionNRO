@@ -1,9 +1,10 @@
 package nro.models.map.dungeon;
 
+import nro.core.Tickable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DungeonManager {
+public class DungeonManager implements Tickable {
 
    public final List<Dungeon> list = new ArrayList<>();
 
@@ -51,5 +52,20 @@ public class DungeonManager {
          }
          list.removeAll(r);
       }
+   }
+
+   @Override
+   public void tick(long nowMillis) throws Exception {
+      update();
+   }
+
+   @Override
+   public int periodMs() {
+      return 1000;
+   }
+
+   @Override
+   public boolean isActive() {
+      return !list.isEmpty();
    }
 }

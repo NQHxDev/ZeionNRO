@@ -8,6 +8,7 @@ import nro.utils.Util;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -43,13 +44,12 @@ public class GiftcodePlayer {
          return;
       }
       code = code.toLowerCase();
-      try {
-         PreparedStatement stmt = DBService.gI().getConnectionForGame().prepareStatement(
-               "SELECT * FROM `member_gift` WHERE `coded` like ? AND (expires_atd IS NULL OR expires_atd > now()) LIMIT 1;",
-               ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+      try (Connection con = DBService.gI().getConnection();
+            PreparedStatement stmt = con.prepareStatement(
+                  "SELECT * FROM `member_gift` WHERE `coded` like ? AND (expires_atd IS NULL OR expires_atd > now()) LIMIT 1;",
+                  ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
          stmt.setString(1, code);
-         ResultSet res = stmt.executeQuery();
-         try {
+         try (ResultSet res = stmt.executeQuery()) {
             if (!res.first()) {
                Service.getInstance().sendThongBaoOK(player, "Mã quà tặng không tồn tại hoặc đã hết hạn.");
                return;
@@ -141,9 +141,6 @@ public class GiftcodePlayer {
                res.updateTimestamp("updated_atd", timestamp);
                res.updateRow();
             }
-         } finally {
-            res.close();
-            stmt.close();
          }
       } catch (Exception e) {
          e.printStackTrace();
@@ -151,20 +148,16 @@ public class GiftcodePlayer {
    }
 
    private boolean isUsedGiftCode(int playerID, int giftCodeId) {
-      try {
-         PreparedStatement stmt = DBService.gI().getConnectionForGame().prepareStatement(
-               "SELECT * FROM `member_gift_lichsu` WHERE `gift_code_idd` = ? AND `player_idd` = ? LIMIT 1;",
-               ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+      try (Connection con = DBService.gI().getConnection();
+            PreparedStatement stmt = con.prepareStatement(
+                  "SELECT * FROM `member_gift_lichsu` WHERE `gift_code_idd` = ? AND `player_idd` = ? LIMIT 1;",
+                  ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY)) {
          stmt.setInt(1, giftCodeId);
          stmt.setInt(2, playerID);
-         ResultSet res = stmt.executeQuery();
-         try {
+         try (ResultSet res = stmt.executeQuery()) {
             if (res.first()) {
                return true;
             }
-         } finally {
-            res.close();
-            stmt.close();
          }
       } catch (SQLException e) {
          e.printStackTrace();
@@ -173,16 +166,15 @@ public class GiftcodePlayer {
    }
 
    private void addUsedGiftCode(int playerID, int giftCodeId, String code) {
-      try {
+      try (Connection con = DBService.gI().getConnection();
+            PreparedStatement stmt = con.prepareStatement(
+                  "INSERT INTO `member_gift_lichsu`(`player_idd`, `gift_code_idd`, `coded`, `created_atd`) VALUES (?, ?, ?, ?)")) {
          Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-         PreparedStatement stmt = DBService.gI().getConnectionForGame().prepareStatement(
-               "INSERT INTO `member_gift_lichsu`(`player_idd`, `gift_code_idd`, `coded`, `created_atd`) VALUES (?, ?, ?, ?)");
          stmt.setInt(1, playerID);
          stmt.setInt(2, giftCodeId);
          stmt.setString(3, code);
          stmt.setTimestamp(4, timestamp);
          stmt.executeUpdate();
-         stmt.close();
       } catch (SQLException e) {
          e.printStackTrace();
       }

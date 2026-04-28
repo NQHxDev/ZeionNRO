@@ -1,6 +1,6 @@
 package nro.manager;
 
-import nro.core.concurrent.GameScheduler;
+import nro.core.GameScheduler;
 import nro.models.player.Player;
 import nro.network.io.Message;
 import nro.services.Service;

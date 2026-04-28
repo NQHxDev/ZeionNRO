@@ -14,7 +14,7 @@ import nro.services.func.PVPServcice;
 import nro.utils.Log;
 import nro.utils.SkillUtil;
 import nro.utils.Util;
-import nro.core.concurrent.GameScheduler;
+import nro.core.GameScheduler;
 import nro.services.func.RadaService;
 
 import java.io.IOException;

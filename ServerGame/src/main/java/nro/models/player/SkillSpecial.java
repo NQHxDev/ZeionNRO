@@ -7,7 +7,7 @@ import nro.services.SkillService;
 import java.util.ArrayList;
 import java.util.List;
 
-import nro.core.concurrent.GameScheduler;
+import nro.core.GameScheduler;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
