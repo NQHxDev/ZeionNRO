@@ -1,5 +1,6 @@
 package nro.attr;
 
+import nro.core.GameLoop;
 import nro.core.Tickable;
 import nro.utils.Util;
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class AttributeManager implements Tickable {
 
    public void update() {
       if (Util.canDoWithTime(lastUpdate, 1000)) {
-         lastUpdate = System.currentTimeMillis();
+         lastUpdate = GameLoop.currentMillis;
          synchronized (attributes) {
             for (Attribute at : attributes) {
                try {
@@ -79,5 +80,4 @@ public class AttributeManager implements Tickable {
    public boolean isActive() {
       return true;
    }
-
 }

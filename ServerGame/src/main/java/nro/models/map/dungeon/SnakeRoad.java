@@ -3,7 +3,7 @@ package nro.models.map.dungeon;
 import nro.consts.ConstItem;
 import nro.consts.ConstMap;
 import nro.consts.ConstPlayer;
-import nro.lib.RandomCollection;
+import nro.utils.RandomCollection;
 import nro.models.boss.Boss;
 import nro.models.boss.BossData;
 import nro.models.boss.cdrd.CBoss;

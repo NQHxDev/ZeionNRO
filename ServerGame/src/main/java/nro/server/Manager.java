@@ -23,7 +23,7 @@ import nro.jdbc.daos.manager.PartDAO;
 import nro.jdbc.daos.manager.SideTaskDAO;
 import nro.jdbc.daos.manager.SkillDAO;
 import nro.jdbc.daos.manager.TaskDAO;
-import nro.lib.RandomCollection;
+import nro.utils.RandomCollection;
 import nro.manager.NamekBallManager;
 import nro.manager.SieuHangManager;
 import nro.models.clan.Clan;

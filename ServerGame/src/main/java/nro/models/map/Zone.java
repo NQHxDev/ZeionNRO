@@ -205,6 +205,9 @@ public class Zone {
    }
 
    public boolean isBossCanJoin(Boss boss) {
+      if (this.zoneId < 4 && this.map.zones.size() > 4) {
+         return false;
+      }
       for (Player b : this.bosses) {
          if (b.id == boss.id) {
             return false;

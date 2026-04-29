@@ -1,7 +1,7 @@
 package nro.models.npc.specific;
 
 import nro.consts.*;
-import nro.lib.RandomCollection;
+import nro.utils.RandomCollection;
 import nro.models.item.Item;
 import nro.models.item.ItemOption;
 import nro.models.item.ItemTemplate;

@@ -1,5 +1,6 @@
 package nro.utils;
 
+import nro.core.GameLoop;
 import nro.models.mob.Mob;
 import nro.models.npc.Npc;
 import nro.models.player.Player;
@@ -218,7 +219,7 @@ public class Util {
    }
 
    public static String msToTime(long ms) {
-      ms = ms - System.currentTimeMillis();
+      ms = ms - GameLoop.currentMillis;
       if (ms < 0) {
          ms = 0;
       }
@@ -287,7 +288,7 @@ public class Util {
    }
 
    public static int currentTimeSec() {
-      return (int) System.currentTimeMillis() / 1000;
+      return (int) GameLoop.currentMillis / 1000;
    }
 
    public static String replace(String text, String regex, String replacement) {
@@ -366,7 +367,7 @@ public class Util {
    }
 
    public static boolean canDoWithTime(long lastTime, long miniTimeTarget) {
-      return System.currentTimeMillis() - lastTime > miniTimeTarget;
+      return GameLoop.currentMillis - lastTime > miniTimeTarget;
    }
 
    private static final char[] SOURCE_CHARACTERS = { 'À', 'Á', 'Â', 'Ã', 'È', 'É',

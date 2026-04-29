@@ -1,4 +1,4 @@
-package nro.lib;
+package nro.utils;
 
 import java.util.NavigableMap;
 import java.util.Random;

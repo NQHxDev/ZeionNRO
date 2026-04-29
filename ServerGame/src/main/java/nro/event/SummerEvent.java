@@ -8,7 +8,7 @@ import nro.consts.ConstPlayer;
 import nro.consts.ConstRewardLimit;
 import nro.consts.ConstTextColor;
 import nro.dialog.ConfirmDialog;
-import nro.lib.RandomCollection;
+import nro.utils.RandomCollection;
 import nro.models.boss.Boss;
 import nro.models.boss.BossData;
 import nro.models.boss.event.Beetle;

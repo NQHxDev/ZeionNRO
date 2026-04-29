@@ -5,7 +5,7 @@ import nro.consts.ConstAttribute;
 
 import nro.consts.ConstMob;
 
-import nro.lib.RandomCollection;
+import nro.utils.RandomCollection;
 import nro.models.item.ItemLuckyRound;
 import nro.models.item.ItemOptionLuckyRound;
 import nro.models.item.ItemReward;
