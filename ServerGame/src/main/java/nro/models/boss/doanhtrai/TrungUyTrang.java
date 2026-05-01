@@ -1,4 +1,4 @@
-package nro.models.boss.boss_doanh_trai;
+package nro.models.boss.doanhtrai;
 
 import nro.models.boss.BossData;
 import nro.models.boss.BossFactory;

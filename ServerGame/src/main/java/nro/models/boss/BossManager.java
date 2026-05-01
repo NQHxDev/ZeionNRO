@@ -7,7 +7,7 @@ import java.util.List;
 
 import nro.models.boss.boss_ban_do_kho_bau.BossBanDoKhoBau;
 
-import nro.models.boss.boss_doanh_trai.BossDoanhTrai;
+import nro.models.boss.doanhtrai.BossDoanhTrai;
 
 import nro.models.boss.cdrd.CBoss;
 

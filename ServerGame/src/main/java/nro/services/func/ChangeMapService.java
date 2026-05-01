@@ -650,10 +650,15 @@ public class ChangeMapService {
       }
    }
 
-   // kiểm tra map có thể vào với nhiệm vụ hiện tại
    public Zone checkMapCanJoin(Player player, Zone zoneJoin) {
       if (player.isPet || player.isBoss || player.getSession() != null && player.isAdmin()) {
          return zoneJoin;
+      }
+      if (zoneJoin != null && MapService.gI().isMapDoanhTrai(player.zone.map.mapId)) {
+         if (zoneJoin.map.mapId != 27 && !player.zone.isAllMobsDie()) {
+            Service.getInstance().sendThongBaoOK(player, "Bạn phải tiêu diệt hết quái trong map mới có thể đi tiếp");
+            return null;
+         }
       }
       if (zoneJoin != null && MapService.gI().isMapDoanhTrai(zoneJoin.map.mapId)) {
          if (player.clan != null && player.clan.doanhTrai != null

@@ -1,31 +1,27 @@
-package nro.models.boss.boss_doanh_trai;
+package nro.models.boss.doanhtrai;
 
-import nro.consts.ConstPlayer;
 import nro.consts.ConstRatio;
 import nro.models.boss.BossData;
 import nro.models.map.phoban.DoanhTrai;
 import nro.models.player.Player;
 import nro.services.SkillService;
+import nro.services.func.ChangeMapService;
 import nro.utils.Util;
 
-public class NinjaAoTimFake extends NinjaAoTim {
+public class RobotVeSi extends BossDoanhTrai {
 
-   public NinjaAoTimFake(int id, DoanhTrai doanhTrai) {
-      super(id, BossData.NINJA_AO_TIM_FAKE, doanhTrai);
-      this.typePk = ConstPlayer.PK_ALL;
+   public RobotVeSi(int id, DoanhTrai doanhTrai) {
+      super(id, BossData.ROBOT_VE_SI, doanhTrai);
    }
 
    @Override
    public void attack() {
       try {
          if (!useSpecialSkill()) {
-            if (Util.isTrue(30, ConstRatio.PER100)) {
-               this.talk();
-            }
             Player pl = getPlayerAttack();
             this.playerSkill.skillSelect = this.getSkillAttack();
             if (Util.getDistance(this, pl) <= this.getRangeCanAttackWithSkillSelect()) {
-               if (Util.isTrue(50, ConstRatio.PER100)) {
+               if (Util.isTrue(20, ConstRatio.PER100)) {
                   goToXY(pl.location.x + Util.nextInt(-20, 20), Util.nextInt(pl.location.y - 80,
                         this.zone.map.yPhysicInTop(pl.location.x, 0)), false);
                }
@@ -35,13 +31,26 @@ public class NinjaAoTimFake extends NinjaAoTim {
                goToPlayer(pl, false);
             }
          }
-      } catch (Exception ex) {
-         // ex.printStackTrace();
+      } catch (Exception e) {
       }
    }
 
    @Override
    public void rewards(Player pl) {
-      super.DoXungQuanh(pl, 457, Util.nextInt(10, 30), 10);// 1- 500 thỏi vàng
+      super.DoXungQuanh(pl, 457, Util.nextInt(100, 300), 10);// 1- 500 thỏi vàng
+      super.itemDropCoTile(pl, 611, 1, 10);
+      super.tileRoiDoThanLinh(pl, 10, 10, 5);
    }
+
+   @Override
+   public void joinMap() {
+      try {
+         this.zone = this.doanhTrai.getMapById(mapJoin[Util.nextInt(0, mapJoin.length - 1)]);
+         int x = Util.nextInt(50, this.zone.map.mapWidth - 50);
+         ChangeMapService.gI().changeMap(this, this.zone, x, this.zone.map.yPhysicInTop(x, 100));
+      } catch (Exception e) {
+
+      }
+   }
+
 }

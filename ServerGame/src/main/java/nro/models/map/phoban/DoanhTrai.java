@@ -1,12 +1,12 @@
 package nro.models.map.phoban;
 
 import nro.models.boss.BossFactory;
-import nro.models.boss.boss_doanh_trai.BossDoanhTrai;
-import nro.models.boss.boss_doanh_trai.NinjaAoTim;
-import nro.models.boss.boss_doanh_trai.RobotVeSi;
-import nro.models.boss.boss_doanh_trai.TrungUyThep;
-import nro.models.boss.boss_doanh_trai.TrungUyTrang;
-import nro.models.boss.boss_doanh_trai.TrungUyXanhLo;
+import nro.models.boss.doanhtrai.BossDoanhTrai;
+import nro.models.boss.doanhtrai.NinjaAoTim;
+import nro.models.boss.doanhtrai.RobotVeSi;
+import nro.models.boss.doanhtrai.TrungUyThep;
+import nro.models.boss.doanhtrai.TrungUyTrang;
+import nro.models.boss.doanhtrai.TrungUyXanhLo;
 import nro.models.clan.Clan;
 import nro.models.map.Zone;
 import nro.models.mob.Mob;

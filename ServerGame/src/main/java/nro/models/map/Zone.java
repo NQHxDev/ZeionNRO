@@ -200,6 +200,22 @@ public class Zone {
       return this.players.size();
    }
 
+   public boolean isAllMobsDie() {
+      for (Mob mob : mobs) {
+         if (!mob.isDie()) {
+            return false;
+         }
+      }
+      if (MapService.gI().isMapDoanhTrai(this.map.mapId)) {
+         for (Player boss : bosses) {
+            if (boss != null && !boss.isDie()) {
+               return false;
+            }
+         }
+      }
+      return true;
+   }
+
    public int getNumOfBosses() {
       return this.bosses.size();
    }
