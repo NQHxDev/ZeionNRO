@@ -21,7 +21,7 @@ import nro.services.*;
 import nro.utils.Log;
 import nro.utils.TimeUtil;
 import nro.utils.Util;
-import nro.core.concurrent.GameScheduler;
+import nro.core.GameScheduler;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -650,10 +650,15 @@ public class ChangeMapService {
       }
    }
 
-   // kiểm tra map có thể vào với nhiệm vụ hiện tại
    public Zone checkMapCanJoin(Player player, Zone zoneJoin) {
       if (player.isPet || player.isBoss || player.getSession() != null && player.isAdmin()) {
          return zoneJoin;
+      }
+      if (zoneJoin != null && MapService.gI().isMapDoanhTrai(player.zone.map.mapId)) {
+         if (zoneJoin.map.mapId != 27 && !player.zone.isAllMobsDie()) {
+            Service.getInstance().sendThongBaoOK(player, "Bạn phải tiêu diệt hết quái trong map mới có thể đi tiếp");
+            return null;
+         }
       }
       if (zoneJoin != null && MapService.gI().isMapDoanhTrai(zoneJoin.map.mapId)) {
          if (player.clan != null && player.clan.doanhTrai != null
@@ -723,7 +728,7 @@ public class ChangeMapService {
             case 24: // trạm tàu vũ trụ trái đất
             case 25: // trạm tàu vũ trụ namếc
             case 26: // trạm tàu vũ trụ xayda
-               if (TaskService.gI().getIdTask(player) < ConstTask.TASK_6_0) {
+               if (TaskService.gI().getIdTask(player) < ConstTask.TASK_4_0) {
                   Service.getInstance().sendThongBao(player, "Vui lòng hoàn thành nhiệm vụ trước khi tới đây!");
                   return null;
                }
@@ -731,7 +736,7 @@ public class ChangeMapService {
             case 3: // rừng nấm
             case 11: // thung lũng maima
             case 17: // rừng nguyên sinh
-               if (TaskService.gI().getIdTask(player) < ConstTask.TASK_7_0) {
+               if (TaskService.gI().getIdTask(player) < ConstTask.TASK_4_0) {
                   Service.getInstance().sendThongBao(player, "Vui lòng hoàn thành nhiệm vụ trước khi tới đây!");
                   return null;
                }

@@ -63,7 +63,7 @@ public class LoginController {
 
    public void updateTimeLogout(int id) throws SQLException {
       PreparedStatement ps = null;
-      try (Connection con = DBService.gI().getConnectionForGame();) {
+      try (Connection con = DBService.gI().getConnection();) {
          ps = con.prepareStatement("update account set last_time_logout = ? where id = ?");
          ps.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
          ps.setInt(2, id);

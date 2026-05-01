@@ -4,6 +4,7 @@ import nro.models.boss.Boss;
 import nro.models.boss.BossData;
 import nro.models.player.Player;
 import nro.models.skill.Skill;
+import nro.services.func.ChangeMapService;
 
 public class SieuHangBoss extends Boss {
 
@@ -37,6 +38,7 @@ public class SieuHangBoss extends Boss {
       this.nPoint.critg = opponent.nPoint.critg;
       this.nPoint.hpMax = opponent.nPoint.hpMax;
       this.nPoint.hp = opponent.nPoint.hpMax;
+      this.joinMapIdle = true;
    }
 
    @Override
@@ -46,7 +48,9 @@ public class SieuHangBoss extends Boss {
 
    @Override
    public void joinMap() {
-      super.joinMap();
+      if (this.zone != null) {
+         ChangeMapService.gI().changeMap(this, this.zone, this.location.x, this.location.y);
+      }
    }
 
    @Override
@@ -68,6 +72,20 @@ public class SieuHangBoss extends Boss {
    @Override
    protected boolean useSpecialSkill() {
       return false;
+   }
+
+   @Override
+   public void generalRewards(Player pl) {
+   }
+
+   @Override
+   protected void notifyPlayeKill(Player player) {
+   }
+
+   @Override
+   public void die() {
+      this.setJustRest();
+      this.changeStatus(Boss.DIE);
    }
 
 }

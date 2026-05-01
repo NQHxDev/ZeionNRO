@@ -16,7 +16,9 @@ import java.util.concurrent.TimeUnit;
 public class GameConfig {
 
    private boolean isOpenPrisonPlanet;
+
    private boolean isOpenSuperMarket;
+
    private String event;
 
    public GameConfig() {

@@ -552,7 +552,7 @@ public class TamBao {
    // ghi lịch sử quay (lưu JSON của vật phẩm)
    private void insertHistory(Player pl, Item prize) {
       final String sql = "INSERT INTO history_tambao (id_player, item) VALUES (?, ?)";
-      try (Connection con = DBService.gI().getConnectionForGame();
+      try (Connection con = DBService.gI().getConnection();
             PreparedStatement ps = con.prepareStatement(sql)) {
 
          ps.setLong(1, pl.id);

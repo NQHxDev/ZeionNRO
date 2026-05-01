@@ -492,15 +492,16 @@ public class ClanService {
          }
          FlagBag flagBag = FlagBagService.gI().getFlagBag(imgId);
          if (flagBag != null) {
-            if (flagBag.gold > 0) {
+            int costGoldBar = 1; // Phí tạo bang: 1 thỏi vàng
+
+            if (costGoldBar > 0) {
                Item thoivang = InventoryService.gI().findItemBagByTemp(player, 457);
-               if (thoivang != null && thoivang.quantity >= flagBag.gold) {
-                  InventoryService.gI().subQuantityItemsBag(player, thoivang, flagBag.gold);
+               if (thoivang != null && thoivang.quantity >= costGoldBar) {
+                  InventoryService.gI().subQuantityItemsBag(player, thoivang, costGoldBar);
                   InventoryService.gI().sendItemBags(player);
                   Service.getInstance().point(player);
-                  player.inventory.gold -= flagBag.gold;
                } else {
-                  Service.getInstance().sendThongBao(player, "Bạn không đủ Thỏi vàng");
+                  Service.getInstance().sendThongBao(player, "Bạn cần " + costGoldBar + " Thỏi vàng để tạo bang!");
                   return;
                }
             }
@@ -768,15 +769,16 @@ public class ClanService {
       Clan clan = player.clan;
       FlagBag flagBag = FlagBagService.gI().getFlagBag(imgId);
       if (flagBag != null) {
-         if (flagBag.gold > 0) {
+         int costGoldBar = 1; // Phí đổi cờ: 1 thỏi vàng
+
+         if (costGoldBar > 0) {
             Item thoivang = InventoryService.gI().findItemBagByTemp(player, 457);
-            if (thoivang != null && thoivang.quantity >= flagBag.gold) {
-               InventoryService.gI().subQuantityItemsBag(player, thoivang, flagBag.gold);
+            if (thoivang != null && thoivang.quantity >= costGoldBar) {
+               InventoryService.gI().subQuantityItemsBag(player, thoivang, costGoldBar);
                InventoryService.gI().sendItemBags(player);
                Service.getInstance().point(player);
-               player.inventory.gold -= flagBag.gold;
             } else {
-               Service.getInstance().sendThongBao(player, "Bạn không đủ Thỏi vàng");
+               Service.getInstance().sendThongBao(player, "Bạn cần " + costGoldBar + " Thỏi vàng để đổi cờ!");
                return;
             }
          }
@@ -970,7 +972,7 @@ public class ClanService {
    private void removeClan(int clId) {
       PreparedStatement ps = null;
       PreparedStatement ps2 = null;
-      try (Connection con = DBService.gI().getConnectionForClan();) {
+      try (Connection con = DBService.gI().getConnection();) {
          ps = con.prepareStatement("DELETE FROM clan_sv"
                + Manager.SERVER + " where id = " + clId);
          ps.executeUpdate();
@@ -995,7 +997,7 @@ public class ClanService {
 
    private void removeClanPlayer(int plId) {
       PreparedStatement ps = null;
-      try (Connection con = DBService.gI().getConnectionForClan();) {
+      try (Connection con = DBService.gI().getConnection();) {
          ps = con.prepareStatement("update player set clan_id_sv"
                + Manager.SERVER + " = -1 where id = " + plId);
          ps.executeUpdate();
@@ -1097,7 +1099,7 @@ public class ClanService {
       PreparedStatement ps = null;
 
       try {
-         Connection con = DBService.gI().getConnectionForClan();
+         Connection con = DBService.gI().getConnection();
          ps = con.prepareStatement("update clan_sv" + Manager.SERVER
                + " set slogan = ?, img_id = ?, power_point = ?, max_member = ?, clan_point = ?, "
                + "level = ?, members = ? where id = ? limit 1");
@@ -1119,7 +1121,7 @@ public class ClanService {
                dataObject.addProperty("clan_point", cm.clanPoint);
                dataObject.addProperty("join_time", cm.joinTime);
                dataObject.addProperty("ask_pea_time", cm.timeAskPea);
-               dataArray.add(gson.toJson(dataObject));
+               dataArray.add(dataObject);
             }
             String member = gson.toJson(dataArray);
             ps.setString(1, clan.slogan);

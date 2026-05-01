@@ -1,4 +1,4 @@
-package nro.lib;
+package nro.utils;
 
 import java.util.NavigableMap;
 import java.util.Random;
@@ -7,7 +7,9 @@ import java.util.TreeMap;
 public class RandomCollection<E> {
 
    private final NavigableMap<Double, E> map = new TreeMap<Double, E>();
+
    private final Random random;
+
    private double total = 0;
 
    public RandomCollection() {

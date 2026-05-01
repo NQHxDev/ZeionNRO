@@ -11,7 +11,7 @@
  Target Server Version : 90600 (9.6.0)
  File Encoding         : 65001
 
- Date: 25/04/2026 08:49:34
+ Date: 16/04/2026 16:52:52
 */
 
 SET NAMES utf8mb4;
@@ -23,8 +23,8 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `account`;
 CREATE TABLE `account` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `username` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `username` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+  `password` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `ban` smallint NOT NULL DEFAULT '0',
@@ -34,28 +34,28 @@ CREATE TABLE `account` (
   `is_admin` tinyint(1) NOT NULL DEFAULT '0',
   `last_time_login` timestamp NOT NULL DEFAULT '2002-05-07 00:00:00',
   `last_time_logout` timestamp NOT NULL DEFAULT '2002-05-07 00:00:00',
-  `ip_address` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '127.0.0.1',
+  `ip_address` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '127.0.0.1',
   `active` int NOT NULL DEFAULT '0',
-  `reward` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `reward` text COLLATE utf8mb4_general_ci,
   `thoi_vang` int NOT NULL DEFAULT '0',
   `server_login` int NOT NULL DEFAULT '1',
   `new_reg` int NOT NULL DEFAULT '0',
-  `ip` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '127.0.0.1',
-  `phone` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '123456789',
+  `ip` varchar(100) COLLATE utf8mb4_general_ci DEFAULT '127.0.0.1',
+  `phone` varchar(32) COLLATE utf8mb4_general_ci DEFAULT '123456789',
   `last_server_change_time` timestamp NOT NULL DEFAULT '2002-05-07 00:00:00',
   `ruby` int NOT NULL DEFAULT '0',
   `count_card` int DEFAULT '0',
   `type_bonus` int DEFAULT '0',
-  `ref` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0',
+  `ref` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '0',
   `diemgioithieu` int NOT NULL DEFAULT '0',
   `vnd` bigint NOT NULL DEFAULT '0',
   `tongnap` bigint NOT NULL DEFAULT '0',
   `tongnap_7ngay` bigint NOT NULL DEFAULT '0',
   `gioithieu` int NOT NULL DEFAULT '0',
-  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `username` (`username`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of account
@@ -69,12 +69,12 @@ COMMIT;
 DROP TABLE IF EXISTS `achivements`;
 CREATE TABLE `achivements` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `detail` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `name` text COLLATE utf8mb4_general_ci NOT NULL,
+  `detail` text COLLATE utf8mb4_general_ci NOT NULL,
   `money` int NOT NULL,
-  `max_count` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0',
+  `max_count` varchar(250) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Records of achivements
@@ -87,18 +87,18 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS `adminpanel`;
 CREATE TABLE `adminpanel` (
-  `domain` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `title` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `logo` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `trangthai` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `android` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `iphone` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `windows` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `java` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `apikey` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `taikhoanmb` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `stkmb` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `tenmb` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+  `domain` text COLLATE utf8mb4_general_ci,
+  `title` text COLLATE utf8mb4_general_ci,
+  `logo` text COLLATE utf8mb4_general_ci,
+  `trangthai` text COLLATE utf8mb4_general_ci NOT NULL,
+  `android` text COLLATE utf8mb4_general_ci,
+  `iphone` text COLLATE utf8mb4_general_ci,
+  `windows` text COLLATE utf8mb4_general_ci,
+  `java` text COLLATE utf8mb4_general_ci,
+  `apikey` text COLLATE utf8mb4_general_ci,
+  `taikhoanmb` text COLLATE utf8mb4_general_ci,
+  `stkmb` text COLLATE utf8mb4_general_ci,
+  `tenmb` text COLLATE utf8mb4_general_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
@@ -147,7 +147,7 @@ COMMIT;
 DROP TABLE IF EXISTS `attribute_template`;
 CREATE TABLE `attribute_template` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` mediumtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `name` mediumtext COLLATE utf8mb3_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
@@ -163,8 +163,8 @@ COMMIT;
 DROP TABLE IF EXISTS `bang_tin`;
 CREATE TABLE `bang_tin` (
   `id` int NOT NULL,
-  `tieu_de` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `info` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `tieu_de` text COLLATE utf8mb4_general_ci,
+  `info` text COLLATE utf8mb4_general_ci,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -198,9 +198,9 @@ COMMIT;
 DROP TABLE IF EXISTS `caption`;
 CREATE TABLE `caption` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `earth` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `saiya` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `namek` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `earth` text COLLATE utf8mb4_general_ci NOT NULL,
+  `saiya` text COLLATE utf8mb4_general_ci NOT NULL,
+  `namek` text COLLATE utf8mb4_general_ci NOT NULL,
   `power` bigint NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
@@ -217,8 +217,8 @@ COMMIT;
 DROP TABLE IF EXISTS `category`;
 CREATE TABLE `category` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `tenchuyenmuc` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `mota` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `tenchuyenmuc` text COLLATE utf8mb4_general_ci NOT NULL,
+  `mota` text COLLATE utf8mb4_general_ci,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -234,14 +234,14 @@ COMMIT;
 DROP TABLE IF EXISTS `clan_sv1`;
 CREATE TABLE `clan_sv1` (
   `id` int NOT NULL,
-  `NAME` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `slogan` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `NAME` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `slogan` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
   `img_id` int NOT NULL DEFAULT '0',
   `power_point` bigint NOT NULL DEFAULT '0',
   `max_member` smallint NOT NULL DEFAULT '10',
   `clan_point` int NOT NULL DEFAULT '0',
   `LEVEL` int NOT NULL DEFAULT '1',
-  `members` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `members` text COLLATE utf8mb4_general_ci NOT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
@@ -283,8 +283,8 @@ DROP TABLE IF EXISTS `collection_book`;
 CREATE TABLE `collection_book` (
   `id` int NOT NULL AUTO_INCREMENT,
   `item_id` int NOT NULL,
-  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `info` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `info` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `icon` int NOT NULL,
   `rank` int NOT NULL,
   `max_amount` int NOT NULL,
@@ -294,7 +294,7 @@ CREATE TABLE `collection_book` (
   `body` int NOT NULL,
   `leg` int NOT NULL,
   `bag` int NOT NULL,
-  `options` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `options` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `aura` int NOT NULL DEFAULT '-1',
   PRIMARY KEY (`id`),
   KEY `item_id` (`item_id`)
@@ -314,7 +314,7 @@ CREATE TABLE `comment` (
   `id` int NOT NULL AUTO_INCREMENT,
   `id_post` int DEFAULT NULL,
   `id_user` int DEFAULT NULL,
-  `noidung` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `noidung` text COLLATE utf8mb4_general_ci NOT NULL,
   `ngaytao` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=335 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -375,8 +375,8 @@ COMMIT;
 DROP TABLE IF EXISTS `flag_bag`;
 CREATE TABLE `flag_bag` (
   `id` int NOT NULL,
-  `icon_data` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `NAME` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'flag_bag',
+  `icon_data` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `NAME` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'flag_bag',
   `gold` int NOT NULL DEFAULT '-1',
   `gem` int NOT NULL DEFAULT '-1',
   `icon_id` int NOT NULL DEFAULT '0',
@@ -397,7 +397,7 @@ CREATE TABLE `gift_code_histories` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `player_id` int NOT NULL,
   `gift_code_id` bigint unsigned NOT NULL,
-  `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -418,11 +418,11 @@ DROP TABLE IF EXISTS `gift_codes`;
 CREATE TABLE `gift_codes` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `type` tinyint NOT NULL COMMENT '0: For personal, 1: For everyone',
-  `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `gold` int NOT NULL DEFAULT '0',
   `gem` int NOT NULL DEFAULT '0',
   `ruby` int NOT NULL DEFAULT '0',
-  `items` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `items` longtext COLLATE utf8mb4_unicode_ci,
   `status` tinyint NOT NULL COMMENT '0: Inactive, 1: Active, 2: Expired',
   `active` int NOT NULL DEFAULT '0' COMMENT '0: Kh?´ng y?ªu cáº§u k?­ch hoáº¡t , 1 : y?ªu cáº§u k?­ch hoáº¡t',
   `expires_at` timestamp NULL DEFAULT NULL,
@@ -458,7 +458,7 @@ COMMIT;
 DROP TABLE IF EXISTS `history_receive_goldbar`;
 CREATE TABLE `history_receive_goldbar` (
   `player_id` int NOT NULL,
-  `player_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `player_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   `gold_before_receive` int NOT NULL,
   `gold_after_receive` int NOT NULL,
   `gold_bag_before` int NOT NULL,
@@ -502,14 +502,14 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS `history_transaction`;
 CREATE TABLE `history_transaction` (
-  `player_1` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `player_2` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `item_player_1` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `item_player_2` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `bag_1_before_tran` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `bag_2_before_tran` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `bag_1_after_tran` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `bag_2_after_tran` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `player_1` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `player_2` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `item_player_1` text COLLATE utf8mb4_general_ci NOT NULL,
+  `item_player_2` text COLLATE utf8mb4_general_ci NOT NULL,
+  `bag_1_before_tran` text COLLATE utf8mb4_general_ci NOT NULL,
+  `bag_2_before_tran` text COLLATE utf8mb4_general_ci NOT NULL,
+  `bag_1_after_tran` text COLLATE utf8mb4_general_ci NOT NULL,
+  `bag_2_after_tran` text COLLATE utf8mb4_general_ci NOT NULL,
   `time_tran` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
@@ -525,7 +525,7 @@ COMMIT;
 DROP TABLE IF EXISTS `img_by_name`;
 CREATE TABLE `img_by_name` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `NAME` varchar(55) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `NAME` varchar(55) COLLATE utf8mb4_general_ci NOT NULL,
   `n_frame` int NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `NAME` (`NAME`)
@@ -543,7 +543,7 @@ COMMIT;
 DROP TABLE IF EXISTS `intrinsic`;
 CREATE TABLE `intrinsic` (
   `id` int NOT NULL,
-  `NAME` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `NAME` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   `param_from_1` int NOT NULL DEFAULT '0',
   `param_to_1` int NOT NULL DEFAULT '0',
   `param_from_2` int NOT NULL DEFAULT '0',
@@ -565,7 +565,7 @@ COMMIT;
 DROP TABLE IF EXISTS `item_option_template`;
 CREATE TABLE `item_option_template` (
   `id` int NOT NULL,
-  `NAME` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `NAME` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `TYPE` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
@@ -594,7 +594,7 @@ CREATE TABLE `item_shop` (
   PRIMARY KEY (`id`) USING BTREE,
   KEY `tab_id` (`tab_id`) USING BTREE,
   KEY `temp_id` (`temp_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=983139161 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=983139160 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of item_shop
@@ -628,8 +628,8 @@ CREATE TABLE `item_template` (
   `id` int NOT NULL,
   `TYPE` int NOT NULL,
   `gender` smallint NOT NULL,
-  `NAME` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `NAME` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `description` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   `icon_id` int NOT NULL,
   `part` int NOT NULL,
   `is_up_to_up` tinyint(1) NOT NULL,
@@ -649,7 +649,7 @@ COMMIT;
 DROP TABLE IF EXISTS `kham_ngoc`;
 CREATE TABLE `kham_ngoc` (
   `id` int NOT NULL,
-  `options` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `options` text COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -665,16 +665,16 @@ COMMIT;
 DROP TABLE IF EXISTS `map_template`;
 CREATE TABLE `map_template` (
   `id` int NOT NULL,
-  `NAME` varchar(55) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `data` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[]',
+  `NAME` varchar(55) COLLATE utf8mb4_general_ci NOT NULL,
+  `data` varchar(1000) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[]',
   `zones` int NOT NULL DEFAULT '1',
   `max_player` int NOT NULL DEFAULT '15',
-  `waypoints` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `mobs` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `npcs` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `effect_noel` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `eff_event` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `effect` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `waypoints` text COLLATE utf8mb4_general_ci NOT NULL,
+  `mobs` text COLLATE utf8mb4_general_ci NOT NULL,
+  `npcs` text COLLATE utf8mb4_general_ci NOT NULL,
+  `effect_noel` text COLLATE utf8mb4_general_ci NOT NULL,
+  `eff_event` text COLLATE utf8mb4_general_ci NOT NULL,
+  `effect` text COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
@@ -690,10 +690,10 @@ COMMIT;
 DROP TABLE IF EXISTS `mb_bank`;
 CREATE TABLE `mb_bank` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `tid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `tid` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `description` text COLLATE utf8mb4_general_ci NOT NULL,
   `amount` int NOT NULL,
-  `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `username` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   `status` int NOT NULL,
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -713,11 +713,11 @@ CREATE TABLE `member_gift` (
   `idd` bigint unsigned NOT NULL AUTO_INCREMENT,
   `player_idd` int NOT NULL,
   `typed` tinyint NOT NULL COMMENT '0: For personal, 1: For everyone',
-  `coded` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `coded` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `goldd` int NOT NULL DEFAULT '0',
   `gemd` int NOT NULL DEFAULT '0',
   `rubyd` int NOT NULL DEFAULT '0',
-  `itemsd` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `itemsd` longtext COLLATE utf8mb4_unicode_ci,
   `statusd` tinyint NOT NULL COMMENT '0: Inactive, 1: Active, 2: Expired',
   `actived` int NOT NULL DEFAULT '0' COMMENT '0: Kh?´ng y?ªu cáº§u k?­ch hoáº¡t , 1 : y?ªu cáº§u k?­ch hoáº¡t',
   `expires_atd` timestamp NULL DEFAULT NULL,
@@ -740,7 +740,7 @@ CREATE TABLE `member_gift_lichsu` (
   `idd` bigint unsigned NOT NULL AUTO_INCREMENT,
   `player_idd` int NOT NULL,
   `gift_code_idd` bigint unsigned NOT NULL,
-  `coded` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `coded` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_atd` timestamp NULL DEFAULT NULL,
   `updated_atd` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`idd`),
@@ -778,7 +778,7 @@ DROP TABLE IF EXISTS `mob_template`;
 CREATE TABLE `mob_template` (
   `id` int NOT NULL,
   `TYPE` int NOT NULL,
-  `NAME` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `NAME` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
   `hp` int NOT NULL,
   `range_move` smallint NOT NULL,
   `speed` smallint NOT NULL,
@@ -803,9 +803,9 @@ CREATE TABLE `moc_vong_quay` (
   `max_value` int NOT NULL DEFAULT '0',
   `item_id` int NOT NULL DEFAULT '-1',
   `quantity` int NOT NULL DEFAULT '0',
-  `item_options` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[[73,1]]',
+  `item_options` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[[73,1]]',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Records of moc_vong_quay
@@ -819,7 +819,7 @@ COMMIT;
 DROP TABLE IF EXISTS `nclass`;
 CREATE TABLE `nclass` (
   `id` int NOT NULL,
-  `NAME` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `NAME` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
@@ -837,11 +837,11 @@ CREATE TABLE `news_posts` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `user_id` bigint unsigned NOT NULL,
   `category_id` bigint unsigned NOT NULL,
-  `slug` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `title` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `short_content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `thumbnail` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `title` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `short_content` text COLLATE utf8mb4_unicode_ci,
+  `content` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `thumbnail` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `views` int NOT NULL DEFAULT '0',
   `status` int NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -880,12 +880,12 @@ COMMIT;
 DROP TABLE IF EXISTS `npc_template`;
 CREATE TABLE `npc_template` (
   `id` int NOT NULL,
-  `NAME` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `NAME` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
   `head` int NOT NULL,
   `body` int NOT NULL,
   `leg` int NOT NULL,
   `avt` int NOT NULL,
-  `id_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `id_name` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
@@ -902,7 +902,7 @@ DROP TABLE IF EXISTS `part`;
 CREATE TABLE `part` (
   `id` int NOT NULL,
   `TYPE` int NOT NULL,
-  `DATA` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `DATA` text COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
@@ -936,12 +936,12 @@ COMMIT;
 DROP TABLE IF EXISTS `phong_thi_nghiem`;
 CREATE TABLE `phong_thi_nghiem` (
   `id` int NOT NULL,
-  `name_tab` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `name_binh` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `items` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `name_tab` text COLLATE utf8mb4_general_ci,
+  `name_binh` text COLLATE utf8mb4_general_ci,
+  `items` text COLLATE utf8mb4_general_ci NOT NULL,
   `thoi_gian` int NOT NULL DEFAULT '0',
   `item_nhan` int NOT NULL DEFAULT '0',
-  `info` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `info` text COLLATE utf8mb4_general_ci,
   `color` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -959,7 +959,7 @@ DROP TABLE IF EXISTS `phongchat`;
 CREATE TABLE `phongchat` (
   `id` int NOT NULL AUTO_INCREMENT,
   `id_user` int DEFAULT NULL,
-  `noidung` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `noidung` text COLLATE utf8mb4_general_ci NOT NULL,
   `ngaytao` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=282 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -976,12 +976,12 @@ COMMIT;
 DROP TABLE IF EXISTS `phuc_loi`;
 CREATE TABLE `phuc_loi` (
   `id` int NOT NULL,
-  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `name` text COLLATE utf8mb4_general_ci NOT NULL,
   `max_tab` int NOT NULL,
   `id_tab` int NOT NULL DEFAULT '0',
-  `info_phucloi` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `info_phucloi` text COLLATE utf8mb4_general_ci,
   `action` int NOT NULL DEFAULT '1',
-  `tich_luy` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `tich_luy` text COLLATE utf8mb4_general_ci,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -998,9 +998,9 @@ DROP TABLE IF EXISTS `phuc_loi_tab`;
 CREATE TABLE `phuc_loi_tab` (
   `id` int NOT NULL,
   `tab_id` int NOT NULL DEFAULT '0',
-  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `name` text COLLATE utf8mb4_general_ci NOT NULL,
   `max_count` int NOT NULL DEFAULT '0',
-  `list_item` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `list_item` longtext COLLATE utf8mb4_general_ci,
   `active` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -1018,143 +1018,100 @@ DROP TABLE IF EXISTS `player`;
 CREATE TABLE `player` (
   `id` int NOT NULL AUTO_INCREMENT,
   `account_id` int DEFAULT NULL,
-  `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `name` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
   `power` bigint NOT NULL DEFAULT '0',
   `head` int NOT NULL DEFAULT '102',
   `gender` int NOT NULL,
   `have_tennis_space_ship` tinyint(1) DEFAULT '0',
   `clan_id_sv1` int NOT NULL DEFAULT '-1',
   `clan_id_sv2` int NOT NULL DEFAULT '-1',
-  `data_inventory` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `data_location` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `data_magic_tree` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `items_body` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `items_bag` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `items_box` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `items_box_lucky_round` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `friends` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `enemies` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `data_intrinsic` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `data_item_time` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `data_item_time_sieucap` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `data_mabu_egg` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `data_charm` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `skills` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `skills_shortcut` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `pet_info` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `data_inventory` text COLLATE utf8mb4_general_ci NOT NULL,
+  `data_location` text COLLATE utf8mb4_general_ci NOT NULL,
+  `data_point` text COLLATE utf8mb4_general_ci NOT NULL,
+  `data_magic_tree` text COLLATE utf8mb4_general_ci NOT NULL,
+  `items_body` text COLLATE utf8mb4_general_ci NOT NULL,
+  `items_bag` text COLLATE utf8mb4_general_ci NOT NULL,
+  `items_box` text COLLATE utf8mb4_general_ci NOT NULL,
+  `items_box_lucky_round` text COLLATE utf8mb4_general_ci NOT NULL,
+  `friends` text COLLATE utf8mb4_general_ci NOT NULL,
+  `enemies` text COLLATE utf8mb4_general_ci NOT NULL,
+  `data_intrinsic` text COLLATE utf8mb4_general_ci NOT NULL,
+  `data_item_time` text COLLATE utf8mb4_general_ci NOT NULL,
+  `data_item_time_sieucap` text COLLATE utf8mb4_general_ci NOT NULL,
+  `data_task` text COLLATE utf8mb4_general_ci NOT NULL,
+  `data_mabu_egg` text COLLATE utf8mb4_general_ci NOT NULL,
+  `data_charm` text COLLATE utf8mb4_general_ci NOT NULL,
+  `skills` text COLLATE utf8mb4_general_ci NOT NULL,
+  `skills_shortcut` text COLLATE utf8mb4_general_ci NOT NULL,
+  `pet_info` text COLLATE utf8mb4_general_ci NOT NULL,
   `pet_power` bigint NOT NULL DEFAULT '0',
-  `pet_point` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `pet_body` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `pet_skill` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `pet_point` text COLLATE utf8mb4_general_ci NOT NULL,
+  `pet_body` text COLLATE utf8mb4_general_ci NOT NULL,
+  `pet_skill` text COLLATE utf8mb4_general_ci NOT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `data_black_ball` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `data_black_ball` text COLLATE utf8mb4_general_ci NOT NULL,
   `thoi_vang` int DEFAULT NULL,
-  `data_side_task` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `data_side_task` text COLLATE utf8mb4_general_ci NOT NULL,
   `new_reg` int NOT NULL DEFAULT '0',
   `event_point` int NOT NULL DEFAULT '0',
   `1sao` int NOT NULL DEFAULT '0',
   `2sao` int NOT NULL DEFAULT '0',
   `3sao` int NOT NULL DEFAULT '0',
   `top` int NOT NULL DEFAULT '0',
-  `collection_book` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `challenge` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '[2000000,0,0]',
+  `collection_book` text COLLATE utf8mb4_general_ci,
+  `challenge` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '[2000000,0,0]',
   `firstTimeLogin` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `sk_tet` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[0,0,0,0,0]',
-  `buy_limit` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[0,0,0,0,0,0,0,0]',
+  `sk_tet` varchar(50) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[0,0,0,0,0]',
+  `buy_limit` varchar(50) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[0,0,0,0,0,0,0,0,0,0,0,0,0]',
   `moc_nap` int DEFAULT '0',
-  `achivements` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `reward_limit` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '[0,0,0,0,0,0,0,0]',
+  `achivements` text COLLATE utf8mb4_general_ci,
+  `reward_limit` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '[0,0,0,0,0,0,0,0,0,0]',
   `hoivien_vip` int NOT NULL DEFAULT '0',
-  `diemdanh` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `diemdanh` text COLLATE utf8mb4_general_ci,
   `moc_nap2` int NOT NULL DEFAULT '0',
-  `data_item_noel` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `data_item_noel` text COLLATE utf8mb4_general_ci NOT NULL,
   `chuyencan` int NOT NULL DEFAULT '0',
-  `drop_vang_ngoc` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[0,0]',
+  `drop_vang_ngoc` varchar(100) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[0,0]',
   `tong_nap` int NOT NULL DEFAULT '0',
-  `nhan_moc_nap` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[0,0,0,0,0]',
-  `nhan_moc_nap2` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[0,0,0,0,0]',
-  `chuyen_sinh` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[0,0,0,0,0]',
-  `danh_hieu` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[0,0,0,0,0,0,0,0]',
-  `rank_sieu_hang` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[0,0,0,0,0,0]',
-  `so_may_man` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[]',
-  `data_offtrain` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[0,0]',
-  `reset_ngay` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[0,0]',
-  `active_phuc_loi` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[]',
+  `nhan_moc_nap` varchar(100) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[0,0,0,0,0]',
+  `nhan_moc_nap2` varchar(100) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[0,0,0,0,0]',
+  `chuyen_sinh` varchar(100) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[0,0,0,0,0]',
+  `danh_hieu` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]',
+  `rank_sieu_hang` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[0,0,0,0,0,0]',
+  `so_may_man` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[]',
+  `data_offtrain` varchar(50) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[0,0]',
+  `reset_ngay` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[0,0]',
+  `active_phuc_loi` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[]',
   `kill_boss` int NOT NULL DEFAULT '0',
   `check_qua_chuyencan` int NOT NULL DEFAULT '0',
   `naplandau` int NOT NULL DEFAULT '0',
   `tichluynap` int NOT NULL DEFAULT '0',
-  `nhan_moc_nap3` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[0,0,0,0,0]',
+  `nhan_moc_nap3` varchar(100) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[0,0,0,0,0]',
   `sukien_2thang9` bigint NOT NULL DEFAULT '0',
   `sukien_trungthu` bigint NOT NULL DEFAULT '0',
   `diem_quay` int NOT NULL DEFAULT '0',
-  `active_vong_quay` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `kham_ngoc` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `active_vong_quay` text COLLATE utf8mb4_general_ci NOT NULL,
+  `kham_ngoc` text COLLATE utf8mb4_general_ci NOT NULL,
   `active_kham_ngoc` int NOT NULL DEFAULT '0',
-  `ruong_cai_trang` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `ruong_phu_kien` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `ruong_pet` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `ruong_linh_thu` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `ruong_thu_cuoi` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `ruong_cai_trang` text COLLATE utf8mb4_general_ci NOT NULL,
+  `ruong_phu_kien` text COLLATE utf8mb4_general_ci NOT NULL,
+  `ruong_pet` text COLLATE utf8mb4_general_ci NOT NULL,
+  `ruong_linh_thu` text COLLATE utf8mb4_general_ci NOT NULL,
+  `ruong_thu_cuoi` text COLLATE utf8mb4_general_ci NOT NULL,
   `active_ruong_suu_tam` int NOT NULL DEFAULT '0',
   `phut_online` int NOT NULL DEFAULT '0',
-  `check_online` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[]',
-  `check_diem_danh` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[]',
+  `check_online` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[]',
+  `check_diem_danh` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[]',
   `weektimelogin` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `dan_duoc` varchar(225) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[0,0,0]',
-  `phong_thi_nghiem` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `dan_duoc` varchar(225) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '[0,0,0]',
+  `phong_thi_nghiem` text COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `diemdanh` (`id`),
   UNIQUE KEY `account_id` (`account_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of player
--- ----------------------------
-BEGIN;
-COMMIT;
-
--- ----------------------------
--- Table structure for player_point
--- ----------------------------
-DROP TABLE IF EXISTS `player_point`;
-CREATE TABLE `player_point` (
-  `player_id` int NOT NULL,
-  `power` bigint DEFAULT '0',
-  `tiem_nang` bigint DEFAULT '0',
-  `hp_goc` double DEFAULT '0',
-  `mp_goc` double DEFAULT '0',
-  `dame_goc` double DEFAULT '0',
-  `def_goc` double DEFAULT '0',
-  `crit_goc` int DEFAULT '0',
-  `hp` double DEFAULT '0',
-  `mp` double DEFAULT '0',
-  `stamina` int DEFAULT '0',
-  `max_stamina` int DEFAULT '0',
-  `limit_power` int DEFAULT '0',
-  PRIMARY KEY (`player_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- ----------------------------
--- Records of player_point
--- ----------------------------
-BEGIN;
-COMMIT;
-
--- ----------------------------
--- Table structure for player_task
--- ----------------------------
-DROP TABLE IF EXISTS `player_task`;
-CREATE TABLE `player_task` (
-  `player_id` int NOT NULL,
-  `task_id` int DEFAULT '0',
-  `sub_id` int DEFAULT '0',
-  `task_count` int DEFAULT '0',
-  PRIMARY KEY (`player_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- ----------------------------
--- Records of player_task
 -- ----------------------------
 BEGIN;
 COMMIT;
@@ -1166,8 +1123,8 @@ DROP TABLE IF EXISTS `post`;
 CREATE TABLE `post` (
   `id` int NOT NULL AUTO_INCREMENT,
   `id_user` int NOT NULL,
-  `tieude` varchar(225) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `noidung` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `tieude` varchar(225) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `noidung` text COLLATE utf8mb4_general_ci,
   `ngaytao` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `id_chuyenmuc` int DEFAULT NULL,
   `luotxem` int NOT NULL DEFAULT '0',
@@ -1248,7 +1205,7 @@ CREATE TABLE `ruong_suu_tam` (
   `id_item` int NOT NULL,
   `option_id` int NOT NULL,
   `param` int NOT NULL,
-  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `name` text COLLATE utf8mb4_general_ci,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -1283,36 +1240,17 @@ COMMIT;
 DROP TABLE IF EXISTS `side_task_template`;
 CREATE TABLE `side_task_template` (
   `id` int NOT NULL,
-  `NAME` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `max_count_lv1` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `max_count_lv2` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `max_count_lv3` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `max_count_lv4` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `max_count_lv5` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `NAME` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `max_count_lv1` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `max_count_lv2` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `max_count_lv3` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `max_count_lv4` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `max_count_lv5` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Records of side_task_template
--- ----------------------------
-BEGIN;
-COMMIT;
-
--- ----------------------------
--- Table structure for sieu_hang
--- ----------------------------
-DROP TABLE IF EXISTS `sieu_hang`;
-CREATE TABLE `sieu_hang` (
-  `player_id` int NOT NULL,
-  `point` int DEFAULT '100',
-  `used_ticket` int DEFAULT '0',
-  `last_time_ticket` bigint DEFAULT '0',
-  PRIMARY KEY (`player_id`),
-  CONSTRAINT `fk_sieu_hang_player` FOREIGN KEY (`player_id`) REFERENCES `player` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
-
--- ----------------------------
--- Records of sieu_hang
 -- ----------------------------
 BEGIN;
 COMMIT;
@@ -1324,15 +1262,15 @@ DROP TABLE IF EXISTS `skill_template`;
 CREATE TABLE `skill_template` (
   `nclass_id` int NOT NULL,
   `id` int NOT NULL,
-  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `name` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
   `max_point` smallint NOT NULL DEFAULT '7',
   `mana_use_type` smallint NOT NULL,
   `type` smallint NOT NULL,
   `icon_id` int NOT NULL,
-  `dam_info` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `dam_info` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   `slot` int NOT NULL DEFAULT '7',
-  `skills` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `desc` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `skills` text COLLATE utf8mb4_general_ci NOT NULL,
+  `desc` text COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`nclass_id`,`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -1349,7 +1287,7 @@ DROP TABLE IF EXISTS `tab_shop`;
 CREATE TABLE `tab_shop` (
   `id` int NOT NULL AUTO_INCREMENT,
   `shop_id` int NOT NULL,
-  `NAME` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `NAME` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   KEY `shop_id` (`shop_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
@@ -1371,7 +1309,7 @@ CREATE TABLE `tambao_items` (
   `quantity` int DEFAULT NULL,
   `item_options` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `tile_trung_thuong` smallint unsigned NOT NULL DEFAULT '0' COMMENT 'Permille (0..1000). Dùng với Util.isTrue(tile, 1000)',
-  `des` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `des` text COLLATE utf8mb4_general_ci,
   `start_at` datetime DEFAULT NULL,
   `end_at` datetime DEFAULT NULL,
   `enabled` tinyint(1) NOT NULL DEFAULT '1',
@@ -1394,8 +1332,8 @@ COMMIT;
 DROP TABLE IF EXISTS `task_main_template`;
 CREATE TABLE `task_main_template` (
   `id` int NOT NULL,
-  `NAME` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `detail` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `NAME` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `detail` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -1411,9 +1349,9 @@ COMMIT;
 DROP TABLE IF EXISTS `task_sub_template`;
 CREATE TABLE `task_sub_template` (
   `task_main_id` int NOT NULL,
-  `NAME` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `NAME` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   `max_count` int NOT NULL DEFAULT '-1',
-  `notify` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `notify` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
   `npc_id` int NOT NULL DEFAULT '-1',
   `map` int NOT NULL,
   KEY `task_main_id` (`task_main_id`)
@@ -1431,13 +1369,13 @@ COMMIT;
 DROP TABLE IF EXISTS `topup`;
 CREATE TABLE `topup` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `request_id` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `request_id` text COLLATE utf8mb4_general_ci,
   `trangthai` int DEFAULT NULL,
   `vnd` int DEFAULT NULL,
-  `username` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `seri` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `code` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `loaithe` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `username` text COLLATE utf8mb4_general_ci,
+  `seri` text COLLATE utf8mb4_general_ci,
+  `code` text COLLATE utf8mb4_general_ci,
+  `loaithe` text COLLATE utf8mb4_general_ci,
   `time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -1503,7 +1441,7 @@ COMMIT;
 DROP TABLE IF EXISTS `type_map`;
 CREATE TABLE `type_map` (
   `id` int NOT NULL,
-  `NAME` varchar(55) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `NAME` varchar(55) COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -1525,7 +1463,7 @@ CREATE TABLE `weapon_store` (
   `luong` int NOT NULL DEFAULT '0',
   `yen` int NOT NULL DEFAULT '0',
   `expire` bigint NOT NULL DEFAULT '-1',
-  `options` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `options` text COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 

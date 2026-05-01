@@ -12,8 +12,8 @@ public class MobPoint {
    public double clanMemHighestDame; // dame lớn nhất trong clan
    public double clanMemHighestHp; // hp lớn nhất trong clan
 
-   public int xHpForDame = 50; // dame gốc = highesHp / xHpForDame;
-   public int xDameForHp = 10; // hp gốc = xDameForHp * highestDame;
+   public int xHpForDame = 20; // dame gốc = highesHp / xHpForDame;
+   public int xDameForHp = 1; // hp gốc = xDameForHp * highestHp; (Đã đổi logic sang HP)
 
    public MobPoint(Mob mob) {
       this.mob = mob;

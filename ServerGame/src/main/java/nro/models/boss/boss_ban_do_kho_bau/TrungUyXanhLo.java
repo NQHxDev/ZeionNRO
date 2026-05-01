@@ -1,7 +1,7 @@
 package nro.models.boss.boss_ban_do_kho_bau;
 
 import nro.consts.ConstRatio;
-import nro.consts.MapName;
+import nro.consts.ConstMap;
 import nro.models.boss.BossData;
 import nro.models.boss.BossFactory;
 import nro.models.map.phoban.BanDoKhoBau;
@@ -76,7 +76,7 @@ public class TrungUyXanhLo extends BossBanDoKhoBau {
    @Override
    public void joinMap() {
       try {
-         this.zone = banDoKhoBau.getMapById(MapName.DONG_KHO_BAU);
+         this.zone = banDoKhoBau.getMapById(ConstMap.DONG_KHO_BAU);
          ChangeMapService.gI().changeMap(this, this.zone, 1065, this.zone.map.yPhysicInTop(1065, 0));
       } catch (Exception e) {
 

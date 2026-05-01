@@ -33,7 +33,7 @@ public class NpcService {
       createMenuConMeo(player, indexMenu, avatar, npcSay, menuSelect);
    }
 
-   private void createMenu(Player player, int indexMenu, byte npcTempId, int avatar, String npcSay,
+   public void createMenu(Player player, int indexMenu, int npcTempId, int avatar, String npcSay,
          String... menuSelect) {
       Message msg;
       try {

@@ -1,8 +1,17 @@
 package nro.network.netty;
 
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
-import io.netty.channel.*;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.epoll.Epoll;
+import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -65,13 +74,14 @@ public class NettyServer {
    }
 
    public void start() throws Exception {
-      bossGroup = new NioEventLoopGroup(1);
-      workerGroup = new NioEventLoopGroup(); // Default to cores * 2
+      boolean useEpoll = Epoll.isAvailable();
+      bossGroup = useEpoll ? new EpollEventLoopGroup(1) : new NioEventLoopGroup(1);
+      workerGroup = useEpoll ? new EpollEventLoopGroup() : new NioEventLoopGroup();
 
       try {
          ServerBootstrap b = new ServerBootstrap();
          b.group(bossGroup, workerGroup)
-            .channel(NioServerSocketChannel.class)
+            .channel(useEpoll ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
             .option(ChannelOption.SO_BACKLOG, 1024)
             .childOption(ChannelOption.SO_KEEPALIVE, true)
             .childOption(ChannelOption.TCP_NODELAY, true)

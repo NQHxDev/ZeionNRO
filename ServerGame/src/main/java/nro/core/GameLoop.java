@@ -1,14 +1,17 @@
-package nro.core.loop;
+package nro.core;
 
-import nro.core.concurrent.GameScheduler;
 import java.util.Queue;
-import java.util.concurrent.*;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public final class GameLoop implements Runnable {
 
-   /** tick khung: 50ms (20 FPS) */
+   /** Tick 50ms - 20 FPS */
    private static final int FRAME_MS = 50;
+
+   public static volatile long currentMillis = System.currentTimeMillis();
 
    private static final class Entry {
       final Tickable t;
@@ -20,9 +23,6 @@ public final class GameLoop implements Runnable {
       }
    }
 
-   /**
-    * Queue nhẹ hơn CopyOnWriteArrayList rất nhiều.
-    */
    private final Queue<Entry> entries = new ConcurrentLinkedQueue<>();
 
    private ScheduledFuture<?> loop;
@@ -63,7 +63,9 @@ public final class GameLoop implements Runnable {
 
    @Override
    public void run() {
-      long now = System.currentTimeMillis();
+      currentMillis = System.currentTimeMillis();
+
+      long now = currentMillis;
       long start = now;
       long budgetMs = FRAME_MS * 3L;
 
@@ -90,5 +92,6 @@ public final class GameLoop implements Runnable {
       if (spent > budgetMs && slowWarn.incrementAndGet() % 20 == 0) {
          System.err.println("[GameLoop] frame spent " + spent + "ms, entries=" + entries.size());
       }
+
    }
 }

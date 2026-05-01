@@ -1,4 +1,4 @@
-package nro.models.boss.boss_doanh_trai;
+package nro.models.boss.doanhtrai;
 
 import nro.models.boss.Boss;
 import nro.models.boss.BossData;
@@ -11,7 +11,8 @@ import nro.services.Service;
 import nro.utils.Util;
 
 public abstract class BossDoanhTrai extends Boss {
-   private double highestDame; // dame lớn nhất trong clan
+
+   // private double highestDame; // dame lớn nhất trong clan
    private double highestHp; // hp lớn nhất trong clan
 
    private double xHpForDame = 50; // dame gốc = highesHp / xHpForDame;
@@ -31,28 +32,24 @@ public abstract class BossDoanhTrai extends Boss {
    }
 
    private void spawn(Clan clan) {
+      // Find highest HP in clan members present
+      for (ClanMember cm : clan.getMembers()) {
+         for (Player pl : clan.membersInGame) {
+            if (pl.id == cm.id && pl.nPoint.hpMax >= highestHp) {
+               this.highestHp = pl.nPoint.hpMax;
+            }
+         }
+      }
+
       switch (this.typeDame) {
          case DAME_TIME_PLAYER_WITH_HIGHEST_HP_IN_CLAN:
-            for (ClanMember cm : clan.getMembers()) {
-               for (Player pl : clan.membersInGame) {
-                  if (pl.id == cm.id && pl.nPoint.hpMax >= highestHp) {
-                     this.highestHp = pl.nPoint.hpMax;
-                  }
-               }
-            }
             this.nPoint.dameg = (long) (this.highestHp / this.xHpForDame);
             break;
       }
       switch (this.typeHp) {
          case HP_TIME_PLAYER_WITH_HIGHEST_DAME_IN_CLAN:
-            for (ClanMember cm : clan.getMembers()) {
-               for (Player pl : clan.membersInGame) {
-                  if (pl.id == cm.id && pl.nPoint.dame >= highestDame) {
-                     this.highestDame = pl.nPoint.dame;
-                  }
-               }
-            }
-            this.nPoint.hpg = (long) (this.highestDame * this.xDameForHp);
+            // NRO Original: Boss HP is based on player HP, not damage
+            this.nPoint.hpg = (long) (this.highestHp * this.xDameForHp / 10.0);
             this.nPoint.calPoint();
             this.nPoint.setFullHpMp();
             break;

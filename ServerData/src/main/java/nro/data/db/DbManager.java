@@ -47,10 +47,28 @@ public class DbManager {
       // Cấu hình Pool
       config.setMinimumIdle(5);
       config.setMaximumPoolSize(20);
-      config.setIdleTimeout(300000);
-      config.setConnectionTimeout(10000);
+      config.setIdleTimeout(600000); // 10 mins
+      config.setConnectionTimeout(30000); // 30s
+      config.setMaxLifetime(1800000); // 30 mins
+      config.setInitializationFailTimeout(-1); // Đợi DB khởi động
+      config.setLeakDetectionThreshold(30000); // 30s
+      config.setValidationTimeout(5000); // 5s
 
       this.dataSource = new HikariDataSource(config);
+      System.out.println("[INFO] Đang khởi tạo kết nối Database ...");
+
+      // Kiểm tra kết nối trong luồng riêng để không chặn main thread
+      new Thread(() -> {
+         try {
+            Connection conn = this.dataSource.getConnection();
+            if (conn != null) {
+               System.out.println("[SUCCESS] Kết nối Database thành công!");
+               conn.close();
+            }
+         } catch (SQLException e) {
+            // Không cần báo lỗi
+         }
+      }).start();
    }
 
    public Connection getConnection() throws SQLException {

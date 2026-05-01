@@ -17,25 +17,18 @@ public class NettyDecoder extends ByteToMessageDecoder {
 
       in.markReaderIndex();
 
-      // DEBUG TRACE: In ra 10 byte đầu tiên để xác định header thực tế
-      int traceLen = Math.min(in.readableBytes(), 10);
-      byte[] trace = new byte[traceLen];
-      in.getBytes(in.readerIndex(), trace);
-
-      // Use a local copy of curR to simulate decryption
       int localCurR = session.getCurR();
 
-      // 1. Read Command
+      // Read Command
       byte rawCmd = in.readByte();
       byte cmd = rawCmd;
       if (session.isConnected()) {
          cmd = session.decodeKey(rawCmd, localCurR++);
       }
 
-      // 2. Read Length
+      // Read Length
       int size;
       if (session.isConnected()) {
-         // Client ALWAYS sends standard 2-byte encrypted size header to server
          if (in.readableBytes() < 2) {
             in.resetReaderIndex();
             return;
@@ -44,7 +37,6 @@ public class NettyDecoder extends ByteToMessageDecoder {
          byte b2 = in.readByte();
          size = (session.decodeKey(b1, localCurR++) & 0xFF) << 8 | (session.decodeKey(b2, localCurR++) & 0xFF);
       } else {
-         // Chưa kết nối (Handshake): Vẫn là 2 byte size mặc định
          if (in.readableBytes() < 2) {
             in.resetReaderIndex();
             return;
@@ -52,26 +44,26 @@ public class NettyDecoder extends ByteToMessageDecoder {
          size = in.readUnsignedShort();
       }
 
-      // 3. Read Data
+      // Read Data
+      if (size > 16384 || size < 0) {
+         ctx.close();
+         return;
+      }
+
       if (in.readableBytes() < size) {
          in.resetReaderIndex();
          return;
       }
 
-      // All data is available, now we can commit the changes
-      byte[] rawData = new byte[size];
-      in.readBytes(rawData);
-
       byte[] decryptedData = new byte[size];
       if (session.isConnected()) {
          for (int i = 0; i < size; i++) {
-            decryptedData[i] = session.decodeKey(rawData[i], localCurR++);
+            decryptedData[i] = session.decodeKey(in.readByte(), localCurR++);
          }
       } else {
-         System.arraycopy(rawData, 0, decryptedData, 0, size);
+         in.readBytes(decryptedData);
       }
 
-      // COMMIT the session state
       session.setCurR(localCurR);
 
       Message msg = new Message(cmd, decryptedData);

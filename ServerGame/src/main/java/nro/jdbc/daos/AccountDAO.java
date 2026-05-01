@@ -16,7 +16,7 @@ public class AccountDAO {
 
    public static void updateAccount(Session session) {
       PreparedStatement ps = null;
-      try (Connection con = DBService.gI().getConnectionForGetPlayer();) {
+      try (Connection con = DBService.gI().getConnection();) {
          ps = con.prepareStatement("update account set password = ? where id = ? and username = ?");
          ps.setString(1, session.pp);
          ps.setInt(2, session.userId);
@@ -34,7 +34,7 @@ public class AccountDAO {
 
    public static void updateLastTimeLoginAllAccount() {
       PreparedStatement ps = null;
-      try (Connection con = DBService.gI().getConnectionForGame();) {
+      try (Connection con = DBService.gI().getConnection();) {
          ps = con.prepareStatement("update account set last_time_login = '2000-01-01', "
                + "last_time_logout = '2001-01-01' where server_login = " + Manager.SERVER);
          ps.executeUpdate();
@@ -53,7 +53,7 @@ public class AccountDAO {
    public static void updateAccoutLogout(Session session) {
       if (session.uu != null && session.pp != null) {
          PreparedStatement ps = null;
-         try (Connection con = DBService.gI().getConnectionForGame();) {
+         try (Connection con = DBService.gI().getConnection();) {
             ps = con.prepareStatement("update account set last_time_logout = ? where id = ?");
             ps.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
             ps.setInt(2, session.userId);
@@ -71,7 +71,7 @@ public class AccountDAO {
 
    public static void banAccount(Session session) {
       PreparedStatement ps = null;
-      try (Connection con = DBService.gI().getConnectionForGetPlayer();) {
+      try (Connection con = DBService.gI().getConnection();) {
          ps = con.prepareStatement("update account set ban = 1 where id = ? and username = ?");
          ps.setInt(1, session.userId);
          ps.setString(2, session.uu);
@@ -89,7 +89,7 @@ public class AccountDAO {
    public static int createAccount(String user, String password) {
       int key = -1;
       PreparedStatement ps = null;
-      try (Connection con = DBService.gI().getConnectionForGetPlayer();) {
+      try (Connection con = DBService.gI().getConnection();) {
          ps = con.prepareStatement("select * from account where username = ?");
          ps.setString(1, user);
          if (ps.executeQuery().next()) {

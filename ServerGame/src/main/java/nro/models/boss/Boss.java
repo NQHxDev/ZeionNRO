@@ -7,6 +7,7 @@ import nro.models.boss.cdrd.CBoss;
 import nro.models.boss.iboss.BossInterface;
 import nro.models.boss.mabu_war.BossMabuWar;
 import nro.models.map.ItemMap;
+import nro.models.map.Map;
 import nro.models.map.Zone;
 import nro.models.player.Player;
 import nro.models.skill.Skill;
@@ -458,15 +459,21 @@ public abstract class Boss extends Player implements BossInterface {
       if (this.zone != null) {
          ChangeMapService.gI().changeMapBySpaceShip(this, this.zone, ChangeMapService.TENNIS_SPACE_SHIP);
          ServerNotify.gI().notify("Boss " + this.name + " vừa xuất hiện tại " + this.zone.map.mapName);
-         // System.out.println("Boss " + this.name + " vừa xuất hiện tại " +
-         // this.zone.map.mapName + " khu vực " + this.zone.zoneId);
       }
    }
 
    public Zone getMapCanJoin(int mapId) {
-      Zone map = MapService.gI().getMapWithRandZone(mapId);
-      if (map.isBossCanJoin(this)) {
-         return map;
+      Map map = MapService.gI().getMapById(mapId);
+      Zone zone = null;
+      if (map != null) {
+         if (map.zones.size() > 4) {
+            zone = map.zones.get(Util.nextInt(4, map.zones.size() - 1));
+         } else {
+            zone = map.zones.get(Util.nextInt(0, map.zones.size() - 1));
+         }
+      }
+      if (zone != null && zone.isBossCanJoin(this)) {
+         return zone;
       } else {
          return getMapCanJoin(mapJoin[Util.nextInt(0, mapJoin.length - 1)]);
       }
@@ -592,6 +599,9 @@ public abstract class Boss extends Player implements BossInterface {
 
    @Override
    public Player getPlayerAttack() throws Exception {
+      if (this.zone == null) {
+         return null;
+      }
       if (countChangePlayerAttack < targetCountChangePlayerAttack
             && plAttack != null && plAttack.zone != null
             && plAttack.zone.equals(this.zone)) {

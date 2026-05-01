@@ -1,4 +1,4 @@
-package nro.core.concurrent;
+package nro.core;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.ThreadPoolExecutor;

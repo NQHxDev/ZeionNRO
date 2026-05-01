@@ -137,4 +137,5 @@ public class GhiDanh extends Npc {
          Service.getInstance().sendThongBao(player, "Mỗi ngày chỉ có thể nhận quà một lần");
       }
    }
+
 }

@@ -1,5 +1,7 @@
 package nro.models.map;
 
+import nro.core.Tickable;
+
 import nro.consts.ConstMap;
 import nro.models.mob.MobTemplate;
 import nro.models.map.war.BlackBallWar;
@@ -19,7 +21,7 @@ import nro.utils.Util;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Map {
+public class Map implements Tickable {
 
    public static final byte T_EMPTY = 0;
    public static final byte T_TOP = 2;
@@ -124,6 +126,9 @@ public class Map {
    public void update() {
       for (Zone zone : this.zones) {
          try {
+            if (zone.getPlayers().isEmpty()) {
+               continue;
+            }
             zone.update();
          } catch (Exception e) {
             Log.error(Map.class, e, "Update Zone Error - ZoneID: " + zone.zoneId + " - MapID: " + this.mapId);
@@ -139,7 +144,7 @@ public class Map {
             Mob mob = new Mob();
             mob.tempId = mobTemp[i];
             mob.level = mobLevel[i];
-            mob.point.setHpFull(mobHp[i]);
+            mob.point.setHpFull(temp.hp);
             mob.location.x = mobX[i];
             mob.location.y = mobY[i];
             mob.point.setHP(mob.point.getHpFull());
@@ -280,5 +285,24 @@ public class Map {
 
    public void removeZone(Zone z) {
       zones.remove(z);
+   }
+   @Override
+   public void tick(long nowMillis) throws Exception {
+      update();
+   }
+
+   @Override
+   public int periodMs() {
+      return 200;
+   }
+
+   @Override
+   public boolean isActive() {
+      for (Zone zone : zones) {
+         if (!zone.getPlayers().isEmpty()) {
+            return true;
+         }
+      }
+      return false;
    }
 }

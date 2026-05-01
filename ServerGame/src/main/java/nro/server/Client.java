@@ -1,94 +1,60 @@
 package nro.server;
 
-import nro.login.LoginSession;
-import nro.models.item.Item;
-import nro.models.map.war.NamekBallWar;
-import nro.models.player.Player;
-import nro.models.pvp.PVP;
-import nro.server.io.Session;
-import nro.services.InventoryService;
-import nro.services.ItemTimeService;
-import nro.services.MapService;
-import nro.services.PlayerService;
-import nro.services.Service;
-import nro.services.func.PVPServcice;
-import nro.services.func.SummonDragon;
-import nro.services.func.TransactionService;
 import nro.utils.Log;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import nro.models.pvp.PVP;
+import nro.services.Service;
+import nro.models.item.Item;
+import nro.server.io.Session;
+import nro.login.LoginSession;
+import nro.services.MapService;
+import nro.models.player.Player;
+import nro.services.PlayerService;
+import nro.services.ItemTimeService;
+import nro.services.func.PVPServcice;
+import nro.services.InventoryService;
+import nro.services.func.SummonDragon;
+import nro.models.map.war.NamekBallWar;
+import nro.services.func.TransactionService;
 
-import java.util.stream.Collectors;
+import java.util.Map;
 import lombok.Getter;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import nro.consts.ConstPlayer;
 
+import nro.utils.Util;
 import nro.models.map.Zone;
-import nro.models.phuban.DragonNamecWar.TranhNgoc;
-import nro.models.player.Inventory;
+import nro.utils.SkillUtil;
 import nro.models.player.Pet;
 import nro.models.skill.Skill;
-import nro.services.ItemService;
 import nro.services.PetService;
-import nro.utils.SkillUtil;
-import nro.utils.Util;
+import nro.services.ItemService;
+import nro.models.player.Inventory;
+import nro.models.phuban.DragonNamecWar.TranhNgoc;
 
 public class Client implements Runnable {
 
    private static Client i;
 
    @Getter
-   public final List<Session> sessions = new ArrayList<>();
-   private final Map<Integer, Session> sessions_id = new HashMap<Integer, Session>();
-   private final Map<Long, Player> players_id = new HashMap<Long, Player>();
-   private final Map<Integer, Player> players_userId = new HashMap<Integer, Player>();
-   private final Map<String, Player> players_name = new HashMap<String, Player>();
-   private final List<Player> players = new ArrayList<>();
-   public final List<Player> bots = new ArrayList<>();
-   public final List<Pet> pets = new ArrayList<>();
+   public final List<Session> sessions = new CopyOnWriteArrayList<>();
 
-   private final String[] TenDau = { "asap", "ashy", "asks", "atom", "aunt", "auto", "avid", "away", "awry", "axis",
-         "babe", "baby", "back", "bail", "bake", "bald", "ball",
-         "band", "bang", "bank", "byes", "byte", "cabs", "cage", "cake", "calf", "call", "calm", "came", "camp", "cams",
-         "cane", "cant", "cape", "caps", "carb", "card",
-         "care", "carp", "cars", "cart", "crow", "crud", "cruel", "crux", "cube", "cubs", "cues", "cuff", "cuke",
-         "cull", "cult", "cunt", "cure", "curl", "cute", "cuts", "cyan",
-         "cyst", "dabs", "dace", "dada", "dads", "daff", "daft", "dais", "dale", "dame", "damn", "damp", "dams", "else",
-         "emir", "emit", "ends", "envy", "epic", "eras",
-         "ergo", "erst", "espy", "etch", "even", "ever", "evil", "exam", "exec", "exes", "exit", "expo", "eyed", "eyes",
-         "face", "fact", "fade", "fads", "fags", "fail",
-         "fair", "fake", "fall", "fame", "fang", "fans", "fare", "farm", "fast", "fate", "faux", "fawn", "faze", "gain",
-         "gala", "gale", "gall", "game",
-         "gamy", "gang", "gape", "gaps", "gash", "gasp", "gate", "gaud", "gave", "gawk", "gays", "gear", "geld", "gems",
-         "gene", "gent", "germ", "gets", "ghee", "gibe",
-         "gibs", "gift", "gigs", "gild", "gill", "gilt", "gimp", "gins", "girl", "gist", "give", "glad", "glee", "glen",
-         "glow" };
+   private final Map<Integer, Session> sessions_id = new ConcurrentHashMap<>();
 
-   private final String[] TenSau = { "buns", "bunt", "buoy", "bush", "buss", "busy", "buts", "butt", "buys", "buzz",
-         "byes", "byte", "cabs", "cage", "cake", "calf", "call",
-         "calm", "came", "camp", "cams", "cane", "cant", "cape", "caps", "carb", "card", "care", "carp", "cars", "cart",
-         "case", "cash", "cask", "cast", "cats", "cave",
-         "cede", "cell", "cent", "cere", "cert", "cess", "chat", "chef", "chew", "chic", "chin", "chip", "chit", "chop",
-         "chow", "chub", "chug", "cine", "cite", "city",
-         "clad", "clam", "clap", "claw", "clay", "clef", "clew", "clip", "clod", "clog", "clot", "club", "clue", "coal",
-         "coat", "coax", "cock", "coco", "code", "coed",
-         "coil", "coin", "coke", "cola", "cold", "colt", "coma", "comb", "come", "comp", "cone", "conk", "cool", "coop",
-         "cope", "copy", "cord", "core", "cork", "corn",
-         "cost", "cosy", "cote", "cots", "cove", "cowl", "cows", "crab", "crag", "crap", "crew", "crib", "crop", "dome",
-         "done", "doom", "door", "dope", "dork", "dorm",
-         "dose", "dote", "dots", "dove", "down", "doze", "drag", "dram", "drat", "draw", "drew", "drip", "drop", "drug",
-         "drum", "dual", "dubs", "duck", "duct", "dude",
-         "duds", "dues", "duet", "duke", "dull", "duly", "dumb", "dump", "dune", "dunk", "dusk", "dust", "duty", "dyed",
-         "dyer", "dyes", "each", "earl", "earn", "ears",
-         "ease", "east", "easy", "eats", "echo", "edge", "edit", "eggs", "egos", "eire", "eject", "elan", "elms",
-         "else", "emir", "emit", "ends", "envy", "epic", "eras",
-         "ergo", "erst", "espy", "etch", "even", "ever", "evil", "exam", "exec", "exes", "exit", "expo", "eyed", "eyes",
-         "face", "fact", "fade", "fads", "fags", "fail",
-         "fair", "fake", "fall", "fame", "fang", "fans", "fare", "farm", "fast", "fate", "faux", "fawn", "faze", "fear",
-         "feat", "feed", "feel", "fees", "feet", "fell",
-         "felt", "fend", "fern", "feta", "glue", "glum", "gnat", "gnaw" };
+   private final Map<Long, Player> players_id = new ConcurrentHashMap<>();
+
+   private final Map<Integer, Player> players_userId = new ConcurrentHashMap<>();
+
+   private final Map<String, Player> players_name = new ConcurrentHashMap<>();
+
+   private final List<Player> players = new CopyOnWriteArrayList<>();
+
+   public final List<Player> bots = new CopyOnWriteArrayList<>();
+
+   public final List<Pet> pets = new CopyOnWriteArrayList<>();
 
    public int id = 1_000_000_000;
 
@@ -97,9 +63,7 @@ public class Client implements Runnable {
    }
 
    public List<Player> getPlayers() {
-      synchronized (players) {
-         return this.players.stream().collect(Collectors.toList());
-      }
+      return new ArrayList<>(this.players);
    }
 
    public static Client gI() {
@@ -110,13 +74,11 @@ public class Client implements Runnable {
    }
 
    public void put(Session session) {
-      synchronized (sessions) {
-         if (!sessions_id.containsValue(session)) {
-            this.sessions_id.put(session.getId(), session);
-         }
-         if (!sessions.contains(session)) {
-            this.sessions.add(session);
-         }
+      if (!sessions_id.containsValue(session)) {
+         this.sessions_id.put(session.getId(), session);
+      }
+      if (!sessions.contains(session)) {
+         this.sessions.add(session);
       }
    }
 
@@ -137,24 +99,22 @@ public class Client implements Runnable {
    }
 
    public void remove(Session session) {
-      synchronized (sessions) {
-         this.sessions_id.remove(session.getId());
-         this.sessions.remove(session);
-         LoginSession login = ServerManager.gI().login;
-         if (login != null && login.connected) {
-            login.service.logout(session.userId);
-         }
-         if (session.player != null) {
-            this.remove(session.player);
-            session.player.dispose();
-         }
-         if (session.loginSuccess && session.joinedGame) {
-            session.loginSuccess = false;
-            session.joinedGame = false;
-            // AccountDAO.updateAccoutLogout(session);
-         }
-         ServerManager.gI().disconnect(session);
+      this.sessions_id.remove(session.getId());
+      this.sessions.remove(session);
+      LoginSession login = ServerManager.gI().login;
+      if (login != null && login.connected) {
+         login.service.logout(session.userId);
       }
+      if (session.player != null) {
+         this.remove(session.player);
+         session.player.dispose();
+      }
+      if (session.loginSuccess && session.joinedGame) {
+         session.loginSuccess = false;
+         session.joinedGame = false;
+         // AccountDAO.updateAccoutLogout(session);
+      }
+      ServerManager.gI().disconnect(session);
    }
 
    public void clear() {
@@ -172,15 +132,13 @@ public class Client implements Runnable {
 
    public void createBot() {
       try {
-         String[] name1 = TenDau;
-         String[] name2 = TenSau;
          Player pl = new Player();
          // pl.setSession(s);
          // pl.getSession().userId = id;
          System.out.println("Creat Bot:" + "[" + id + "]");
          pl.id = id;
          id++;
-         pl.name = name1[Util.nextInt(name1.length)] + name2[Util.nextInt(name2.length)];
+         pl.name = nro.services.BotManager.gI().generateRandomName();
          pl.gender = (byte) Util.nextInt(0, 2);
          pl.isBot = true;
          pl.isBoss = false;
@@ -310,11 +268,9 @@ public class Client implements Runnable {
    }
 
    public Session getSession(Session session) {
-      synchronized (sessions) {
-         for (Session se : sessions) {
-            if (se != session && se.userId == session.userId) {
-               return se;
-            }
+      for (Session se : sessions) {
+         if (se != session && se.userId == session.userId) {
+            return se;
          }
       }
       return null;
@@ -330,22 +286,17 @@ public class Client implements Runnable {
 
    public void close() {
       Log.log("Cleaning up sessions ...");
-      synchronized (sessions) {
-         while (!this.sessions.isEmpty()) {
-            Log.log("LEFT PLAYER: " + this.players.size() + ".........................");
-            this.kickSession(this.sessions.remove(0));
-         }
+      while (!this.sessions.isEmpty()) {
+         this.kickSession(this.sessions.remove(0));
       }
    }
 
    private void update() {
-      synchronized (sessions) {
-         for (Session session : sessions) {
-            if (session.timeWait > 0) {
-               session.timeWait--;
-               if (session.timeWait == 0) {
-                  kickSession(session);
-               }
+      for (Session session : sessions) {
+         if (session.timeWait > 0) {
+            session.timeWait--;
+            if (session.timeWait == 0) {
+               kickSession(session);
             }
          }
       }
@@ -357,8 +308,12 @@ public class Client implements Runnable {
          try {
             long st = System.currentTimeMillis();
             update();
-            Thread.sleep(800 - (System.currentTimeMillis() - st));
+            long delay = 800 - (System.currentTimeMillis() - st);
+            if (delay > 0) {
+               Thread.sleep(delay);
+            }
          } catch (Exception e) {
+            e.printStackTrace();
          }
       }
    }

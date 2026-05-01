@@ -1,11 +1,13 @@
 package nro.models.map.challenge;
 
+import nro.core.Tickable;
+
 import nro.utils.Util;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MartialCongressManager {
+public class MartialCongressManager implements Tickable {
 
    private static MartialCongressManager i;
    private long lastUpdate;
@@ -45,5 +47,19 @@ public class MartialCongressManager {
       synchronized (toRemove) {
          toRemove.add(mc);
       }
+   }
+   @Override
+   public void tick(long nowMillis) throws Exception {
+      update();
+   }
+
+   @Override
+   public int periodMs() {
+      return 1000;
+   }
+
+   @Override
+   public boolean isActive() {
+      return !list.isEmpty();
    }
 }

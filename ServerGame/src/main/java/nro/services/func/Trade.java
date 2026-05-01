@@ -359,7 +359,7 @@ public class Trade {
                      gold1Before, gold2Before, this.player1.inventory.gold, this.player2.inventory.gold);
                PreparedStatement ps = null;
                ResultSet rs = null;
-               try (Connection con = DBService.gI().getConnectionForSaveHistory();) {
+               try (Connection con = DBService.gI().getConnection();) {
                   PlayerDAO.saveBag(con, player1);
                   PlayerDAO.saveBag(con, player2);
                } catch (Exception e) {

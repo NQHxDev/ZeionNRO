@@ -20,14 +20,23 @@ public abstract class Dungeon {
    public static final int SNAKE_ROAD = 2;
 
    public final List<ZDungeon> zones = new ArrayList<>();
+
    public int id;
+
    public int type;
+
    public int level;
+
    public String name;
+
    public long createdAt;
+
    public int countDown;
+
    public String title;
+
    public boolean closed;
+
    public boolean finish;
 
    public Dungeon(int level) {

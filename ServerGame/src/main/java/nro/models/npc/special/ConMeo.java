@@ -762,7 +762,7 @@ public class ConMeo extends Npc {
    }
 
    private void handleLoadData(Player player, int select) {
-      try (java.sql.Connection con = DBService.gI().getConnectionForGame()) {
+      try (java.sql.Connection con = DBService.gI().getConnection()) {
          switch (select) {
             case 0:
                ServiceDataDAO.loadBangTin(con);

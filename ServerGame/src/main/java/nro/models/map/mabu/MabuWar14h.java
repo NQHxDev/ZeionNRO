@@ -1,19 +1,21 @@
 package nro.models.map.mabu;
 
-import java.util.ArrayList;
 import java.util.List;
-import nro.models.boss.Boss;
-import nro.models.boss.BossFactory;
-import nro.models.player.Player;
-import nro.services.MapService;
-import nro.services.Service;
-import nro.services.func.ChangeMapService;
 import nro.utils.TimeUtil;
+import java.util.ArrayList;
+import nro.models.boss.Boss;
+import nro.services.Service;
+import nro.services.MapService;
+import nro.models.player.Player;
+import nro.models.boss.BossFactory;
+import nro.services.func.ChangeMapService;
 
 public class MabuWar14h {
 
    private static MabuWar14h i;
+
    public final List<Boss> bosses = new ArrayList<>();
+
    public static long TIME_OPEN;
 
    public static long TIME_CLOSE;
@@ -23,21 +25,24 @@ public class MabuWar14h {
    public static final byte HOUR_CLOSE = 21;
    public static final byte MIN_CLOSE = 30;
    public static final byte SECOND_CLOSE = 0;
+
    private int day = -1;
+
    public boolean initBoss;
+
    public boolean clearBoss;
 
    public static MabuWar14h gI() {
       if (i == null) {
          i = new MabuWar14h();
       }
-      i.setTime();
       return i;
    }
 
    public void setTime() {
-      if (i.day == -1 || i.day != TimeUtil.getCurrDay()) {
-         i.day = TimeUtil.getCurrDay();
+      int currDay = TimeUtil.getCurrDay();
+      if (this.day == -1 || this.day != currDay) {
+         this.day = currDay;
          try {
             MabuWar14h.TIME_OPEN = TimeUtil.getTime(
                   TimeUtil.getTimeNow("dd/MM/yyyy") + " " + HOUR_OPEN + ":" + MIN_OPEN + ":" + SECOND_OPEN,
@@ -52,6 +57,7 @@ public class MabuWar14h {
    }
 
    public boolean isTimeMabuWar() {
+      setTime();
       long now = System.currentTimeMillis();
       return now > TIME_OPEN && now < TIME_CLOSE;
    }

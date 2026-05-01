@@ -21,11 +21,15 @@ import nro.server.io.Session;
 import nro.services.func.ChangeMapService;
 import nro.utils.Log;
 import nro.utils.SkillUtil;
+import net.datafaker.Faker;
+import java.text.Normalizer;
+import java.util.regex.Pattern;
 
 public class BotManager {
 
    private static BotManager instance;
    private static int id = 1000000;
+   private static final Faker faker = new Faker();
 
    public final List<Player> bots = new ArrayList<>();
    public final List<Pet> pets = new ArrayList<>();
@@ -34,47 +38,6 @@ public class BotManager {
          63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77,
          79, 80, 81, 82, 83,
    };
-
-   private final String[] TenDau = { "asap", "ashy", "asks", "atom", "aunt", "auto", "avid", "away", "awry", "axis",
-         "babe", "baby", "back", "bail", "bake", "bald", "ball",
-         "band", "bang", "bank", "byes", "byte", "cabs", "cage", "cake", "calf", "call", "calm", "came", "camp", "cams",
-         "cane", "cant", "cape", "caps", "carb", "card",
-         "care", "carp", "cars", "cart", "crow", "crud", "cruel", "crux", "cube", "cubs", "cues", "cuff", "cuke",
-         "cull", "cult", "cunt", "cure", "curl", "cute", "cuts", "cyan",
-         "cyst", "dabs", "dace", "dada", "dads", "daff", "daft", "dais", "dale", "dame", "damn", "damp", "dams", "else",
-         "emir", "emit", "ends", "envy", "epic", "eras",
-         "ergo", "erst", "espy", "etch", "even", "ever", "evil", "exam", "exec", "exes", "exit", "expo", "eyed", "eyes",
-         "face", "fact", "fade", "fads", "fags", "fail",
-         "fair", "fake", "fall", "fame", "fang", "fans", "fare", "farm", "fast", "fate", "faux", "fawn", "faze", "gain",
-         "gala", "gale", "gall", "game",
-         "gamy", "gang", "gape", "gaps", "gash", "gasp", "gate", "gaud", "gave", "gawk", "gays", "gear", "geld", "gems",
-         "gene", "gent", "germ", "gets", "ghee", "gibe",
-         "gibs", "gift", "gigs", "gild", "gill", "gilt", "gimp", "gins", "girl", "gist", "give", "glad", "glee", "glen",
-         "glow" };
-
-   private final String[] TenSau = { "buns", "bunt", "buoy", "bush", "buss", "busy", "buts", "butt", "buys", "buzz",
-         "byes", "byte", "cabs", "cage", "cake", "calf", "call",
-         "calm", "came", "camp", "cams", "cane", "cant", "cape", "caps", "carb", "card", "care", "carp", "cars", "cart",
-         "case", "cash", "cask", "cast", "cats", "cave",
-         "cede", "cell", "cent", "cere", "cert", "cess", "chat", "chef", "chew", "chic", "chin", "chip", "chit", "chop",
-         "chow", "chub", "chug", "cine", "cite", "city",
-         "clad", "clam", "clap", "claw", "clay", "clef", "clew", "clip", "clod", "clog", "clot", "club", "clue", "coal",
-         "coat", "coax", "cock", "coco", "code", "coed",
-         "coil", "coin", "coke", "cola", "cold", "colt", "coma", "comb", "come", "comp", "cone", "conk", "cool", "coop",
-         "cope", "copy", "cord", "core", "cork", "corn",
-         "cost", "cosy", "cote", "cots", "cove", "cowl", "cows", "crab", "crag", "crap", "crew", "crib", "crop", "dome",
-         "done", "doom", "door", "dope", "dork", "dorm",
-         "dose", "dote", "dots", "dove", "down", "doze", "drag", "dram", "drat", "draw", "drew", "drip", "drop", "drug",
-         "drum", "dual", "dubs", "duck", "duct", "dude",
-         "duds", "dues", "duet", "duke", "dull", "duly", "dumb", "dump", "dune", "dunk", "dusk", "dust", "duty", "dyed",
-         "dyer", "dyes", "each", "earl", "earn", "ears",
-         "ease", "east", "easy", "eats", "echo", "edge", "edit", "eggs", "egos", "eire", "eject", "elan", "elms",
-         "else", "emir", "emit", "ends", "envy", "epic", "eras",
-         "ergo", "erst", "espy", "etch", "even", "ever", "evil", "exam", "exec", "exes", "exit", "expo", "eyed", "eyes",
-         "face", "fact", "fade", "fads", "fags", "fail",
-         "fair", "fake", "fall", "fame", "fang", "fans", "fare", "farm", "fast", "fate", "faux", "fawn", "faze", "fear",
-         "feat", "feed", "feel", "fees", "feet", "fell",
-         "felt", "fend", "fern", "feta", "glue", "glum", "gnat", "gnaw" };
 
    public static BotManager gI() {
       if (instance == null) {
@@ -85,12 +48,9 @@ public class BotManager {
 
    public void createBot() {
       try {
-         String[] name1 = TenDau;
-         String[] name2 = TenSau;
-
          Player pl = new Player();
          pl.id = id++;
-         pl.name = name1[Util.nextInt(name1.length)] + name2[Util.nextInt(name2.length)];
+         pl.name = generateRandomName();
          pl.gender = (byte) Util.nextInt(0, 2);
          pl.isBot = true;
 
@@ -222,4 +182,16 @@ public class BotManager {
       Service.getInstance().point(pl);
       Service.getInstance().Send_Caitrang(pl);
    }
+
+   public String generateRandomName() {
+      String name = faker.name().firstName().toLowerCase() + Util.nextInt(10, 99);
+      return removeAccent(name);
+   }
+
+   public String removeAccent(String s) {
+      String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
+      Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+      return pattern.matcher(temp).replaceAll("").replace("đ", "d").replace("Đ", "D");
+   }
+
 }

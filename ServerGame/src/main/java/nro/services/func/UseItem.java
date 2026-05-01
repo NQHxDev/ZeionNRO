@@ -4,7 +4,7 @@ import nro.consts.*;
 import nro.dialog.MenuDialog;
 import nro.dialog.MenuRunable;
 import nro.event.Event;
-import nro.lib.RandomCollection;
+import nro.utils.RandomCollection;
 import nro.manager.MiniPetManager;
 import nro.manager.NamekBallManager;
 import nro.manager.PetFollowManager;

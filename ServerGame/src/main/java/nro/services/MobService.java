@@ -181,20 +181,15 @@ public class MobService {
             }
          }
       }
-      mob.point.dame = Util.DoubleGioihan(mob.point.clanMemHighestHp / (double) mob.point.xHpForDame);
-      for (ClanMember cm : clan.getMembers()) {
-         for (Player pl : clan.membersInGame) {
-            if (pl.id == cm.id && pl.nPoint.dame >= mob.point.clanMemHighestDame) {
-               mob.point.clanMemHighestDame = pl.nPoint.dame;
-            }
-         }
-      }
-      mob.point.hp = Util.DoubleGioihan(mob.point.clanMemHighestDame * (double) mob.point.xDameForHp);
+      // NRO Original: Mob Dame = 1/20 of Player Max HP
+      mob.point.dame = Util.DoubleGioihan(mob.point.clanMemHighestHp / 20.0);
+      // NRO Original: Mob HP = Player Max HP
+      mob.point.hp = mob.point.maxHp = Util.DoubleGioihan(mob.point.clanMemHighestHp);
    }
 
    public void initMobDoanhTrai(Mob mob, double point) {
       mob.point.hp = mob.point.maxHp = (double) (point / 10.0);
-      mob.point.dame = mob.point.dame = (double) (point / 200.0);
+      mob.point.dame = (double) (point / 200.0);
    }
 
    public void initMobBanDoKhoBau(Mob mob, byte level) {

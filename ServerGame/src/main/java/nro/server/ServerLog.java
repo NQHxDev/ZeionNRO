@@ -1,15 +1,16 @@
 package nro.server;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.util.Calendar;
 import java.util.Date;
+import java.time.Instant;
+import java.io.FileWriter;
+import java.util.Calendar;
+import java.io.BufferedWriter;
+import java.text.SimpleDateFormat;
 
 public class ServerLog {
 
    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd_MM_yyyy");
+
    private static final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 
    public static void logCombine(String name, String itemname, int param) {
@@ -52,4 +53,5 @@ public class ServerLog {
          return "01:01:00";
       }
    }
+
 }

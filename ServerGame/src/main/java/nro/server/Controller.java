@@ -19,8 +19,38 @@ import nro.network.IController;
 import nro.network.ISession;
 import nro.network.io.Message;
 import nro.server.io.Session;
-import nro.services.*;
-import nro.services.func.*;
+import nro.services.BangTin;
+import nro.services.ChatGlobalService;
+import nro.services.ClanService;
+import nro.services.FlagBagService;
+import nro.services.FriendAndEnemyService;
+import nro.services.GameDuDoan;
+import nro.services.IntrinsicService;
+import nro.services.InventoryService;
+import nro.services.ItemMapService;
+import nro.services.ItemTimeService;
+import nro.services.KhamNgoc;
+import nro.services.MapService;
+import nro.services.NpcService;
+import nro.services.PhongThiNghiem;
+import nro.services.PhucLoi;
+import nro.services.PlayerService;
+import nro.services.RuongSuuTam;
+import nro.services.Service;
+import nro.services.SkillService;
+import nro.services.SubMenuService;
+import nro.services.TamBao;
+import nro.services.TaskService;
+import nro.services.func.ChangeMapService;
+import nro.services.func.CombineServiceNew;
+import nro.services.func.EffectMapService;
+import nro.services.func.Input;
+import nro.services.func.LuckyRoundService;
+import nro.services.func.PVPServcice;
+import nro.services.func.RadaService;
+import nro.services.func.ShopService;
+import nro.services.func.TransactionService;
+import nro.services.func.UseItem;
 import nro.utils.Log;
 import nro.utils.Util;
 import org.slf4j.Logger;
@@ -39,14 +69,19 @@ import nro.models.item.Item;
 import nro.manager.SieuHangManager;
 
 import nro.notification.NotiManager;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Controller implements IController {
+
+   private final Map<Byte, IMessageHandler> handlers = new HashMap<>();
 
    private static Controller instance;
 
    public static Controller getInstance() {
       if (instance == null) {
          instance = new Controller();
+         instance.initHandlers();
       }
 
       return instance;
@@ -59,6 +94,138 @@ public class Controller implements IController {
    @Override
    public void onDisconnected(ISession session) {
       Client.gI().remove((Session) session);
+   }
+
+   private void initHandlers() {
+      // Move
+      handlers.put((byte) -7, (player, _msg) -> {
+         if (player != null) {
+            int toX = player.location.x;
+            int toY = player.location.y;
+            try {
+               _msg.reader().readByte();
+               toX = _msg.reader().readShort();
+               toY = _msg.reader().readShort();
+            } catch (Exception e) {
+            }
+            if (player.skillSpecial.isStartSkillSpecial) {
+               if (toX > player.location.x) {
+                  player.skillSpecial.dir = 1;
+               } else if (toX < player.location.x) {
+                  player.skillSpecial.dir = -1;
+               }
+            }
+            PlayerService.gI().playerMove(player, toX, toY);
+         }
+      });
+
+      // Use Skill
+      handlers.put((byte) -45, (player, _msg) -> {
+         if (player != null) {
+            SkillService.gI().useSkill(player, null, null, _msg);
+         }
+      });
+
+      // Pick Item
+      handlers.put((byte) -20, (player, _msg) -> {
+         if (player != null && !player.isDie()) {
+            int itemMapId = _msg.reader().readShort();
+            ItemMapService.gI().pickItem(player, itemMapId, false);
+         }
+      });
+
+      // Chat
+      handlers.put((byte) 44, (player, _msg) -> {
+         if (player != null) {
+            String text = _msg.reader().readUTF();
+            Service.getInstance().chat(player, text);
+         }
+      });
+
+      // Select Menu
+      handlers.put((byte) 32, (player, _msg) -> {
+         if (player != null) {
+            int npcId = _msg.reader().readShort();
+            int select = _msg.reader().readByte();
+            MenuController.getInstance().doSelectMenu(player, npcId, select);
+         }
+      });
+
+      // Open Menu NPC
+      handlers.put((byte) 33, (player, _msg) -> {
+         if (player != null) {
+            int npcId = _msg.reader().readShort();
+            MenuController.getInstance().openMenuNPC(player.getSession(), npcId, player);
+         }
+      });
+
+      // Sub Command
+      handlers.put((byte) -30, (player, _msg) -> {
+         if (player != null) {
+            messageSubCommand(player.getSession(), _msg);
+         }
+      });
+
+      // Finish Load Map
+      handlers.put((byte) -39, (player, _msg) -> {
+         if (player != null && player.zone != null && player.zone.map != null) {
+            ChangeMapService.gI().finishLoadMap(player);
+            if (player.zone.map.mapId == (21 + player.gender)) {
+               if (player.mabuEgg != null) {
+                  player.mabuEgg.sendMabuEgg();
+               }
+            }
+            EffectMapService.gI().sendEffEvent(player);
+         }
+      });
+
+      // Request Get Item
+      handlers.put((byte) -40, (player, _msg) -> {
+         if (player != null) {
+            UseItem.gI().getItem(player.getSession(), _msg);
+         }
+      });
+
+      // Do Item (Use item)
+      handlers.put((byte) -43, (player, _msg) -> {
+         if (player != null) {
+            UseItem.gI().doItem(player, _msg);
+         }
+      });
+
+      // Combine
+      handlers.put((byte) -81, (player, _msg) -> {
+         if (player != null) {
+            _msg.reader().readByte();
+            int[] indexItem = new int[_msg.reader().readByte()];
+            for (int i = 0; i < indexItem.length; i++) {
+               indexItem[i] = _msg.reader().readByte();
+            }
+            CombineServiceNew.gI().showInfoCombine(player, indexItem);
+         }
+      });
+
+      // Ki gui
+      handlers.put(Cmd.KIGUI, (player, _msg) -> {
+         if (player != null) {
+            ConsignmentShop.getInstance().handler(player, _msg);
+         }
+      });
+
+      // Achievement
+      handlers.put(Cmd.ACHIEVEMENT, (player, _msg) -> {
+         if (player != null) {
+            TaskService.gI().rewardAchivement(player, _msg.reader().readByte());
+         }
+      });
+
+      // Rada Card
+      handlers.put(Cmd.RADA_CARD, (player, _msg) -> {
+         if (player != null) {
+            RadaService.getInstance().controller(player, _msg);
+         }
+      });
+
    }
 
    public static List<Integer> list_effect = Arrays.asList(79, 80, 81, 82, 83, 84, 85,
@@ -90,16 +257,22 @@ public class Controller implements IController {
          if (Manager.debug) {
             System.out.println("CMD receive: " + cmd);
          }
+         IMessageHandler handler = handlers.get(cmd);
+         if (handler != null) {
+            handler.handle(player, _msg);
+         } else {
+            handleOld(_session, _msg);
+         }
+      } catch (Exception e) {
+         Log.error(Controller.class, e);
+      }
+   }
+
+   private void handleOld(Session _session, Message _msg) throws Exception {
+      byte cmd = _msg.command;
+      Player player = _session.player;
+      try {
          switch (cmd) {
-            case Cmd.KIGUI:
-               ConsignmentShop.getInstance().handler(player, _msg);
-               break;
-            case Cmd.ACHIEVEMENT:
-               TaskService.gI().rewardAchivement(player, _msg.reader().readByte());
-               break;
-            case Cmd.RADA_CARD:
-               RadaService.getInstance().controller(player, _msg);
-               break;
             case -127:
                if (player != null) {
                   LuckyRoundService.gI().readOpenBall(player, _msg);
@@ -430,60 +603,6 @@ public class Controller implements IController {
                   }
                }
                break;
-            case -7:
-               if (player != null) {
-                  int toX = player.location.x;
-                  int toY = player.location.y;
-                  try {
-                     @SuppressWarnings("unused")
-                     byte b = _msg.reader().readByte();
-
-                     toX = _msg.reader().readShort();
-                     toY = _msg.reader().readShort();
-                  } catch (Exception e) {
-                  }
-                  if (player.skillSpecial.isStartSkillSpecial) {
-                     if (toX > player.location.x) {
-                        player.skillSpecial.dir = 1;
-                     } else if (toX < player.location.x) {
-                        player.skillSpecial.dir = -1;
-                     }
-                  }
-                  PlayerService.gI().playerMove(player, toX, toY);
-               }
-               break;
-            case Cmd.GET_IMAGE_SOURCE:
-               Resources.gI().downloadResources(_session, _msg);
-               break;
-            case -81:
-               if (player != null) {
-                  _msg.reader().readByte();
-                  int[] indexItem = new int[_msg.reader().readByte()];
-                  for (int i = 0; i < indexItem.length; i++) {
-                     indexItem[i] = _msg.reader().readByte();
-                  }
-
-                  CombineServiceNew.gI().showInfoCombine(player, indexItem);
-               }
-               break;
-
-            case -87:
-               DataGame.updateData(_session);
-               break;
-
-            case Cmd.FINISH_UPDATE:
-               _session.finishUpdate();
-               break;
-
-            case Cmd.REQUEST_ICON:
-               int id = _msg.reader().readInt();
-               Resources.gI().requestIcon(_session, id);
-               break;
-
-            case Cmd.GET_IMG_BY_NAME:
-               Resources.gI().requestImgByName(_session, _msg.reader().readUTF());
-               break;
-
             case -66:
                int effId = _msg.reader().readShort();
                int idT = effId;
@@ -521,11 +640,6 @@ public class Controller implements IController {
                if (player != null && player.zone != null) {
                   player.zone.changeMapWaypoint(player);
                   Service.getInstance().hideWaitDialog(player);
-               }
-               break;
-            case -45:
-               if (player != null) {
-                  SkillService.gI().useSkill(player, null, null, _msg);
                }
                break;
             case -46:
@@ -574,17 +688,6 @@ public class Controller implements IController {
                   ClanService.gI().clanInvite(player, _msg);
                }
                break;
-            case -40:
-               UseItem.gI().getItem(_session, _msg);
-               break;
-            case -41:
-               Service.getInstance().sendCaption(_session, _msg.reader().readByte());
-               break;
-            case -43:
-               if (player != null) {
-                  UseItem.gI().doItem(player, _msg);
-               }
-               break;
             case -91:
                if (player != null) {
                   switch (player.iDMark.getTypeChangeMap()) {
@@ -597,17 +700,6 @@ public class Controller implements IController {
                   }
                }
                break;
-            case -39:
-               if (player != null && player.zone != null && player.zone.map != null) {
-                  ChangeMapService.gI().finishLoadMap(player);
-                  if (player.zone.map.mapId == (21 + player.gender)) {
-                     if (player.mabuEgg != null) {
-                        player.mabuEgg.sendMabuEgg();
-                     }
-                  }
-                  EffectMapService.gI().sendEffEvent(player);
-               }
-               break;
             case 11:
                byte modId = _msg.reader().readByte();
                if (modId == 85 || modId == 88 || modId == 89 || modId == 94 || modId == 95 || modId == 96 || modId == 97
@@ -617,25 +709,6 @@ public class Controller implements IController {
                   Resources.gI().requestMobTemplate(_session, modId);
                } else {
                   Resources.gI().requestMobTemplate(_session, modId);
-               }
-               break;
-            case 44:
-               if (player != null) {
-                  String text = _msg.reader().readUTF();
-                  Service.getInstance().chat(player, text);
-               }
-               break;
-            case 32:
-               if (player != null) {
-                  int npcId = _msg.reader().readShort();
-                  int select = _msg.reader().readByte();
-                  MenuController.getInstance().doSelectMenu(player, npcId, select);
-               }
-               break;
-            case 33:
-               if (player != null) {
-                  int npcId = _msg.reader().readShort();
-                  MenuController.getInstance().openMenuNPC(_session, npcId, player);
                }
                break;
             case 34:
@@ -662,20 +735,29 @@ public class Controller implements IController {
                System.out.println("send image version");
                DataGame.sendDataImageVersion(_session);
                break;
-            case -20:
-               if (player != null && !player.isDie()) {
-                  int itemMapId = _msg.reader().readShort();
-                  ItemMapService.gI().pickItem(player, itemMapId, false);
-               }
+            case Cmd.GET_IMAGE_SOURCE:
+               Resources.gI().downloadResources(_session, _msg);
+               break;
+            case -87:
+               DataGame.updateData(_session);
+               break;
+            case Cmd.FINISH_UPDATE:
+               _session.finishUpdate();
+               break;
+            case Cmd.REQUEST_ICON:
+               Resources.gI().requestIcon(_session, _msg.reader().readInt());
+               break;
+            case Cmd.GET_IMG_BY_NAME:
+               Resources.gI().requestImgByName(_session, _msg.reader().readUTF());
+               break;
+            case -41:
+               Service.getInstance().sendCaption(_session, _msg.reader().readByte());
                break;
             case -28:
                messageNotMap(_session, _msg);
                break;
             case -29:
                messageNotLogin(_session, _msg);
-               break;
-            case -30:
-               messageSubCommand(_session, _msg);
                break;
             case -15: // về nhà
                if (player != null) {
@@ -947,7 +1029,7 @@ public class Controller implements IController {
 
          final String sqlCheck = "SELECT 1 FROM player WHERE name = ? OR account_id = ? LIMIT 1";
 
-         try (Connection con = DBService.gI().getConnectionForSaveData();
+         try (Connection con = DBService.gI().getConnection();
                PreparedStatement ps = con.prepareStatement(sqlCheck)) {
 
             ps.setString(1, name);

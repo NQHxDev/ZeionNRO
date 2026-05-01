@@ -2,7 +2,7 @@
 
 # Configurations
 JAR_FILE="ServerGame.jar"
-JAVA_OPTS="-Xms1G -Xmx2G -Djava.awt.headless=true"
+JAVA_OPTS="-Xms2G -Xmx4G -XX:+UseZGC -XX:+ZGenerational -Djava.awt.headless=true"
 RESTART_DELAY=5
 
 echo "----------------------------------------------------"

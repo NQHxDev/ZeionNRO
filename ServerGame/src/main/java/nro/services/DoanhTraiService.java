@@ -4,6 +4,7 @@ import nro.models.map.Zone;
 import nro.models.map.phoban.DoanhTrai;
 import nro.models.mob.Mob;
 import nro.models.player.Player;
+import nro.services.func.ChangeMapService;
 
 public class DoanhTraiService {
 
@@ -54,20 +55,32 @@ public class DoanhTraiService {
    }
 
    public void openDoanhTrai(Player player) {
-      if (player.clan != null && player.clan.doanhTrai == null
-            && !player.clan.haveGoneDoanhTrai) {
-         DoanhTrai doanhTrai = null;
-         for (DoanhTrai dt : DoanhTrai.DOANH_TRAIS) {
-            if (!dt.isOpened) {
-               doanhTrai = dt;
-               break;
+      // Yêu cầu bắt buộc phải có Bang hội để tránh crash "this.clan is null"
+      if (player.clan != null) {
+         if (player.isAdmin() || (player.clan.doanhTrai == null && !player.clan.haveGoneDoanhTrai)) {
+            DoanhTrai doanhTrai = null;
+            for (DoanhTrai dt : DoanhTrai.DOANH_TRAIS) {
+               if (!dt.isOpened) {
+                  doanhTrai = dt;
+                  break;
+               }
             }
-         }
-         if (doanhTrai != null) {
-            doanhTrai.openDoanhTrai(player, player.clan);
+            if (doanhTrai != null) {
+               doanhTrai.openDoanhTrai(player, player.clan);
+            } else {
+               Service.getInstance().sendThongBao(player, "Doanh trại đã đầy, vui lòng quay lại sau");
+            }
          } else {
-            Service.getInstance().sendThongBao(player, "Doanh trại đã đầy, vui lòng quay lại sau");
+            Service.getInstance().sendThongBao(player, "Không thể thực hiện");
          }
+      } else {
+         Service.getInstance().sendThongBao(player, "Ngươi cần phải gia nhập Bang hội!");
+      }
+   }
+
+   public void joinDoanhTrai(Player player) {
+      if (player.clan != null && (player.isAdmin() || player.clan.doanhTrai != null)) {
+         ChangeMapService.gI().changeMap(player, 53, -1, 35, 432);
       } else {
          Service.getInstance().sendThongBao(player, "Không thể thực hiện");
       }
