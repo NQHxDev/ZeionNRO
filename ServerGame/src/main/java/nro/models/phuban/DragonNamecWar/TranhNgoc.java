@@ -33,7 +33,6 @@ public class TranhNgoc {
       if (i == null) {
          i = new TranhNgoc();
       }
-      i.setTime();
       return i;
    }
 
@@ -78,8 +77,9 @@ public class TranhNgoc {
    }
 
    public void setTime() {
-      if (i.day == -1 || i.day != TimeUtil.getCurrDay()) {
-         i.day = TimeUtil.getCurrDay();
+      int currDay = TimeUtil.getCurrDay();
+      if (this.day == -1 || this.day != currDay) {
+         this.day = currDay;
          try {
             TranhNgoc.TIME_OPEN = TimeUtil.getTime(
                   TimeUtil.getTimeNow("dd/MM/yyyy") + " " + HOUR_OPEN + ":" + MIN_OPEN + ":" + 0,
@@ -128,11 +128,13 @@ public class TranhNgoc {
    }
 
    public boolean isTimeRegisterWar() {
+      setTime();
       long now = System.currentTimeMillis();
       return now > TIME_REGISTER && now < TIME_OPEN;
    }
 
    public boolean isTimeStartWar() {
+      setTime();
       long now = System.currentTimeMillis();
       return now > TIME_OPEN && now < TIME_CLOSE;
    }

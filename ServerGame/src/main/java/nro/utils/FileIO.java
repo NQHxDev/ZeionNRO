@@ -29,13 +29,6 @@ public class FileIO {
       return null;
    }
 
-   // public static void main(String[] args) {
-   // long st = System.currentTimeMillis();
-   // for(int i = 0; i < 100; i++){
-   // readFile("resources/data/nro/icon/x1/" + i+".png");
-   // }
-   // System.out.println(System.currentTimeMillis()-st);
-   // }
    public static ByteArrayOutputStream loadFile(String url) {
       try {
          FileInputStream openFileInput = new FileInputStream(url);
@@ -73,22 +66,4 @@ public class FileIO {
       }
    }
 
-   // public static void main(String[] args) {
-   // try {
-   // DataInputStream dis = new DataInputStream(new
-   // FileInputStream("data/map/temp/48"));
-   // dis.readByte();
-   // int tmw, tmh;
-   // System.out.println("tmw: " + (tmw = dis.readByte()));
-   // System.out.println("tmh: " + (tmh = dis.readByte()));
-   // for (int i = 0; i < tmh; i++) {
-   // for (int j = 0; j < tmw; j++) {
-   // String text = dis.readByte() + "";
-   // System.out.print(text + (text.length() == 1 ? " " : " "));
-   // }
-   // System.out.println();
-   // }
-   // } catch (Exception e) {
-   // }
-   // }
 }

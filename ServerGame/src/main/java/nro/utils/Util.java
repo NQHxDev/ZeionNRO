@@ -29,7 +29,9 @@ import nro.services.ItemService;
 public class Util {
 
    private static final Random rand;
+
    private static final SimpleDateFormat dateFormat;
+
    private static SimpleDateFormat dateFormatDay = new SimpleDateFormat("yyyy-MM-dd");
 
    public static boolean isAfterDay(long lastTime) {

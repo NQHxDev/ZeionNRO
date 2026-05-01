@@ -126,6 +126,9 @@ public class Map implements Tickable {
    public void update() {
       for (Zone zone : this.zones) {
          try {
+            if (zone.getPlayers().isEmpty()) {
+               continue;
+            }
             zone.update();
          } catch (Exception e) {
             Log.error(Map.class, e, "Update Zone Error - ZoneID: " + zone.zoneId + " - MapID: " + this.mapId);
@@ -290,7 +293,7 @@ public class Map implements Tickable {
 
    @Override
    public int periodMs() {
-      return 1000;
+      return 200;
    }
 
    @Override

@@ -115,7 +115,7 @@ public class ServerManager {
          nettyServer.setPublicConfig(Manager.DOMAIN, PORT);
          nettyServer.setRedirect(false);
 
-         // Cấu hình Session Factory để tạo nro.server.io.Session
+         // Cấu hình Session Factory
          nettyServer.setSessionFactory((channel, id) -> {
             String ip = channel.remoteAddress().toString().replace("/", "").split(":")[0];
             if (canConnectWithIp(ip)) {

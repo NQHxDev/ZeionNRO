@@ -22,19 +22,19 @@ public class DuongTang extends Npc {
 
    @Override
    public void openBaseMenu(Player player) {
-      if (this.mapId == MapName.LANG_ARU) {
+      if (this.mapId == ConstMap.LANG_ARU) {
          this.createOtherMenu(player, ConstNpc.BASE_MENU,
                "|7|NGŨ HÀNH SƠN"
                      + "\n|2|A mi phò phò, thí chủ hãy giúp giải cứu đồ đệ của bần tăng đang bị phong ấn tại ngũ hành sơn."
                      + "\n|3|Tại đây sức mạnh dưới 100 Tỷ đánh quái được x2 TNSM",
                "Đồng ý", "Từ chối");
       }
-      if (this.mapId == MapName.NGU_HANH_SON_3) {
+      if (this.mapId == ConstMap.NGU_HANH_SON_3) {
          this.createOtherMenu(player, ConstNpc.BASE_MENU,
                "A mi phò phò, thí chủ hãy thu thập bùa 'giải khai phong ấn', mỗi chữ 10 cái.",
                "Về\nLàng Aru", "Từ chối");
       }
-      if (this.mapId == MapName.NGU_HANH_SON) {
+      if (this.mapId == ConstMap.NGU_HANH_SON) {
          this.createOtherMenu(player, ConstNpc.BASE_MENU,
                "A mi phò phò, thí chủ hãy thu thập bùa 'giải khai phong ấn', mỗi chữ 10 cái.",
                "Đổi đào chín", "Giải phong ấn", "Từ chối");
@@ -44,7 +44,7 @@ public class DuongTang extends Npc {
    @Override
    public void confirmMenu(Player player, int select) {
       if (canOpenNpc(player)) {
-         if (this.mapId == MapName.LANG_ARU) {
+         if (this.mapId == ConstMap.LANG_ARU) {
             if (player.iDMark.isBaseMenu()) {
                switch (select) {
                   case 0:
@@ -67,7 +67,7 @@ public class DuongTang extends Npc {
                }
             }
          }
-         if (this.mapId == MapName.NGU_HANH_SON_3) {
+         if (this.mapId == ConstMap.NGU_HANH_SON_3) {
             if (player.iDMark.isBaseMenu()) {
                switch (select) {
                   case 0:
@@ -85,7 +85,7 @@ public class DuongTang extends Npc {
                }
             }
          }
-         if (this.mapId == MapName.NGU_HANH_SON) {
+         if (this.mapId == ConstMap.NGU_HANH_SON) {
             if (player.iDMark.isBaseMenu()) {
                switch (select) {
                   case 0:

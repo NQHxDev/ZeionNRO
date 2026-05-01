@@ -12,8 +12,8 @@ import java.util.concurrent.TimeUnit;
 
 import nro.utils.Log;
 import nro.services.Service;
-import nro.services.ClanService;
 import nro.core.GameScheduler;
+import nro.services.ClanService;
 
 @NoArgsConstructor
 public class AutoMaintenance {

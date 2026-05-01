@@ -268,6 +268,7 @@ public class Manager {
       try {
          Log.log("Đang bắt đầu load server.properties...");
          loadProperties();
+
          Log.log("Đang bắt đầu load game.properties...");
          gameConfig = new GameConfig();
       } catch (Exception ex) {

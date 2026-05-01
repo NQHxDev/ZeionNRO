@@ -1,10 +1,10 @@
 package nro.network.io;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.buffer.PooledByteBufAllocator;
-import io.netty.buffer.Unpooled;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -13,9 +13,11 @@ import java.nio.charset.StandardCharsets;
 public class Message {
 
    public byte command;
+
    private ByteBuf buffer;
 
    private DataOutputStream dos;
+
    private DataInputStream dis;
 
    private boolean isBigMsg;

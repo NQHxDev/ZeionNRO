@@ -16,6 +16,16 @@ import nro.services.TaskService;
 
 public class Mob {
 
+   private static final double[] POW_095 = new double[201];
+   private static final double[] POW_115 = new double[201];
+
+   static {
+      for (int i = 0; i <= 200; i++) {
+         POW_095[i] = Math.pow(0.95, i);
+         POW_115[i] = Math.pow(1.15, i);
+      }
+   }
+
    public int id;
    public Zone zone;
    public int tempId;
@@ -149,14 +159,16 @@ public class Mob {
       // Tăng hệ số nhân cơ bản từ 5.0 lên 6.5
       long tiemNang = (long) (ratio * maxTiemNang * 6.5);
 
-      // Xử lý chênh lệch Level bằng công thức lũy thừa cho Clean code
+      // Xử lý chênh lệch Level bằng bảng tra cứu đã tính sẵn
       if (levelDiff > 0) {
-         tiemNang = (long) (tiemNang * Math.pow(0.95, levelDiff)); // Giảm 5% mỗi cấp khi mạnh hơn quái
+         int idx = Math.min(200, levelDiff);
+         tiemNang = (long) (tiemNang * POW_095[idx]); // Giảm 5% mỗi cấp khi mạnh hơn quái
          if (levelDiff > 15) {
             tiemNang = 1;
          }
       } else if (levelDiff < 0) {
-         tiemNang = (long) (tiemNang * Math.pow(1.15, -levelDiff)); // Tăng 15% mỗi cấp khi đánh quái vượt cấp
+         int idx = Math.min(200, -levelDiff);
+         tiemNang = (long) (tiemNang * POW_115[idx]); // Tăng 15% mỗi cấp khi đánh quái vượt cấp
       }
 
       tiemNang = Math.max(1, tiemNang);

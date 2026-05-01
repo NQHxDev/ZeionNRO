@@ -9,8 +9,8 @@ public class MobData {
    public int id;
 
    public byte type;
-    public byte typeData;
-    public byte[][] frameBoss;
+   public byte typeData;
+   public byte[][] frameBoss;
 
    public Sprite[] sprites;
 

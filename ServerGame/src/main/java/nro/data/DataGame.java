@@ -39,7 +39,7 @@ public class DataGame {
    public static final Map<String, Short> MAP_MOUNT_NUM = new HashMap<>();
 
    private static byte[] readFileWithLog(String path) {
-      Log.log("DataGame: [INFO] Đang nạp " + path);
+      Log.log("DataGame: Đang nạp " + path);
       return FileIO.readFile(path);
    }
 
@@ -92,17 +92,23 @@ public class DataGame {
          msg = Message.create(-87);
          msg.writer().writeByte(vsData);
          msg.writer().writeInt(dart != null ? dart.length : 0);
-         if (dart != null) msg.writer().write(dart);
+         if (dart != null)
+            msg.writer().write(dart);
          msg.writer().writeInt(arrow != null ? arrow.length : 0);
-         if (arrow != null) msg.writer().write(arrow);
+         if (arrow != null)
+            msg.writer().write(arrow);
          msg.writer().writeInt(effect != null ? effect.length : 0);
-         if (effect != null) msg.writer().write(effect);
+         if (effect != null)
+            msg.writer().write(effect);
          msg.writer().writeInt(image != null ? image.length : 0);
-         if (image != null) msg.writer().write(image);
+         if (image != null)
+            msg.writer().write(image);
          msg.writer().writeInt(part != null ? part.length : 0);
-         if (part != null) msg.writer().write(part);
+         if (part != null)
+            msg.writer().write(part);
          msg.writer().writeInt(skill != null ? skill.length : 0);
-         if (skill != null) msg.writer().write(skill);
+         if (skill != null)
+            msg.writer().write(skill);
 
          session.doSendMessage(msg);
       } catch (Exception e) {

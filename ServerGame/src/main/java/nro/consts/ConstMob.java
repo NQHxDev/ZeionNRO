@@ -53,13 +53,16 @@ public class ConstMob {
    public static final byte HEO_XAYDA = 18;
    public static final byte HEO_RUNG_ME = 19;
    public static final byte HEO_XANH_ME = 20;
+
    public static final byte ALIEN = 21;
    public static final byte BULON = 22;
    public static final byte UKULELE = 23;
    public static final byte QUY_MAP = 24;
+
    public static final byte TAMBOURINE = 25;
    public static final byte DRUM = 26;
    public static final byte AKKUMAN = 27;
+
    public static final byte THAN_LAN_BAY_2 = 28;
    public static final byte PHI_LONG_2 = 29;
    public static final byte QUY_BAY_2 = 30;

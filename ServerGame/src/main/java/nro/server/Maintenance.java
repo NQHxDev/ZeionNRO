@@ -6,6 +6,7 @@ import nro.utils.Log;
 
 public class Maintenance extends Thread {
 
+   // TODO: Rename Variable isRuning
    public static boolean isRuning = false;
 
    private static Maintenance i;
