@@ -137,9 +137,9 @@ public class GodGK {
          }
 
          try (PreparedStatement ps = conn.prepareStatement(
-               "SELECT p.*, pp.*, sh.point AS point_sh, sh.used_ticket AS used_ticket_sh, sh.last_time_ticket AS last_time_sh "
-                     + "FROM player p INNER JOIN player_point pp ON p.id = pp.player_id "
-                     + "LEFT JOIN sieu_hang sh ON p.id = sh.player_id WHERE p.account_id = ? LIMIT 1")) {
+                "SELECT p.*, pp.*, sh.point AS point_sh, sh.used_ticket AS used_ticket_sh, sh.last_time_ticket AS last_time_sh, sh.last_time_reset AS last_time_sh_reset "
+                      + "FROM player p INNER JOIN player_point pp ON p.id = pp.player_id "
+                      + "LEFT JOIN sieu_hang sh ON p.id = sh.player_id WHERE p.account_id = ? LIMIT 1")) {
             ps.setInt(1, session.userId);
             try (ResultSet rs = ps.executeQuery()) {
                if (rs.next()) {
@@ -244,7 +244,11 @@ public class GodGK {
       player.usedTicketSieuHang = rs.getInt("used_ticket_sh");
       player.lastTimeReceivedTicket = rs.getLong("last_time_sh");
       if (player.lastTimeReceivedTicket <= 0) {
-         player.lastTimeReceivedTicket = System.currentTimeMillis();
+         player.lastTimeReceivedTicket = 0;
+      }
+      player.lastTimeSieuHangReset = rs.getLong("last_time_sh_reset");
+      if (player.lastTimeSieuHangReset <= 0) {
+         player.lastTimeSieuHangReset = 0;
       }
 
       if (player.hoivienvip > 0) {

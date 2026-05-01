@@ -205,51 +205,27 @@ public class Controller implements IController {
          }
       });
 
-      // Update Data
-      handlers.put((byte) -87, (player, _msg) -> {
-         DataGame.updateData(player.getSession());
-      });
-
       // Ki gui
       handlers.put(Cmd.KIGUI, (player, _msg) -> {
-         ConsignmentShop.getInstance().handler(player, _msg);
+         if (player != null) {
+            ConsignmentShop.getInstance().handler(player, _msg);
+         }
       });
 
       // Achievement
       handlers.put(Cmd.ACHIEVEMENT, (player, _msg) -> {
-         TaskService.gI().rewardAchivement(player, _msg.reader().readByte());
+         if (player != null) {
+            TaskService.gI().rewardAchivement(player, _msg.reader().readByte());
+         }
       });
 
       // Rada Card
       handlers.put(Cmd.RADA_CARD, (player, _msg) -> {
-         RadaService.getInstance().controller(player, _msg);
+         if (player != null) {
+            RadaService.getInstance().controller(player, _msg);
+         }
       });
 
-      // Get Image Source
-      handlers.put(Cmd.GET_IMAGE_SOURCE, (player, _msg) -> {
-         Resources.gI().downloadResources(player.getSession(), _msg);
-      });
-
-      // Finish Update
-      handlers.put(Cmd.FINISH_UPDATE, (player, _msg) -> {
-         player.getSession().finishUpdate();
-      });
-
-      // Request Icon
-      handlers.put(Cmd.REQUEST_ICON, (player, _msg) -> {
-         int id = _msg.reader().readInt();
-         Resources.gI().requestIcon(player.getSession(), id);
-      });
-
-      // Get Img By Name
-      handlers.put(Cmd.GET_IMG_BY_NAME, (player, _msg) -> {
-         Resources.gI().requestImgByName(player.getSession(), _msg.reader().readUTF());
-      });
-
-      // Send Caption
-      handlers.put((byte) -41, (player, _msg) -> {
-         Service.getInstance().sendCaption(player.getSession(), _msg.reader().readByte());
-      });
    }
 
    public static List<Integer> list_effect = Arrays.asList(79, 80, 81, 82, 83, 84, 85,
@@ -758,6 +734,24 @@ public class Controller implements IController {
             case -111:
                System.out.println("send image version");
                DataGame.sendDataImageVersion(_session);
+               break;
+            case Cmd.GET_IMAGE_SOURCE:
+               Resources.gI().downloadResources(_session, _msg);
+               break;
+            case -87:
+               DataGame.updateData(_session);
+               break;
+            case Cmd.FINISH_UPDATE:
+               _session.finishUpdate();
+               break;
+            case Cmd.REQUEST_ICON:
+               Resources.gI().requestIcon(_session, _msg.reader().readInt());
+               break;
+            case Cmd.GET_IMG_BY_NAME:
+               Resources.gI().requestImgByName(_session, _msg.reader().readUTF());
+               break;
+            case -41:
+               Service.getInstance().sendCaption(_session, _msg.reader().readByte());
                break;
             case -28:
                messageNotMap(_session, _msg);

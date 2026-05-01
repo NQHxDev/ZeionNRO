@@ -29,11 +29,9 @@ public class TrongTai extends Npc {
       if (player.iDMark.isBaseMenu()) {
          switch (select) {
             case 0: // Thi đấu
-               System.out.println("[DEBUG_SIEU_HANG] Selecting 'Thi đấu' for " + player.name);
                SieuHangManager.gI().showOpponents(player);
                break;
             case 1: // Xem Top
-               System.out.println("[DEBUG_SIEU_HANG] Selecting 'Xem Top' for " + player.name);
                TopManager.getInstance().loadSieuHang();
                SieuHangManager.gI().sendTopSieuHang(player);
                break;
@@ -55,6 +53,12 @@ public class TrongTai extends Npc {
                ChangeMapService.gI().changeMapNonSpaceship(player, 52, 500, 336);
                break;
          }
+      } else if (player.iDMark.getIndexMenu() == ConstNpc.MENU_SIEU_HANG) {
+         if (player.opponentsSieuHang != null && select >= 0 && select < player.opponentsSieuHang.size()) {
+            Player opponent = player.opponentsSieuHang.get(select);
+            SieuHangManager.gI().challenge(player, (int) opponent.id);
+         }
       }
    }
+
 }

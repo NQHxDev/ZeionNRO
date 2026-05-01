@@ -80,6 +80,8 @@ public class Player {
    public int pointSieuHang = 100;
    public int usedTicketSieuHang;
    public long lastTimeReceivedTicket;
+   public long lastTimeSieuHangReset;
+   public List<Player> opponentsSieuHang;
 
    public boolean DH1 = false;
    public boolean DH2 = false;

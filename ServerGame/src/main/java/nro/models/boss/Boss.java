@@ -599,6 +599,9 @@ public abstract class Boss extends Player implements BossInterface {
 
    @Override
    public Player getPlayerAttack() throws Exception {
+      if (this.zone == null) {
+         return null;
+      }
       if (countChangePlayerAttack < targetCountChangePlayerAttack
             && plAttack != null && plAttack.zone != null
             && plAttack.zone.equals(this.zone)) {

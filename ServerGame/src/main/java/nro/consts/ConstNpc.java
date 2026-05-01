@@ -161,6 +161,7 @@ public class ConstNpc {
    // index menu base
    public static final int IGNORE_MENU = 712002;
    public static final int BASE_MENU = 752002;
+   public static final int MENU_SIEU_HANG = 1111;
    public static final int ESCORT_QILIN_MENU = 7520033;
    public static final int MENU_TRIEU_HOI_BOSS = 7520034;
    public static final int MENU_TRIEU_HOI_BOSS_VI_THU = 7520035;

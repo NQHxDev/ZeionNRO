@@ -1,5 +1,7 @@
 package nro.event;
 
+import nro.utils.Util;
+import nro.models.map.Map;
 import nro.consts.ConstItem;
 import nro.consts.ConstMap;
 import nro.consts.ConstMob;
@@ -16,7 +18,6 @@ import nro.models.boss.event.NightLord;
 import nro.models.item.Item;
 import nro.models.item.ItemOption;
 import nro.models.map.ItemMap;
-import nro.models.map.Map;
 import nro.models.map.Zone;
 import nro.models.mob.Mob;
 import nro.models.npc.Npc;
@@ -30,7 +31,6 @@ import nro.services.ItemService;
 import nro.services.ItemTimeService;
 import nro.services.MapService;
 import nro.services.Service;
-import nro.utils.Util;
 
 import java.util.List;
 
@@ -510,35 +510,33 @@ public class SummerEvent extends Event {
          Item boHung = InventoryService.gI().findItem(player, ConstItem.BO_HUNG_TE_GIAC, 10);
          Item boKepKim = InventoryService.gI().findItem(player, ConstItem.BO_KEP_KIM, 10);
          if (boKienVuong != null && boHung != null && boKepKim != null) {
-             if (itemID == ConstItem.HU_MAT_ONG) {
-                BossData beetle = new BossData(
-                      "Bọ cánh cứng",
-                      ConstPlayer.TRAI_DAT,
-                      Boss.DAME_NORMAL,
-                      Boss.HP_NORMAL,
-                      1,
-                      new double[][] { { 1500 } },
-                      new short[] { 1245, 1246, 1247 },
-                      null, // mapJoin is null for these event bosses
-                      new int[][] { { Skill.DRAGON, 1, 100 } },
-                      BossData._0_GIAY
-                );
-                new Beetle((byte) generateUniqueID(), beetle, player);
-             } else {
-                BossData nl = new BossData(
-                      "Ngài đêm",
-                      ConstPlayer.TRAI_DAT,
-                      Boss.DAME_NORMAL,
-                      Boss.HP_NORMAL,
-                      1,
-                      new double[][] { { 1500 } },
-                      new short[] { 1248, 1249, 1250 },
-                      null, // mapJoin is null
-                      new int[][] { { Skill.DRAGON, 1, 100 } },
-                      BossData._0_GIAY
-                );
-                new NightLord((byte) generateUniqueID(), nl, player);
-             }
+            if (itemID == ConstItem.HU_MAT_ONG) {
+               BossData beetle = new BossData(
+                     "Bọ cánh cứng",
+                     ConstPlayer.TRAI_DAT,
+                     Boss.DAME_NORMAL,
+                     Boss.HP_NORMAL,
+                     1,
+                     new double[][] { { 1500 } },
+                     new short[] { 1245, 1246, 1247 },
+                     null, // mapJoin is null for these event bosses
+                     new int[][] { { Skill.DRAGON, 1, 100 } },
+                     BossData._0_GIAY);
+               new Beetle((byte) generateUniqueID(), beetle, player);
+            } else {
+               BossData nl = new BossData(
+                     "Ngài đêm",
+                     ConstPlayer.TRAI_DAT,
+                     Boss.DAME_NORMAL,
+                     Boss.HP_NORMAL,
+                     1,
+                     new double[][] { { 1500 } },
+                     new short[] { 1248, 1249, 1250 },
+                     null, // mapJoin is null
+                     new int[][] { { Skill.DRAGON, 1, 100 } },
+                     BossData._0_GIAY);
+               new NightLord((byte) generateUniqueID(), nl, player);
+            }
             InventoryService.gI().subQuantityItemsBag(player, item, 1);
             InventoryService.gI().subQuantityItemsBag(player, boKienVuong, 10);
             InventoryService.gI().subQuantityItemsBag(player, boHung, 10);
