@@ -492,15 +492,16 @@ public class ClanService {
          }
          FlagBag flagBag = FlagBagService.gI().getFlagBag(imgId);
          if (flagBag != null) {
-            if (flagBag.gold > 0) {
+            int costGoldBar = 1; // Phí tạo bang: 1 thỏi vàng
+
+            if (costGoldBar > 0) {
                Item thoivang = InventoryService.gI().findItemBagByTemp(player, 457);
-               if (thoivang != null && thoivang.quantity >= flagBag.gold) {
-                  InventoryService.gI().subQuantityItemsBag(player, thoivang, flagBag.gold);
+               if (thoivang != null && thoivang.quantity >= costGoldBar) {
+                  InventoryService.gI().subQuantityItemsBag(player, thoivang, costGoldBar);
                   InventoryService.gI().sendItemBags(player);
                   Service.getInstance().point(player);
-                  player.inventory.gold -= flagBag.gold;
                } else {
-                  Service.getInstance().sendThongBao(player, "Bạn không đủ Thỏi vàng");
+                  Service.getInstance().sendThongBao(player, "Bạn cần " + costGoldBar + " Thỏi vàng để tạo bang!");
                   return;
                }
             }
@@ -768,15 +769,16 @@ public class ClanService {
       Clan clan = player.clan;
       FlagBag flagBag = FlagBagService.gI().getFlagBag(imgId);
       if (flagBag != null) {
-         if (flagBag.gold > 0) {
+         int costGoldBar = 1; // Phí đổi cờ: 1 thỏi vàng
+
+         if (costGoldBar > 0) {
             Item thoivang = InventoryService.gI().findItemBagByTemp(player, 457);
-            if (thoivang != null && thoivang.quantity >= flagBag.gold) {
-               InventoryService.gI().subQuantityItemsBag(player, thoivang, flagBag.gold);
+            if (thoivang != null && thoivang.quantity >= costGoldBar) {
+               InventoryService.gI().subQuantityItemsBag(player, thoivang, costGoldBar);
                InventoryService.gI().sendItemBags(player);
                Service.getInstance().point(player);
-               player.inventory.gold -= flagBag.gold;
             } else {
-               Service.getInstance().sendThongBao(player, "Bạn không đủ Thỏi vàng");
+               Service.getInstance().sendThongBao(player, "Bạn cần " + costGoldBar + " Thỏi vàng để đổi cờ!");
                return;
             }
          }
@@ -1119,7 +1121,7 @@ public class ClanService {
                dataObject.addProperty("clan_point", cm.clanPoint);
                dataObject.addProperty("join_time", cm.joinTime);
                dataObject.addProperty("ask_pea_time", cm.timeAskPea);
-               dataArray.add(gson.toJson(dataObject));
+               dataArray.add(dataObject);
             }
             String member = gson.toJson(dataArray);
             ps.setString(1, clan.slogan);

@@ -263,6 +263,7 @@ public class ConstNpc {
    public static final int MENU_KHONG_CHO_VAO_DT = 500;
    public static final int MENU_CHO_VAO_DT = 501;
    public static final int MENU_VAO_DT = 502;
+   public static final int MENU_CHO_PHEP_VAO_DT = 503;
 
    // index menu con meo
    public static final int MAKE_MATCH_PVP = 502;
